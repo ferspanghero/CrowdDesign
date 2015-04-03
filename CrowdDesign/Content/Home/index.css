@@ -1,0 +1,27 @@
+﻿div {
+    padding: 5px;
+}
+
+#tblMorphChart, tr, th, td {
+    border: thin;
+    border-style: solid;    
+}
+
+#tblMorphChart {
+    padding: 5px;
+    width: 100%;
+}
+
+th, td {
+    padding: 2px;
+}
+
+th {
+    width: 50px;
+}
+
+td {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}

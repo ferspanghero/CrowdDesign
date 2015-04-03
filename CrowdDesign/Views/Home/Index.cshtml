@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<div id="divMorphChart">
+    <table id="tblMorphChart">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th contenteditable="true">Category 2</th>
+                <th contenteditable="true">Category 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td contenteditable="true">New user</td>
+                <td>@Html.ActionLink("Empty Sketch", "Index", "Sketch")</td>
+                <td>@Html.ActionLink("Empty Sketch", "Index", "Sketch")</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="divActions">
+    <button id="btnCategory">Add category</button>
+    <button id="btnProposal">Add proposal</button>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/Scripts/Home/index.js")
+}

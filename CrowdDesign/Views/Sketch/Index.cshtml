@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<div id="divSketchTools"></div>
+<canvas id="cnvSketch"></canvas>
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/sketch.js")
+    @Scripts.Render("~/Scripts/Sketch/index.js")
+}
