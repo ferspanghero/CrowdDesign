@@ -106,9 +106,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CrowdDesign\CrowdDesign.csproj">
+    <ProjectReference Include="..\CrowdDesign\CrowdDesign.UI.Web.csproj">
       <Project>{1D4CC9E3-49FD-46A1-B6DE-E40B53FBD85E}</Project>
-      <Name>CrowdDesign</Name>
+      <Name>CrowdDesign.UI.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

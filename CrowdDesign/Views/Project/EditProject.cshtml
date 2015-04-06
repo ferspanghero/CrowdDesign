@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "Edit project details";
+}
+
+@model CrowdDesign.Core.Entities.Project
+
+<div id="divMorphChart">
+    <table id="tblMorphChart">
+        <thead>
+            <tr>
+                <th>User</th>
+                @if (Model != null && Model.Categories != null)
+                {
+                    foreach (var category in Model.Categories)
+                    {
+                        <th>@category.Name</th>
+                    }
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Users != null)
+            {
+                foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.Name</td>
+
+                        @if (user.Sketches != null)
+                        {
+                            foreach (var sketch in user.Sketches)
+                            {
+                                <td>@Html.ActionLink("Sketch", "Index", new { sketch })</td>
+                            }
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="divActions">
+    @using (Html.BeginForm("CreateCategory", "Project", new { ProjectId = Model.Id }, FormMethod.Post))
+    {
+        <input name="categoryName" type="text" />
+        <input type="submit" value="Create category" />
+    }
+
+    @using (Html.BeginForm("CreateUser", "Project", new { ProjectId = Model.Id }, FormMethod.Post))
+    {
+        <input name="userName" type="text" />
+        <input type="submit" value="Create user" />
+    }
+</div>

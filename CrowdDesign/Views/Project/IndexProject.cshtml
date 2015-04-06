@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "IndexChart";
+}
+
+@model IEnumerable<CrowdDesign.Core.Entities.Project>
+
+<div id="divCharts">
+    <table id="tblProjects">
+        <thead>
+            <tr>
+                <th>Project Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var project in Model)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(project.Name, "EditProjectDetails", new { ProjectId = project.Id })</td>
+                        <td>
+                            @using (Html.BeginForm("DeleteProject", "Project", new { ProjectId = project.Id }, FormMethod.Post))
+                            {
+                                <input type="submit" value="Delete project" />
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id="divActions">
+    @using (Html.BeginForm("CreateProject", "Project", FormMethod.Post))
+    {
+        <input type="submit" value="Create project" />
+    }
+</div>

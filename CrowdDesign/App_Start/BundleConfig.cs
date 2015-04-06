@@ -1,7 +1,6 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
-namespace CrowdDesign
+namespace CrowdDesign.UI.Web
 {
     public class BundleConfig
     {
@@ -24,9 +23,9 @@ namespace CrowdDesign
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                        "~/Content/site.css",
-                        "~/Content/Home/index.css",
-                        "~/Content/Sketch/sketch.css"));
+                        "~/Content/Site.css",
+                        "~/Content/Project/EditProject.css",
+                        "~/Content/Sketch/IndexSketch.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",

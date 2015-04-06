@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
-namespace CrowdDesign.Controllers
+namespace CrowdDesign.UI.Web.Controllers
 {
     public class SketchController : Controller
     {
@@ -13,7 +9,7 @@ namespace CrowdDesign.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return View("IndexSketch");
         }
 
     }
