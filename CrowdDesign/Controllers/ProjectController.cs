@@ -20,6 +20,7 @@ namespace CrowdDesign.UI.Web.Controllers
         #endregion
 
         #region Methods
+        #region Project Listing
         public ActionResult Index()
         {
             return View("IndexProject", _repository.GetProjects());
@@ -32,8 +33,10 @@ namespace CrowdDesign.UI.Web.Controllers
                 _repository.CreateProject(new Project { Name = "New Project" });
 
             return RedirectToAction("Index");
-        }
+        } 
+        #endregion
 
+        #region Project Details
         public ActionResult EditProjectDetails(int? projectId)
         {
             if (projectId == null)
@@ -56,7 +59,7 @@ namespace CrowdDesign.UI.Web.Controllers
             if (ModelState.IsValid)
                 _repository.UpdateProject(project);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("EditProjectDetails", new { ProjectId = project.Id });
         }
 
         [HttpPost]
@@ -74,7 +77,7 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult CreateCategory(int? projectId)
         {
-            string categoryName = Request["categoryName"];
+            string categoryName = Request["txtCategoryName"];
 
             if (string.IsNullOrEmpty(categoryName) || projectId == null)
                 return View("Error");
@@ -88,7 +91,7 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult CreateUser(int? projectId)
         {
-            string userName = Request["userName"];
+            string userName = Request["txtUserName"];
 
             if (string.IsNullOrEmpty(userName) || projectId == null)
                 return View("Error");
@@ -97,7 +100,35 @@ namespace CrowdDesign.UI.Web.Controllers
                 _repository.CreateUser(projectId.Value, userName);
 
             return RedirectToAction("EditProjectDetails", new { projectId });
+        } 
+        #endregion
+
+        #region Sketch
+        public ActionResult EditSketch(int? sketchId)
+        {
+            if (sketchId == null)
+                return View("Error");
+
+            Sketch sketch = _repository.GetSketch(sketchId.Value);
+
+            if (sketch == null)
+                return HttpNotFound();
+
+            return View("EditSketch", sketch);
         }
+
+        [HttpPost]
+        public ActionResult UpdateSketch(Sketch sketch)
+        {
+            if (sketch == null)
+                return View("Error");
+
+            if (ModelState.IsValid)
+                _repository.UpdateSketch(sketch);
+
+            return RedirectToAction("EditSketch", new { SketchId = sketch.Id });
+        }
+        #endregion
         #endregion
     }
 }

@@ -1,0 +1,13 @@
+﻿#divIndeSketchMain {
+    width: 100%;
+    text-align: center;
+}
+
+#cnvSketch {
+    border: 2px solid black;       
+}
+
+#divSketchTools {
+    display: inline-block;
+    text-align: center;
+}

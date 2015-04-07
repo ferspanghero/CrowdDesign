@@ -4,11 +4,21 @@
 
 @model CrowdDesign.Core.Entities.Project
 
+<div id="divProjectGeneralData">
+    @using (Html.BeginForm("EditProjectName", "Project", FormMethod.Post))
+    {
+        @Html.HiddenFor(model => model.Id)
+        @Html.EditorFor(model => model.Name)
+
+        <input type="submit" value="Alter name" />
+    }
+</div>
+
 <div id="divMorphChart">
     <table id="tblMorphChart">
         <thead>
             <tr>
-                <th>User</th>
+                <th class="cellUser">User</th>
                 @if (Model != null && Model.Categories != null)
                 {
                     foreach (var category in Model.Categories)
@@ -24,13 +34,13 @@
                 foreach (var user in Model.Users)
                 {
                     <tr>
-                        <td>@user.Name</td>
+                        <td class="cellUser">@user.Name</td>
 
                         @if (user.Sketches != null)
                         {
                             foreach (var sketch in user.Sketches)
                             {
-                                <td>@Html.ActionLink("Sketch", "Index", new { sketch })</td>
+                                <td>@Html.ActionLink("Sketch", "EditSketch", new { SketchId = sketch.Id })</td>
                             }
                         }
                     </tr>
@@ -40,16 +50,20 @@
     </table>
 </div>
 
-<div id="divActions">
-    @using (Html.BeginForm("CreateCategory", "Project", new { ProjectId = Model.Id }, FormMethod.Post))
-    {
-        <input name="categoryName" type="text" />
-        <input type="submit" value="Create category" />
-    }
+<div id="divProjectDetailsActions">
+    <div>
+        @using (Html.BeginForm("CreateCategory", "Project", new { ProjectId = Model.Id }, FormMethod.Post))
+        {
+            <input name="txtCategoryName" type="text" />
+            <input type="submit" value="Create category" />
+        }
+    </div>
 
-    @using (Html.BeginForm("CreateUser", "Project", new { ProjectId = Model.Id }, FormMethod.Post))
-    {
-        <input name="userName" type="text" />
-        <input type="submit" value="Create user" />
-    }
+    <div>
+        @using (Html.BeginForm("CreateUser", "Project", new { ProjectId = Model.Id }, FormMethod.Post))
+        {
+            <input name="txtUserName" type="text" />
+            <input type="submit" value="Create user" />
+        }
+    </div>
 </div>

@@ -23,9 +23,10 @@ namespace CrowdDesign.UI.Web
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                        "~/Content/Site.css",
-                        "~/Content/Project/EditProject.css",
-                        "~/Content/Sketch/IndexSketch.css"));
+                        "~/Content/css/Site.css",
+                        "~/Content/css/Project/IndexProject.css",
+                        "~/Content/css/Project/EditProject.css",
+                        "~/Content/css/Project/EditSketch.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",

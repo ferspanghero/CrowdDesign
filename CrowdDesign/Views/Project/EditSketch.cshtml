@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Edit sketch";
+}
+
+@model CrowdDesign.Core.Entities.Sketch
+
+<div id="divIndeSketchMain">
+    <div id="divSketchTools"></div>
+    <div id="divCanvas">
+        <canvas id="cnvSketch"></canvas>
+    </div>
+
+    @using (Html.BeginForm("UpdateSketch", "Project", FormMethod.Post))
+    {
+        @Html.HiddenFor(model => model.Data)
+        @Html.HiddenFor(model => model.Id)
+
+        <input id="btnSaveSketch" type="submit" value="Save changes"/>
+        <input id="btnClearSketch" type="submit" value="Clear" />
+    }
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/sketch.js")
+    @Scripts.Render("~/Scripts/Project/EditSketch.js")
+}
