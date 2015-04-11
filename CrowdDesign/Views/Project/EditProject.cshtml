@@ -40,7 +40,18 @@
                         {
                             foreach (var sketch in user.Sketches)
                             {
-                                <td>@Html.ActionLink("Sketch", "EditSketch", new { SketchId = sketch.Id })</td>
+                                <td>
+                                    @if (sketch.ImageURI == null)
+                                    {
+                                        @Html.ActionLink("Add sketch", "EditSketch", new {SketchId = sketch.Id})
+                                    }
+                                    else
+                                    {
+                                        <a href=@Url.Action("EditSketch", "Project", new {SketchId = sketch.Id})>
+                                            <img id="imgSketchThumbnail" src=@sketch.ImageURI />
+                                        </a>
+                                    }
+                                </td>
                             }
                         }
                     </tr>

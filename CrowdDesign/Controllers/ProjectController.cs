@@ -118,15 +118,15 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateSketch(Sketch sketch)
+        public ActionResult UpdateSketch(Sketch sketch, int? projectId)
         {
-            if (sketch == null)
+            if (sketch == null || projectId == null)
                 return View("Error");
 
             if (ModelState.IsValid)
                 _repository.UpdateSketch(sketch);
 
-            return RedirectToAction("EditSketch", new { SketchId = sketch.Id });
+            return RedirectToAction("EditProjectDetails", new { ProjectId = projectId.Value });
         }
         #endregion
         #endregion

@@ -13,7 +13,7 @@
             sketchElement.sketch().actions.push(this);
         });
 
-        sketchElement.sketch().redraw();
+        sketchElement.sketch().redraw();             
     }
 
     $.each(["#f00", "#ff0", "#0f0", "#0ff", "#00f", "#000", "#fff"], function () {
@@ -26,6 +26,7 @@
 
     $("#btnSaveSketch").click(function () {
         $("#Data").val(JSON.stringify(sketchElement.sketch().actions));
+        $("#ImageURI").val(document.getElementById("cnvSketch").toDataURL());
     });
 
     $("#btnClearSketch").click(function () {

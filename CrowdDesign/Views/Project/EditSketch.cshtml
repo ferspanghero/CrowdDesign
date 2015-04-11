@@ -10,13 +10,13 @@
         <canvas id="cnvSketch"></canvas>
     </div>
 
-    @using (Html.BeginForm("UpdateSketch", "Project", FormMethod.Post))
+    @using (Html.BeginForm("UpdateSketch", "Project", new { ProjectId = Model.User.Project.Id }, FormMethod.Post))
     {
-        @Html.HiddenFor(model => model.Data)
         @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.Data)
+        @Html.HiddenFor(model => model.ImageURI)
 
-        <input id="btnSaveSketch" type="submit" value="Save changes"/>
-        <input id="btnClearSketch" type="submit" value="Clear" />
+        <input id="btnSaveSketch" type="submit" value="Save changes" />        
     }
 </div>
 

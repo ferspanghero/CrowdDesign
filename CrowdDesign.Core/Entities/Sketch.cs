@@ -6,7 +6,8 @@
         public int Id { get; set; }
         public User User { get; set; }
         public Category Category { get; set; }
-        public string Data { get; set; } 
+        public string Data { get; set; }
+        public string ImageURI { get; set; }
         #endregion
     }
 }

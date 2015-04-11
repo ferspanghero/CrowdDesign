@@ -216,7 +216,10 @@ namespace CrowdDesign.Infrastructure.SQLServer
             {
                 sketch = (from s in db.Sketches
                            where s.Id == sketchId
-                           select s).SingleOrDefault();
+                           select s)
+                           .Include(e => e.User)
+                           .Include(e => e.User.Project)  
+                           .SingleOrDefault();
             }
 
             return
@@ -236,6 +239,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
                         if (sketchRecord != null)
                         {
                             sketchRecord.Data = sketch.Data;
+                            sketchRecord.ImageURI = sketch.ImageURI;
                             db.Entry(sketchRecord).State = EntityState.Modified;
 
                             db.SaveChanges();
