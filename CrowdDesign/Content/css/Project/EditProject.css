@@ -2,14 +2,9 @@
     padding: 5px;
 }
 
-#divProjectDetailsActions, #divProjectGeneralData {
+#divProjectGeneralData {
     text-align: left;
 }
-
-    #divProjectDetailsActions div {
-        padding: 0;
-        margin: 0px 0px 3px 0px;
-    }
 
 #tblMorphChart {
     width: 100%;
@@ -17,6 +12,25 @@
 }
 
 #imgSketchThumbnail {
-    width: 100%;
-    height: 100%;
+    width: 50%;
+    height: 50%;
+}
+
+.cellAddNewSketch {
+    text-align: left;
+    border: none;
+}
+
+.cellAddNewCategory {
+    border: none;
+}
+
+.btnAddNew {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
 }

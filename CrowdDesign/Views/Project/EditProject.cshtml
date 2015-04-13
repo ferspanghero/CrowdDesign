@@ -2,6 +2,7 @@
     ViewBag.Title = "Edit project details";
 }
 
+@using CrowdDesign.Core.Entities
 @model CrowdDesign.Core.Entities.Project
 
 <div id="divProjectGeneralData">
@@ -18,63 +19,81 @@
     <table id="tblMorphChart">
         <thead>
             <tr>
-                <th class="cellUser">User</th>
+                <th>Categories</th>
                 @if (Model != null && Model.Categories != null)
                 {
-                    foreach (var category in Model.Categories)
+                    if (Model.Categories.Any(c => c.Sketches != null && c.Sketches.Count > 0))
                     {
-                        <th>@category.Name</th>
+                        int proposedSolutionsCount = (from c in Model.Categories
+                            where c.Sketches != null && c.Sketches.Count > 0
+                            select c.Sketches.Count()).Max();
+
+                        if (proposedSolutionsCount > 0)
+                        {
+                            for (int i = 1; i <= proposedSolutionsCount; i++)
+                            {
+                                string name = "Solution Candidate " + i;
+
+                                <th>@name</th>
+                            }
+                        }
                     }
                 }
             </tr>
         </thead>
         <tbody>
-            @if (Model != null && Model.Users != null)
+            @if (Model == null || Model.Categories == null || Model.Categories.Count == 0)
             {
-                foreach (var user in Model.Users)
+                <tr>
+                    <td class="cellAddNewCategory">
+                        @using (Html.BeginForm("CreateCategory", "Project", new { ProjectId = Model != null ? (int?)Model.Id : null }, FormMethod.Post))
+                        {
+                            <input class="btnAddNew" type="submit" value="Add category" />
+                        }
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var category in Model.Categories)
                 {
                     <tr>
-                        <td class="cellUser">@user.Name</td>
+                        <td>@category.Name</td>
 
-                        @if (user.Sketches != null)
+                        @if (category.Sketches != null)
                         {
-                            foreach (var sketch in user.Sketches)
+                            foreach (var sketch in category.Sketches)
                             {
                                 <td>
-                                    @if (sketch.ImageURI == null)
-                                    {
-                                        @Html.ActionLink("Add sketch", "EditSketch", new {SketchId = sketch.Id})
-                                    }
-                                    else
-                                    {
-                                        <a href=@Url.Action("EditSketch", "Project", new {SketchId = sketch.Id})>
-                                            <img id="imgSketchThumbnail" src=@sketch.ImageURI />
-                                        </a>
-                                    }
+                                    <a href=@Url.Action("EditSketch", "Project", new {SketchId = sketch.Id})>
+                                        <img id="imgSketchThumbnail" src=@sketch.ImageURI />
+                                    </a>
                                 </td>
                             }
+
+                            <td class="cellAddNewSketch">
+                                @using (Html.BeginForm("CreateSketch", "Project", new { CategoryId = category.Id }, FormMethod.Post))
+                                {
+                                    <input class="btnAddNew" type="submit" value="Add solution" />
+                                }
+                            </td>
                         }
                     </tr>
                 }
+
+                <tr>
+                    <td class="cellAddNewCategory">
+                        @using (Html.BeginForm("CreateCategory", "Project", new { ProjectId = Model != null ? (int?)Model.Id : null }, FormMethod.Post))
+                        {
+                            <input class="btnAddNew" type="submit" value="Add category" />
+                        }
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 </div>
-
-<div id="divProjectDetailsActions">
-    <div>
-        @using (Html.BeginForm("CreateCategory", "Project", new { ProjectId = Model.Id }, FormMethod.Post))
-        {
-            <input name="txtCategoryName" type="text" />
-            <input type="submit" value="Create category" />
-        }
-    </div>
-
-    <div>
-        @using (Html.BeginForm("CreateUser", "Project", new { ProjectId = Model.Id }, FormMethod.Post))
-        {
-            <input name="txtUserName" type="text" />
-            <input type="submit" value="Create user" />
-        }
-    </div>
-</div>
+@section scripts
+{
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+}

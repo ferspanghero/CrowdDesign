@@ -30,10 +30,15 @@ namespace CrowdDesign.UI.Web.Controllers
         public ActionResult CreateProject()
         {
             if (ModelState.IsValid)
-                _repository.CreateProject(new Project { Name = "New Project" });
+            {
+                int projectId = _repository.CreateProject("New Project");
 
-            return RedirectToAction("Index");
-        } 
+                if (projectId > 0)
+                    return RedirectToAction("Index");
+            }
+
+            return View("Error");
+        }
         #endregion
 
         #region Project Details
@@ -77,30 +82,36 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult CreateCategory(int? projectId)
         {
-            string categoryName = Request["txtCategoryName"];
-
-            if (string.IsNullOrEmpty(categoryName) || projectId == null)
-                return View("Error");
+            if (projectId == null)
+                return View("Error");            
 
             if (ModelState.IsValid)
-                _repository.CreateCategory(projectId.Value, categoryName);
+            {
+                int categoryId = _repository.CreateCategory(projectId.Value, "New category");
 
-            return RedirectToAction("EditProjectDetails", new { projectId });
+                if (categoryId > 0)
+                    return RedirectToAction("EditProjectDetails", new {projectId});
+            }
+
+            return View("Error");
         }
 
         [HttpPost]
-        public ActionResult CreateUser(int? projectId)
+        public ActionResult CreateSketch(int? categoryId)
         {
-            string userName = Request["txtUserName"];
-
-            if (string.IsNullOrEmpty(userName) || projectId == null)
+            if (categoryId == null)
                 return View("Error");
 
             if (ModelState.IsValid)
-                _repository.CreateUser(projectId.Value, userName);
+            {
+                int sketchId = _repository.CreateSketch(categoryId.Value);
 
-            return RedirectToAction("EditProjectDetails", new { projectId });
-        } 
+                if (sketchId > 0)
+                    return RedirectToAction("EditSketch", new {sketchId});
+            }
+
+            return View("Error");
+        }
         #endregion
 
         #region Sketch

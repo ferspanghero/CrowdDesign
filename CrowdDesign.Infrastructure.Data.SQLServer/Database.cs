@@ -8,7 +8,6 @@ namespace CrowdDesign.Infrastructure.SQLServer
     {
         #region Properties
         public DbSet<Project> Projects { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Sketch> Sketches { get; set; }
         #endregion
@@ -16,11 +15,6 @@ namespace CrowdDesign.Infrastructure.SQLServer
         #region Methods
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Sketch>()
-                .HasRequired(e => e.User)
-                .WithMany(e => e.Sketches)
-                .WillCascadeOnDelete();
-
             modelBuilder.Entity<Sketch>()
                 .HasRequired(e => e.Category)
                 .WithMany()

@@ -9,12 +9,12 @@ namespace CrowdDesign.Core.Interfaces
         #region Methods
         IEnumerable<Project> GetProjects();
         Project GetProject(int projectId);
-        void CreateProject(Project project);
+        int CreateProject(string projectName);
         void UpdateProject(Project project);
-        void DeleteProject(int projectId);
-        void CreateCategory(int projectId, string categoryName);
-        void CreateUser(int projectId, string userName);
+        void DeleteProject(int projectId);        
+        int CreateCategory(int projectId, string categoryName);
         Sketch GetSketch(int sketchId);
+        int CreateSketch(int categoryId);        
         void UpdateSketch(Sketch sketch);
         #endregion        
     }

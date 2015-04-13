@@ -17,8 +17,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
             {
                 // Avoids lazy evaluation issues after the DbContext is disposed by forcing data to be retrieved with IEnumerable.ToList()
                 projects = db.Projects
-                                .Include(e => e.Categories)
-                                .Include(e => e.Users.Select(u => u.Sketches))
+                                .Include(e => e.Categories.Select(u => u.Sketches))
                                 .ToList();
             }
 
@@ -35,8 +34,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
                 project = (from p in db.Projects
                            where p.Id == projectId
                            select p)
-                           .Include(e => e.Categories)
-                           .Include(e => e.Users.Select(u => u.Sketches))                           
+                           .Include(e => e.Categories.Select(u => u.Sketches))
                            .SingleOrDefault();
             }
 
@@ -44,16 +42,25 @@ namespace CrowdDesign.Infrastructure.SQLServer
                 project;
         }
 
-        public void CreateProject(Project project)
+        public int CreateProject(string projectName)
         {
-            if (project != null)
+            int projectId = -1;
+
+            if (!string.IsNullOrEmpty(projectName))
             {
                 using (var db = new Database())
                 {
+                    Project project = new Project { Name = projectName };
+
                     db.Projects.Add(project);
                     db.SaveChanges();
+
+                    projectId = project.Id;
                 }
             }
+
+            return
+                projectId;
         }
 
         public void UpdateProject(Project project)
@@ -94,17 +101,19 @@ namespace CrowdDesign.Infrastructure.SQLServer
             }
         }
 
-        public void CreateCategory(int projectId, string categoryName)
+        public int CreateCategory(int projectId, string categoryName)
         {
-            using (var db = new Database())
-            {
-                if (db.Projects != null)
-                {
-                    Project projectRecord = GetProject(projectId);
+            int categoryId = -1;
 
-                    if (projectRecord != null)
+            if (!string.IsNullOrEmpty(categoryName))
+            {
+                using (var db = new Database())
+                {
+                    if (db.Projects != null)
                     {
-                        using (var transaction = db.Database.BeginTransaction())
+                        Project projectRecord = GetProject(projectId);
+
+                        if (projectRecord != null)
                         {
                             if (projectRecord.Categories == null)
                                 projectRecord.Categories = new List<Category>();
@@ -117,95 +126,20 @@ namespace CrowdDesign.Infrastructure.SQLServer
 
                             // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
                             // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
-                            db.Categories.Attach(category);                 
+                            db.Categories.Attach(category);
                             projectRecord.Categories.Add(category);
                             db.Entry(category).State = EntityState.Added;
 
                             db.SaveChanges();
 
-                            if (projectRecord.Users != null && projectRecord.Users.Count > 0)
-                            {
-                                foreach (var user in projectRecord.Users)
-                                {
-                                    if (user.Sketches == null)
-                                        user.Sketches = new List<Sketch>();
-
-                                    Sketch sketch = new Sketch
-                                    {
-                                        Data = null,
-                                        User = user,
-                                        Category = category
-                                    };
-
-                                    db.Sketches.Attach(sketch);
-                                    user.Sketches.Add(sketch);
-                                    db.Entry(sketch).State = EntityState.Added;
-                                }
-
-                                db.SaveChanges();
-                            }
-
-                            transaction.Commit();
+                            categoryId = category.Id;
                         }
                     }
                 }
             }
-        }
 
-        public void CreateUser(int projectId, string userName)
-        {
-            using (var db = new Database())
-            {
-                if (db.Projects != null)
-                {
-                    Project projectRecord = GetProject(projectId);
-
-                    if (projectRecord != null)
-                    {
-                        using (var transaction = db.Database.BeginTransaction())
-                        {
-                            if (projectRecord.Users == null)
-                                projectRecord.Users = new List<User>();
-
-                            User user = new User
-                            {
-                                Name = userName,
-                                Project = projectRecord,
-                                Sketches = new List<Sketch>()
-                            };
-
-                            // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
-                            // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
-                            db.Users.Attach(user);
-                            projectRecord.Users.Add(user);
-                            db.Entry(user).State = EntityState.Added;
-
-                            db.SaveChanges();
-
-                            if (projectRecord.Categories != null)
-                            {
-                                foreach (var category in projectRecord.Categories)
-                                {
-                                    Sketch sketch = new Sketch
-                                    {
-                                        Data = null,
-                                        User = user,
-                                        Category = category
-                                    };
-
-                                    db.Sketches.Attach(sketch);
-                                    user.Sketches.Add(sketch);
-                                    db.Entry(sketch).State = EntityState.Added;
-                                }
-
-                                db.SaveChanges();
-                            }
-
-                            transaction.Commit();
-                        }
-                    }
-                }
-            }
+            return
+                categoryId;
         }
 
         public Sketch GetSketch(int sketchId)
@@ -215,15 +149,56 @@ namespace CrowdDesign.Infrastructure.SQLServer
             using (var db = new Database())
             {
                 sketch = (from s in db.Sketches
-                           where s.Id == sketchId
-                           select s)
-                           .Include(e => e.User)
-                           .Include(e => e.User.Project)  
+                          where s.Id == sketchId
+                          select s)
+                           .Include(e => e.Category)
+                           .Include(e => e.Category.Project)
                            .SingleOrDefault();
             }
 
             return
                 sketch;
+        }
+
+        public int CreateSketch(int categoryId)
+        {
+            int sketchId = -1;
+
+            using (var db = new Database())
+            {
+                if (db.Projects != null)
+                {
+                    Category categoryRecord = (from c in db.Categories
+                                               where c.Id == categoryId
+                                               select c).Include(c => c.Sketches)
+                                               .Include(c => c.Project)
+                                               .FirstOrDefault();
+
+                    if (categoryRecord != null)
+                    {
+                        if (categoryRecord.Sketches == null)
+                            categoryRecord.Sketches = new List<Sketch>();
+
+                        Sketch sketch = new Sketch
+                        {
+                            Category = categoryRecord,
+                        };
+
+                        // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
+                        // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
+                        db.Sketches.Attach(sketch);
+                        categoryRecord.Sketches.Add(sketch);
+                        db.Entry(sketch).State = EntityState.Added;
+
+                        db.SaveChanges();
+
+                        sketchId = sketch.Id;
+                    }
+                }
+            }
+
+            return
+                sketchId;
         }
 
         public void UpdateSketch(Sketch sketch)
@@ -248,6 +223,6 @@ namespace CrowdDesign.Infrastructure.SQLServer
                 }
             }
         }
-        #endregion        
+        #endregion
     }
 }
