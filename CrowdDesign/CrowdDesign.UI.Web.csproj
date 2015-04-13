@@ -131,9 +131,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\EditCategoryViewModel.cs" />
+    <Compile Include="Models\EditSketchViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\css\Project\EditCategory.css" />
     <Content Include="Content\css\Project\IndexProject.css" />
     <Content Include="Content\css\Project\EditProject.css" />
     <Content Include="Content\css\Project\EditSketch.css" />
@@ -246,10 +249,10 @@
     <Content Include="Scripts\sketch.min.js.map">
       <DependentUpon>sketch.min.js</DependentUpon>
     </Content>
+    <Content Include="Views\Project\EditCategory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

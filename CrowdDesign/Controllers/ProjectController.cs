@@ -1,6 +1,8 @@
 ﻿using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer;
+using CrowdDesign.UI.Web.Models;
+using System;
 using System.Collections;
 using System.Web.Mvc;
 
@@ -50,7 +52,7 @@ namespace CrowdDesign.UI.Web.Controllers
             Project project = _repository.GetProject(projectId.Value);
 
             if (project == null)
-                return HttpNotFound();
+                return View("Error");
 
             return View("EditProject", project);
         }
@@ -79,65 +81,112 @@ namespace CrowdDesign.UI.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public ActionResult CreateCategory(int? projectId)
+        public ActionResult EditCategory(int? projectId, int? categoryId)
         {
             if (projectId == null)
-                return View("Error");            
+                return View("Error");
+
+            Category category = null;
+
+            if (categoryId != null)
+                category = _repository.GetCategory(categoryId.Value);
+
+            EditCategoryViewModel viewModel;
+
+            viewModel = new EditCategoryViewModel { ProjectId = projectId };
+
+            if (category != null)
+            {
+                viewModel.CategoryId = category.Id;
+                viewModel.Name = category.Name;
+                viewModel.Description = category.Description;
+            }
+
+            return View("EditCategory", viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult CreateCategory(EditCategoryViewModel viewModel)
+        {
+            if (viewModel == null || viewModel.ProjectId == null)
+                return View("Error");
 
             if (ModelState.IsValid)
             {
-                int categoryId = _repository.CreateCategory(projectId.Value, "New category");
+                int categoryId = _repository.CreateCategory(viewModel.ProjectId.Value, new Category { Name = viewModel.Name, Description = viewModel.Description });
 
                 if (categoryId > 0)
-                    return RedirectToAction("EditProjectDetails", new {projectId});
+                    return RedirectToAction("EditProjectDetails", new { viewModel.ProjectId });
             }
 
             return View("Error");
         }
 
         [HttpPost]
-        public ActionResult CreateSketch(int? categoryId)
+        public ActionResult UpdateCategory(EditCategoryViewModel viewModel)
         {
-            if (categoryId == null)
+            if (viewModel == null || viewModel.ProjectId == null || viewModel.CategoryId == null)
                 return View("Error");
 
             if (ModelState.IsValid)
-            {
-                int sketchId = _repository.CreateSketch(categoryId.Value);
+                _repository.UpdateCategory(new Category { Id = viewModel.CategoryId.Value, Name = viewModel.Name, Description = viewModel.Description });
 
-                if (sketchId > 0)
-                    return RedirectToAction("EditSketch", new {sketchId});
-            }
-
-            return View("Error");
+            return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
         }
         #endregion
 
         #region Sketch
-        public ActionResult EditSketch(int? sketchId)
+        public ActionResult EditSketch(int? projectId, int? categoryId, int? sketchId)
         {
-            if (sketchId == null)
+            if (projectId == null || categoryId == null)
                 return View("Error");
 
-            Sketch sketch = _repository.GetSketch(sketchId.Value);
+            Sketch sketch = null;
 
-            if (sketch == null)
-                return HttpNotFound();
+            if (sketchId != null)
+                sketch = _repository.GetSketch(sketchId.Value);
 
-            return View("EditSketch", sketch);
+            EditSketchViewModel viewModel;
+
+            viewModel = new EditSketchViewModel { ProjectId = projectId, CategoryId = categoryId };
+
+            if (sketch != null)
+            {
+                viewModel.SketchId = sketch.Id;
+                viewModel.Data = sketch.Data;
+                viewModel.ImageURI = sketch.ImageURI;
+            }
+
+            return View("EditSketch", viewModel);
         }
 
         [HttpPost]
-        public ActionResult UpdateSketch(Sketch sketch, int? projectId)
+        public ActionResult CreateSketch(EditSketchViewModel viewModel)
         {
-            if (sketch == null || projectId == null)
+            if (viewModel == null || viewModel.ProjectId == null || viewModel.CategoryId == null)
                 return View("Error");
 
             if (ModelState.IsValid)
-                _repository.UpdateSketch(sketch);
+            {
+                int sketchId = _repository.CreateSketch(viewModel.CategoryId.Value, new Sketch { Data = viewModel.Data, ImageURI = viewModel.ImageURI });
 
-            return RedirectToAction("EditProjectDetails", new { ProjectId = projectId.Value });
+                if (sketchId > 0)
+                    return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
+            }
+
+            return View("Error");
+        }
+
+        [HttpPost]
+        public ActionResult UpdateSketch(EditSketchViewModel viewModel)
+        {
+            if (viewModel == null || viewModel.ProjectId == null || viewModel.SketchId == null)
+                return View("Error");
+
+            if (ModelState.IsValid)
+                _repository.UpdateSketch(new Sketch { Id = viewModel.SketchId.Value, Data = viewModel.Data, ImageURI = viewModel.ImageURI });
+
+            return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
         }
         #endregion
         #endregion

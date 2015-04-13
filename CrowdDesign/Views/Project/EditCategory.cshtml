@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Edit sketch";
+}
+
+@model CrowdDesign.UI.Web.Models.EditCategoryViewModel
+
+<div id="divEditCategoryMain">
+    @{
+        string actionName;
+
+        if (Model == null || Model.CategoryId == null)
+        {
+            actionName = "CreateCategory";
+        }
+        else
+        {
+            actionName = "UpdateCategory";
+        }
+
+        using (Html.BeginForm(actionName, "Project", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.ProjectId)
+            @Html.HiddenFor(model => model.CategoryId)
+
+            <div class="divEditCategoryField">
+                <div>
+                    @Html.LabelFor(model => model.Name, new { Class = "lblField" })
+                </div>
+
+                <div>
+                    @Html.TextBoxFor(model => model.Name)
+                </div>
+            </div>
+
+            <div class="divEditCategoryField">
+                <div>
+                    @Html.LabelFor(model => model.Description, new { Class = "lblField" })
+                </div>
+
+                <div>
+                    @Html.TextAreaFor(model => model.Description, new { Id = "txtDescription" })
+                </div>
+            </div>
+
+            <div class="divEditCategoryField">
+                <input id="btnSaveSketch" type="submit" value="Save changes" />
+            </div>
+        }
+    }
+</div>

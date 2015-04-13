@@ -11,11 +11,13 @@ namespace CrowdDesign.Core.Interfaces
         Project GetProject(int projectId);
         int CreateProject(string projectName);
         void UpdateProject(Project project);
-        void DeleteProject(int projectId);        
-        int CreateCategory(int projectId, string categoryName);
+        void DeleteProject(int projectId);
+        Category GetCategory(int categoryId);
+        int CreateCategory(int projectId, Category category);
+        void UpdateCategory(Category category);
         Sketch GetSketch(int sketchId);
-        int CreateSketch(int categoryId);        
+        int CreateSketch(int categoryId, Sketch sketch);        
         void UpdateSketch(Sketch sketch);
-        #endregion        
+        #endregion                   
     }
 }

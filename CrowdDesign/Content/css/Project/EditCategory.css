@@ -1,0 +1,18 @@
+﻿#divEditCategoryMain {
+    display: inline;
+    text-align: center;
+}
+
+.divEditCategoryField {
+    margin: 5px;
+    text-align: left;
+}
+
+#txtDescription {
+    width: 300px;
+    height: 150px;
+}
+
+.lblField {
+    font-weight: bold;    
+}

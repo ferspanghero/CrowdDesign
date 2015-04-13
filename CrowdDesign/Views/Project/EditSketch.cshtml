@@ -2,16 +2,16 @@
     ViewBag.Title = "Edit sketch";
 }
 
-@model CrowdDesign.Core.Entities.Sketch
+@model CrowdDesign.UI.Web.Models.EditSketchViewModel
 
-<div id="divIndeSketchMain">
+<div id="divEditSketchMain">
     <div id="divSketchTools">
         <a href="#cnvSketch" data-color="#000000" title="Black"><img src="~/Content/resources/Project/black_icon.png" alt="Black" /></a>
         <a href="#cnvSketch" data-color="#ff0000" title="Red"><img src="~/Content/resources/Project/red_icon.png" alt="Red" /></a>
         <a href="#cnvSketch" data-color="#00ff00" title="Green"><img src="~/Content/resources/Project/green_icon.png" alt="Green" /></a>
         <a href="#cnvSketch" data-color="#0000ff" title="Blue"><img src="~/Content/resources/Project/blue_icon.png" alt="Blue" /></a>
         <a href="#cnvSketch" data-color="#ffff00" title="Yellow"><img src="~/Content/resources/Project/yellow_icon.png" alt="Yellow" /></a>
-        <a href="#cnvSketch" data-color="#00ffff" title="Cyan"><img src="~/Content/resources/Project/cyan_icon.png" alt="Cyan"/></a>
+        <a href="#cnvSketch" data-color="#00ffff" title="Cyan"><img src="~/Content/resources/Project/cyan_icon.png" alt="Cyan" /></a>
         <a href="#cnvSketch" data-color="#ffffff" title="Eraser"><img src="~/Content/resources/Project/eraser_icon.png" alt="Eraser" /></a>
         <a href="#cnvSketch" data-size="1"><img src="~/Content/resources/Project/pencil_icon.png" alt="Pencil" /></a>
         <a href="#cnvSketch" data-size="3"><img src="~/Content/resources/Project/pen_icon.png" alt="Pen" /></a>
@@ -25,13 +25,28 @@
         <canvas id="cnvSketch"></canvas>
     </div>
 
-    @using (Html.BeginForm("UpdateSketch", "Project", new { ProjectId = Model != null && Model.Category != null && Model.Category.Project != null ? (int?)Model.Category.Project.Id : null }, FormMethod.Post))
-    {
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.Data)
-        @Html.HiddenFor(model => model.ImageURI)
+    @{
+        string actionName;
 
-        <input id="btnSaveSketch" type="submit" value="Save changes" />        
+        if (Model == null || Model.SketchId == null)
+        {
+            actionName = "CreateSketch";
+        }
+        else
+        {
+            actionName = "UpdateSketch";
+        }
+
+        using (Html.BeginForm(actionName, "Project", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.ProjectId)
+            @Html.HiddenFor(model => model.CategoryId)
+            @Html.HiddenFor(model => model.SketchId)
+            @Html.HiddenFor(model => model.Data)
+            @Html.HiddenFor(model => model.ImageURI)
+
+            <input id="btnSaveSketch" type="submit" value="Save changes" />
+        }
     }
 </div>
 

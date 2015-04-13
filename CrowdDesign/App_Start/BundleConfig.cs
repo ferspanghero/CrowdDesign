@@ -26,7 +26,8 @@ namespace CrowdDesign.UI.Web
                         "~/Content/css/Site.css",
                         "~/Content/css/Project/IndexProject.css",
                         "~/Content/css/Project/EditProject.css",
-                        "~/Content/css/Project/EditSketch.css"));
+                        "~/Content/css/Project/EditSketch.css",
+                        "~/Content/css/Project/EditCategory.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",

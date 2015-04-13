@@ -25,8 +25,8 @@
                     if (Model.Categories.Any(c => c.Sketches != null && c.Sketches.Count > 0))
                     {
                         int proposedSolutionsCount = (from c in Model.Categories
-                            where c.Sketches != null && c.Sketches.Count > 0
-                            select c.Sketches.Count()).Max();
+                                                      where c.Sketches != null && c.Sketches.Count > 0
+                                                      select c.Sketches.Count()).Max();
 
                         if (proposedSolutionsCount > 0)
                         {
@@ -46,10 +46,7 @@
             {
                 <tr>
                     <td class="cellAddNewCategory">
-                        @using (Html.BeginForm("CreateCategory", "Project", new { ProjectId = Model != null ? (int?)Model.Id : null }, FormMethod.Post))
-                        {
-                            <input class="btnAddNew" type="submit" value="Add category" />
-                        }
+                        @Html.ActionLink("Create category", "EditCategory", new { ProjectId = Model != null ? (int?)Model.Id : null })
                     </td>
                 </tr>
             }
@@ -58,24 +55,21 @@
                 foreach (var category in Model.Categories)
                 {
                     <tr>
-                        <td>@category.Name</td>
+                        <td>@Html.ActionLink(category.Name, "EditCategory", new { ProjectId = Model.Id, CategoryId = category.Id }, new { Title = category.Description })</td>
 
                         @if (category.Sketches != null)
                         {
                             foreach (var sketch in category.Sketches)
                             {
                                 <td>
-                                    <a href=@Url.Action("EditSketch", "Project", new {SketchId = sketch.Id})>
+                                    <a href=@Url.Action("EditSketch", "Project", new {ProjectId = Model.Id, CategoryId = category.Id, SketchId = sketch.Id})>
                                         <img id="imgSketchThumbnail" src=@sketch.ImageURI />
                                     </a>
                                 </td>
                             }
 
                             <td class="cellAddNewSketch">
-                                @using (Html.BeginForm("CreateSketch", "Project", new { CategoryId = category.Id }, FormMethod.Post))
-                                {
-                                    <input class="btnAddNew" type="submit" value="Add solution" />
-                                }
+                                @Html.ActionLink("Add solution", "EditSketch", new { ProjectId = Model.Id, CategoryId = category.Id })
                             </td>
                         }
                     </tr>
@@ -83,10 +77,7 @@
 
                 <tr>
                     <td class="cellAddNewCategory">
-                        @using (Html.BeginForm("CreateCategory", "Project", new { ProjectId = Model != null ? (int?)Model.Id : null }, FormMethod.Post))
-                        {
-                            <input class="btnAddNew" type="submit" value="Add category" />
-                        }
+                        @Html.ActionLink("Create category", "EditCategory", new { ProjectId = Model.Id })
                     </td>
                 </tr>
             }
