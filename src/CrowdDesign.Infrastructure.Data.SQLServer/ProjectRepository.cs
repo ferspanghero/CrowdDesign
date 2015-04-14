@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
-using System.Linq;
-using System.Data.Entity;
 
 namespace CrowdDesign.Infrastructure.SQLServer
 {

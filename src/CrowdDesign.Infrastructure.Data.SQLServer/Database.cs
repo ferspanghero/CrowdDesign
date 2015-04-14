@@ -1,6 +1,5 @@
-﻿using CrowdDesign.Core.Entities;
-using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Conventions;
+﻿using System.Data.Entity;
+using CrowdDesign.Core.Entities;
 
 namespace CrowdDesign.Infrastructure.SQLServer
 {
