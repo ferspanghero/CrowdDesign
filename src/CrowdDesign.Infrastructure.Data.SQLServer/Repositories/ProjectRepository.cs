@@ -3,8 +3,9 @@ using System.Data.Entity;
 using System.Linq;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Infrastructure.SQLServer.Contexts;
 
-namespace CrowdDesign.Infrastructure.SQLServer
+namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 {
     public class ProjectRepository : IProjectRepository
     {
@@ -13,7 +14,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
         {
             IEnumerable<Project> projects;
 
-            using (var db = new Database())
+            using (var db = new DatabaseContext())
             {
                 // Avoids lazy evaluation issues after the DbContext is disposed by forcing data to be retrieved with IEnumerable.ToList()
                 projects = db.Projects
@@ -29,12 +30,12 @@ namespace CrowdDesign.Infrastructure.SQLServer
         {
             Project project;
 
-            using (var db = new Database())
+            using (var db = new DatabaseContext())
             {
                 project = (from p in db.Projects
                            where p.Id == projectId
                            select p)
-                           .Include(e => e.Categories.Select(u => u.Sketches))
+                           .Include(e => e.Categories.Select(u => u.Sketches.Select(s => s.User)))
                            .SingleOrDefault();
             }
 
@@ -48,7 +49,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
 
             if (!string.IsNullOrEmpty(projectName))
             {
-                using (var db = new Database())
+                using (var db = new DatabaseContext())
                 {
                     Project project = new Project { Name = projectName };
 
@@ -67,7 +68,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
         {
             if (project != null)
             {
-                using (var db = new Database())
+                using (var db = new DatabaseContext())
                 {
                     if (db.Projects != null)
                     {
@@ -87,7 +88,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
 
         public void DeleteProject(int projectId)
         {
-            using (var db = new Database())
+            using (var db = new DatabaseContext())
             {
                 if (db.Projects != null)
                 {
@@ -105,7 +106,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
         {
             Category category;
 
-            using (var db = new Database())
+            using (var db = new DatabaseContext())
             {
                 category = (from c in db.Categories
                             where c.Id == categoryId
@@ -124,7 +125,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
 
             if (category != null)
             {
-                using (var db = new Database())
+                using (var db = new DatabaseContext())
                 {
                     if (db.Projects != null)
                     {
@@ -159,7 +160,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
         {
             if (category != null)
             {
-                using (var db = new Database())
+                using (var db = new DatabaseContext())
                 {
                     if (db.Projects != null)
                     {
@@ -182,13 +183,14 @@ namespace CrowdDesign.Infrastructure.SQLServer
         {
             Sketch sketch;
 
-            using (var db = new Database())
+            using (var db = new DatabaseContext())
             {
                 sketch = (from s in db.Sketches
                           where s.Id == sketchId
                           select s)
                            .Include(e => e.Category)
                            .Include(e => e.Category.Project)
+                           .Include(e => e.User)
                            .SingleOrDefault();
             }
 
@@ -196,37 +198,41 @@ namespace CrowdDesign.Infrastructure.SQLServer
                 sketch;
         }
 
-        public int CreateSketch(int categoryId, Sketch sketch)
+        public int CreateSketch(int categoryId, int userId, Sketch sketch)
         {
             int sketchId = -1;
 
             if (sketch != null)
             {
-                using (var db = new Database())
+                using (var dbProject = new DatabaseContext())
                 {
-                    if (db.Projects != null)
+                    if (dbProject.Projects != null)
                     {
-                        Category categoryRecord = GetCategory(categoryId);
+                        ISecurityRepository securityRepository = new SecurityRepository();
 
-                        if (categoryRecord != null)
+                        Category categoryRecord = GetCategory(categoryId);
+                        User userRecord = securityRepository.GetUser(userId);
+
+                        if (categoryRecord != null && userRecord != null)
                         {
                             if (categoryRecord.Sketches == null)
                                 categoryRecord.Sketches = new List<Sketch>();
 
                             sketch.Category = categoryRecord;
+                            sketch.User = userRecord;
 
                             // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
                             // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
-                            db.Sketches.Attach(sketch);
+                            dbProject.Sketches.Attach(sketch);
                             categoryRecord.Sketches.Add(sketch);
-                            db.Entry(sketch).State = EntityState.Added;
+                            dbProject.Entry(sketch).State = EntityState.Added;
 
-                            db.SaveChanges();
+                            dbProject.SaveChanges();
 
                             sketchId = sketch.Id;
                         }
                     }
-                } 
+                }
             }
 
             return
@@ -237,7 +243,7 @@ namespace CrowdDesign.Infrastructure.SQLServer
         {
             if (sketch != null)
             {
-                using (var db = new Database())
+                using (var db = new DatabaseContext())
                 {
                     if (db.Projects != null)
                     {

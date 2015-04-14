@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace CrowdDesign.UI.Web.Models
+
+namespace CrowdDesign.UI.Web.Models.Project
 {
     public class EditCategoryViewModel
     {

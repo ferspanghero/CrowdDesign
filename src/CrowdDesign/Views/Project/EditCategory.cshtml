@@ -2,7 +2,7 @@
     ViewBag.Title = "Edit category";
 }
 
-@model CrowdDesign.UI.Web.Models.EditCategoryViewModel
+@model CrowdDesign.UI.Web.Models.Project.EditCategoryViewModel
 
 <div id="divEditCategoryMain">
     @{
@@ -19,7 +19,7 @@
 
         Html.ValidationSummary(true);
 
-        <br/>
+        <br />
 
         using (Html.BeginForm(actionName, "Project", FormMethod.Post))
         {
@@ -28,7 +28,7 @@
 
             <div class="divEditCategoryField">
                 <div>
-                    @Html.LabelFor(model => model.Name, new {Class = "lblField"})
+                    @Html.LabelFor(model => model.Name, new { Class = "lblField" })
                 </div>
 
                 <div>
@@ -39,17 +39,17 @@
 
             <div class="divEditCategoryField">
                 <div>
-                    @Html.LabelFor(model => model.Description, new {Class = "lblField"})
+                    @Html.LabelFor(model => model.Description, new { Class = "lblField" })
                 </div>
 
                 <div>
-                    @Html.TextAreaFor(model => model.Description, new {Id = "txtDescription"})
+                    @Html.TextAreaFor(model => model.Description, new { Id = "txtDescription" })
                     @Html.ValidationMessageFor(model => model.Description)
                 </div>
             </div>
 
             <div class="divEditCategoryField">
-                <input id="btnSaveSketch" type="submit" value="Save changes"/>
+                <input id="btnSaveSketch" type="submit" value="Save changes" />
             </div>
         }
     }

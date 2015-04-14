@@ -2,7 +2,9 @@
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer;
+using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
+using CrowdDesign.UI.Web.Models.Project;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -20,12 +22,16 @@ namespace CrowdDesign.UI.Web.Controllers
         #endregion
 
         #region Methods
-        #region Project Listing
-        public ActionResult Index()
+        #region Project Management
+        [Authorize]
+        public ActionResult GetProjects()
         {
-            return View("IndexProject", _repository.GetProjects());
+            ViewBag.IsUserAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
+
+            return View("ManageProjects", _repository.GetProjects());
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult CreateProject()
         {
@@ -34,7 +40,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 int projectId = _repository.CreateProject("New Project");
 
                 if (projectId > 0)
-                    return RedirectToAction("Index");
+                    return RedirectToAction("GetProjects");
             }
 
             return View("Error");
@@ -42,8 +48,12 @@ namespace CrowdDesign.UI.Web.Controllers
         #endregion
 
         #region Project Details
+        [Authorize]
         public ActionResult EditProjectDetails(int? projectId)
         {
+            ViewBag.IsUserAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
+            ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
+
             if (projectId == null)
                 return View("Error");
 
@@ -55,6 +65,7 @@ namespace CrowdDesign.UI.Web.Controllers
             return View("EditProject", project);
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult EditProjectName(Project project)
         {
@@ -67,6 +78,7 @@ namespace CrowdDesign.UI.Web.Controllers
             return RedirectToAction("EditProjectDetails", new { ProjectId = project.Id });
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult DeleteProject(int? projectid)
         {
@@ -76,9 +88,10 @@ namespace CrowdDesign.UI.Web.Controllers
             if (ModelState.IsValid)
                 _repository.DeleteProject(projectid.Value);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("GetProjects");
         }
 
+        [Authorize]
         public ActionResult EditCategory(int? projectId, int? categoryId)
         {
             if (projectId == null)
@@ -89,9 +102,7 @@ namespace CrowdDesign.UI.Web.Controllers
             if (categoryId != null)
                 category = _repository.GetCategory(categoryId.Value);
 
-            EditCategoryViewModel viewModel;
-
-            viewModel = new EditCategoryViewModel { ProjectId = projectId };
+            EditCategoryViewModel viewModel = new EditCategoryViewModel { ProjectId = projectId };
 
             if (category != null)
             {
@@ -103,6 +114,7 @@ namespace CrowdDesign.UI.Web.Controllers
             return View("EditCategory", viewModel);
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult CreateCategory(EditCategoryViewModel viewModel)
         {
@@ -120,6 +132,7 @@ namespace CrowdDesign.UI.Web.Controllers
             return View("Error");
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult UpdateCategory(EditCategoryViewModel viewModel)
         {
@@ -134,23 +147,26 @@ namespace CrowdDesign.UI.Web.Controllers
         #endregion
 
         #region Sketch
+        [Authorize]
         public ActionResult EditSketch(int? projectId, int? categoryId, int? sketchId)
         {
             if (projectId == null || categoryId == null)
                 return View("Error");
+
+            ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
+            ViewBag.UserIsAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
 
             Sketch sketch = null;
 
             if (sketchId != null)
                 sketch = _repository.GetSketch(sketchId.Value);
 
-            EditSketchViewModel viewModel;
-
-            viewModel = new EditSketchViewModel { ProjectId = projectId, CategoryId = categoryId };
+            EditSketchViewModel viewModel = new EditSketchViewModel { ProjectId = projectId, CategoryId = categoryId };
 
             if (sketch != null)
             {
                 viewModel.SketchId = sketch.Id;
+                viewModel.UserId = sketch.User != null ? (int?)sketch.User.Id : null;
                 viewModel.Data = sketch.Data;
                 viewModel.ImageURI = sketch.ImageURI;
             }
@@ -158,6 +174,7 @@ namespace CrowdDesign.UI.Web.Controllers
             return View("EditSketch", viewModel);
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult CreateSketch(EditSketchViewModel viewModel)
         {
@@ -166,7 +183,8 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                int sketchId = _repository.CreateSketch(viewModel.CategoryId.Value, new Sketch { Data = viewModel.Data, ImageURI = viewModel.ImageURI });
+                int userId = (int)System.Web.HttpContext.Current.Session["userId"];
+                int sketchId = _repository.CreateSketch(viewModel.CategoryId.Value, userId, new Sketch { Data = viewModel.Data, ImageURI = viewModel.ImageURI });
 
                 if (sketchId > 0)
                     return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
@@ -175,6 +193,7 @@ namespace CrowdDesign.UI.Web.Controllers
             return View("Error");
         }
 
+        [Authorize]
         [HttpPost]
         public ActionResult UpdateSketch(EditSketchViewModel viewModel)
         {

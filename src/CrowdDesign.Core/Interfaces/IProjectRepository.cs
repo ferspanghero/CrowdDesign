@@ -15,7 +15,7 @@ namespace CrowdDesign.Core.Interfaces
         int CreateCategory(int projectId, Category category);
         void UpdateCategory(Category category);
         Sketch GetSketch(int sketchId);
-        int CreateSketch(int categoryId, Sketch sketch);        
+        int CreateSketch(int categoryId, int userId, Sketch sketch);        
         void UpdateSketch(Sketch sketch);
         #endregion                   
     }

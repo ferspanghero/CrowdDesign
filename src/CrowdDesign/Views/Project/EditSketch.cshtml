@@ -2,7 +2,7 @@
     ViewBag.Title = "Edit sketch";
 }
 
-@model CrowdDesign.UI.Web.Models.EditSketchViewModel
+@model CrowdDesign.UI.Web.Models.Project.EditSketchViewModel
 
 <div id="divEditSketchMain">
     <div id="divSketchTools">
@@ -26,26 +26,29 @@
     </div>
 
     @{
-        string actionName;
-
-        if (Model == null || Model.SketchId == null)
+        if (ViewBag.UserIsAdmin || (!Model.UserId.HasValue && ViewBag.UserId > 0) || (Model.UserId.HasValue && Model.UserId == ViewBag.UserId))
         {
-            actionName = "CreateSketch";
-        }
-        else
-        {
-            actionName = "UpdateSketch";
-        }
+            string actionName;
 
-        using (Html.BeginForm(actionName, "Project", FormMethod.Post))
-        {
-            @Html.HiddenFor(model => model.ProjectId)
-            @Html.HiddenFor(model => model.CategoryId)
-            @Html.HiddenFor(model => model.SketchId)
-            @Html.HiddenFor(model => model.Data)
-            @Html.HiddenFor(model => model.ImageURI)
+            if (Model == null || Model.SketchId == null)
+            {
+                actionName = "CreateSketch";
+            }
+            else
+            {
+                actionName = "UpdateSketch";
+            }
 
-            <input id="btnSaveSketch" type="submit" value="Save changes" />
+            using (Html.BeginForm(actionName, "Project", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.ProjectId)
+                @Html.HiddenFor(model => model.CategoryId)
+                @Html.HiddenFor(model => model.SketchId)
+                @Html.HiddenFor(model => model.Data)
+                @Html.HiddenFor(model => model.ImageURI)
+
+                <input id="btnSaveSketch" type="submit" value="Save changes" />
+            }
         }
     }
 </div>

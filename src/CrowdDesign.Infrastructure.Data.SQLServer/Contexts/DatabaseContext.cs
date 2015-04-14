@@ -1,14 +1,15 @@
 ﻿using System.Data.Entity;
 using CrowdDesign.Core.Entities;
 
-namespace CrowdDesign.Infrastructure.SQLServer
+namespace CrowdDesign.Infrastructure.SQLServer.Contexts
 {
-    public class Database : DbContext
+    public class DatabaseContext : DbContext
     {
         #region Properties
         public DbSet<Project> Projects { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Sketch> Sketches { get; set; }
+        public DbSet<User> Users { get; set; }
         #endregion
 
         #region Methods

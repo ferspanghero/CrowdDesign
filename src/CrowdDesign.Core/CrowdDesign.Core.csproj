@@ -42,6 +42,8 @@
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Project.cs" />
     <Compile Include="Entities\Sketch.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Interfaces\ISecurityRepository.cs" />
     <Compile Include="Interfaces\IProjectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

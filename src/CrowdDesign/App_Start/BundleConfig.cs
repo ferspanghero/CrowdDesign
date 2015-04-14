@@ -25,10 +25,11 @@ namespace CrowdDesign.UI.Web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                         "~/Content/css/Site.css",
-                        "~/Content/css/Project/IndexProject.css",
+                        "~/Content/css/Project/ManageProjects.css",
                         "~/Content/css/Project/EditProject.css",
                         "~/Content/css/Project/EditSketch.css",
-                        "~/Content/css/Project/EditCategory.css"));
+                        "~/Content/css/Project/EditCategory.css",
+                        "~/Content/css/Security/Login.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",

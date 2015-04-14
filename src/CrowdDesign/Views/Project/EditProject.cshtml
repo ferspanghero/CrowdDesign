@@ -3,15 +3,18 @@
 }
 @model CrowdDesign.Core.Entities.Project
 
-<div id="divProjectGeneralData">
-    @using (Html.BeginForm("EditProjectName", "Project", FormMethod.Post))
-    {
-        @Html.HiddenFor(model => model.Id)
-        @Html.EditorFor(model => model.Name)
+@if (ViewBag.IsUserAdmin)
+{
+    <div id="divProjectGeneralData">
+        @using (Html.BeginForm("EditProjectName", "Project", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.Id)
+            @Html.EditorFor(model => model.Name)
 
-        <input type="submit" value="Alter name" />
-    }
-</div>
+            <input type="submit" value="Alter name" />
+        }
+    </div>
+}
 
 <div id="divMorphChart">
     <table id="tblMorphChart">
@@ -59,7 +62,9 @@
                         {
                             foreach (var sketch in category.Sketches)
                             {
-                                <td>
+                                string tdClass = (sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch";
+
+                                <td class=@tdClass>
                                     <a href=@Url.Action("EditSketch", "Project", new {ProjectId = Model.Id, CategoryId = category.Id, SketchId = sketch.Id})>
                                         <img id="imgSketchThumbnail" src=@sketch.ImageURI />
                                     </a>

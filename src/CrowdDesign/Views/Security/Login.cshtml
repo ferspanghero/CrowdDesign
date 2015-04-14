@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+@model CrowdDesign.UI.Web.Models.Security.LoginViewModel
+
+<div id="divLoginMain">
+    <h2>Welcome to CrowdDesign!</h2>
+
+    <hr />
+
+    @using (Html.BeginForm("Login", "Security", FormMethod.Post))
+    {
+        <div class="divLoginField">
+            <div>
+                @Html.LabelFor(model => model.Username, new { Class = "lblField" })
+            </div>
+
+            <div class="divLoginField">
+                @Html.TextBoxFor(model => model.Username)
+                @Html.ValidationMessageFor(model => model.Username)
+            </div>
+        </div>
+
+        <div class="divLoginField">
+            <div>
+                @Html.LabelFor(model => model.Password, new { Class = "lblField" })
+            </div>
+
+            <div class="divLoginField">
+                @Html.PasswordFor(model => model.Password)
+                @Html.ValidationMessageFor(model => model.Password)
+            </div>
+        </div>
+        <div class="divLoginField">
+            <input id="btnLogin" type="submit" value="Login" />
+        </div>
+    }
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}
