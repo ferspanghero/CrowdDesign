@@ -7,7 +7,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
     {
         #region Properties
         public DbSet<Project> Projects { get; set; }
-        public DbSet<Category> Categories { get; set; }
+        public DbSet<Dimension> Dimensions { get; set; }
         public DbSet<Sketch> Sketches { get; set; }
         public DbSet<User> Users { get; set; }
         #endregion
@@ -16,7 +16,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Sketch>()
-                .HasRequired(e => e.Category)
+                .HasRequired(e => e.Dimension)
                 .WithMany()
                 .WillCascadeOnDelete();
 

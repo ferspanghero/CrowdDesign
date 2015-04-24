@@ -28,7 +28,7 @@ namespace CrowdDesign.UI.Web
                         "~/Content/css/Project/ManageProjects.css",
                         "~/Content/css/Project/EditProject.css",
                         "~/Content/css/Project/EditSketch.css",
-                        "~/Content/css/Project/EditCategory.css",
+                        "~/Content/css/Project/EditDimension.css",
                         "~/Content/css/Security/Login.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(

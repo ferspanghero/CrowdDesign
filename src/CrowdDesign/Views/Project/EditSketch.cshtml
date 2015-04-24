@@ -42,7 +42,7 @@
             using (Html.BeginForm(actionName, "Project", FormMethod.Post))
             {
                 @Html.HiddenFor(model => model.ProjectId)
-                @Html.HiddenFor(model => model.CategoryId)
+                @Html.HiddenFor(model => model.DimensionId)
                 @Html.HiddenFor(model => model.SketchId)
                 @Html.HiddenFor(model => model.Data)
                 @Html.HiddenFor(model => model.ImageURI)

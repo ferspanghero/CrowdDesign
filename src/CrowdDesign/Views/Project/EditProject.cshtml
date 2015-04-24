@@ -20,12 +20,12 @@
     <table id="tblMorphChart">
         <thead>
             <tr>
-                <th>Categories</th>
-                @if (Model != null && Model.Categories != null)
+                <th>Dimensions</th>
+                @if (Model != null && Model.Dimensions != null)
                 {
-                    if (Model.Categories.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                    if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
                     {
-                        int proposedSolutionsCount = (from c in Model.Categories
+                        int proposedSolutionsCount = (from c in Model.Dimensions
                                                       where c.Sketches != null && c.Sketches.Count > 0
                                                       select c.Sketches.Count()).Max();
 
@@ -43,44 +43,44 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model == null || Model.Categories == null || Model.Categories.Count == 0)
+            @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
             {
                 <tr>
-                    <td class="cellAddNewCategory">
-                        @Html.ActionLink("Create category", "EditCategory", new { ProjectId = Model != null ? (int?)Model.Id : null })
+                    <td class="cellAddNewDimension">
+                        @Html.ActionLink("Create dimension", "EditDimension", new { ProjectId = Model != null ? (int?)Model.Id : null })
                     </td>
                 </tr>
             }
             else
             {
-                foreach (var category in Model.Categories)
+                foreach (var dimension in Model.Dimensions)
                 {
                     <tr>
-                        <td>@Html.ActionLink(category.Name, "EditCategory", new { ProjectId = Model.Id, CategoryId = category.Id }, new { Title = category.Description })</td>
+                        <td>@Html.ActionLink(dimension.Name, "EditDimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description })</td>
 
-                        @if (category.Sketches != null)
+                        @if (dimension.Sketches != null)
                         {
-                            foreach (var sketch in category.Sketches)
+                            foreach (var sketch in dimension.Sketches)
                             {
                                 string tdClass = (sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch";
 
                                 <td class=@tdClass>
-                                    <a href=@Url.Action("EditSketch", "Project", new {ProjectId = Model.Id, CategoryId = category.Id, SketchId = sketch.Id})>
+                                    <a href=@Url.Action("EditSketch", "Project", new { ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id })>
                                         <img id="imgSketchThumbnail" src=@sketch.ImageURI />
                                     </a>
                                 </td>
                             }
 
                             <td class="cellAddNewSketch">
-                                @Html.ActionLink("Add solution", "EditSketch", new { ProjectId = Model.Id, CategoryId = category.Id })
+                                @Html.ActionLink("Add solution", "EditSketch", new { ProjectId = Model.Id, DimensionId = dimension.Id })
                             </td>
                         }
                     </tr>
                 }
 
                 <tr>
-                    <td class="cellAddNewCategory">
-                        @Html.ActionLink("Create category", "EditCategory", new { ProjectId = Model.Id })
+                    <td class="cellAddNewDimension">
+                        @Html.ActionLink("Create dimension", "EditDimension", new { ProjectId = Model.Id })
                     </td>
                 </tr>
             }

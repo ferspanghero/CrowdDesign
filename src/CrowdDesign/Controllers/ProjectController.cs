@@ -92,40 +92,40 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [Authorize]
-        public ActionResult EditCategory(int? projectId, int? categoryId)
+        public ActionResult EditDimension(int? projectId, int? dimensionId)
         {
             if (projectId == null)
                 return View("Error");
 
-            Category category = null;
+            Dimension dimension = null;
 
-            if (categoryId != null)
-                category = _repository.GetCategory(categoryId.Value);
+            if (dimensionId != null)
+                dimension = _repository.GetDimension(dimensionId.Value);
 
-            EditCategoryViewModel viewModel = new EditCategoryViewModel { ProjectId = projectId };
+            EditDimensionViewModel viewModel = new EditDimensionViewModel { ProjectId = projectId };
 
-            if (category != null)
+            if (dimension != null)
             {
-                viewModel.CategoryId = category.Id;
-                viewModel.Name = category.Name;
-                viewModel.Description = category.Description;
+                viewModel.DimensionId = dimension.Id;
+                viewModel.Name = dimension.Name;
+                viewModel.Description = dimension.Description;
             }
 
-            return View("EditCategory", viewModel);
+            return View("EditDimension", viewModel);
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult CreateCategory(EditCategoryViewModel viewModel)
+        public ActionResult CreateDimension(EditDimensionViewModel viewModel)
         {
             if (viewModel == null || viewModel.ProjectId == null)
                 return View("Error");
 
             if (ModelState.IsValid)
             {
-                int categoryId = _repository.CreateCategory(viewModel.ProjectId.Value, new Category { Name = viewModel.Name, Description = viewModel.Description });
+                int dimensionId = _repository.CreateDimension(viewModel.ProjectId.Value, new Dimension { Name = viewModel.Name, Description = viewModel.Description });
 
-                if (categoryId > 0)
+                if (dimensionId > 0)
                     return RedirectToAction("EditProjectDetails", new { viewModel.ProjectId });
             }
 
@@ -134,13 +134,13 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult UpdateCategory(EditCategoryViewModel viewModel)
+        public ActionResult UpdateDimension(EditDimensionViewModel viewModel)
         {
-            if (viewModel == null || viewModel.ProjectId == null || viewModel.CategoryId == null)
+            if (viewModel == null || viewModel.ProjectId == null || viewModel.DimensionId == null)
                 return View("Error");
 
             if (ModelState.IsValid)
-                _repository.UpdateCategory(new Category { Id = viewModel.CategoryId.Value, Name = viewModel.Name, Description = viewModel.Description });
+                _repository.UpdateDimension(new Dimension { Id = viewModel.DimensionId.Value, Name = viewModel.Name, Description = viewModel.Description });
 
             return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
         }
@@ -148,9 +148,9 @@ namespace CrowdDesign.UI.Web.Controllers
 
         #region Sketch
         [Authorize]
-        public ActionResult EditSketch(int? projectId, int? categoryId, int? sketchId)
+        public ActionResult EditSketch(int? projectId, int? dimensionId, int? sketchId)
         {
-            if (projectId == null || categoryId == null)
+            if (projectId == null || dimensionId == null)
                 return View("Error");
 
             ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
@@ -161,7 +161,7 @@ namespace CrowdDesign.UI.Web.Controllers
             if (sketchId != null)
                 sketch = _repository.GetSketch(sketchId.Value);
 
-            EditSketchViewModel viewModel = new EditSketchViewModel { ProjectId = projectId, CategoryId = categoryId };
+            EditSketchViewModel viewModel = new EditSketchViewModel { ProjectId = projectId, DimensionId = dimensionId };
 
             if (sketch != null)
             {
@@ -178,13 +178,13 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult CreateSketch(EditSketchViewModel viewModel)
         {
-            if (viewModel == null || viewModel.ProjectId == null || viewModel.CategoryId == null)
+            if (viewModel == null || viewModel.ProjectId == null || viewModel.DimensionId == null)
                 return View("Error");
 
             if (ModelState.IsValid)
             {
                 int userId = (int)System.Web.HttpContext.Current.Session["userId"];
-                int sketchId = _repository.CreateSketch(viewModel.CategoryId.Value, userId, new Sketch { Data = viewModel.Data, ImageURI = viewModel.ImageURI });
+                int sketchId = _repository.CreateSketch(viewModel.DimensionId.Value, userId, new Sketch { Data = viewModel.Data, ImageURI = viewModel.ImageURI });
 
                 if (sketchId > 0)
                     return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });

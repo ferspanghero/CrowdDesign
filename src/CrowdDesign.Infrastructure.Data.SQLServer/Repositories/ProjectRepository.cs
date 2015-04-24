@@ -18,7 +18,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             {
                 // Avoids lazy evaluation issues after the DbContext is disposed by forcing data to be retrieved with IEnumerable.ToList()
                 projects = db.Projects
-                                .Include(e => e.Categories.Select(u => u.Sketches))
+                                .Include(e => e.Dimensions.Select(u => u.Sketches))
                                 .ToList();
             }
 
@@ -35,7 +35,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 project = (from p in db.Projects
                            where p.Id == projectId
                            select p)
-                           .Include(e => e.Categories.Select(u => u.Sketches.Select(s => s.User)))
+                           .Include(e => e.Dimensions.Select(u => u.Sketches.Select(s => s.User)))
                            .SingleOrDefault();
             }
 
@@ -102,28 +102,28 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             }
         }
 
-        public Category GetCategory(int categoryId)
+        public Dimension GetDimension(int dimensionId)
         {
-            Category category;
+            Dimension dimension;
 
             using (var db = new DatabaseContext())
             {
-                category = (from c in db.Categories
-                            where c.Id == categoryId
+                dimension = (from c in db.Dimensions
+                            where c.Id == dimensionId
                             select c).Include(c => c.Sketches)
                             .Include(c => c.Project)
                             .FirstOrDefault();
             }
 
             return
-                category;
+                dimension;
         }
 
-        public int CreateCategory(int projectId, Category category)
+        public int CreateDimension(int projectId, Dimension dimension)
         {
-            int categoryId = -1;
+            int dimensionId = -1;
 
-            if (category != null)
+            if (dimension != null)
             {
                 using (var db = new DatabaseContext())
                 {
@@ -133,44 +133,44 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
                         if (projectRecord != null)
                         {
-                            if (projectRecord.Categories == null)
-                                projectRecord.Categories = new List<Category>();
+                            if (projectRecord.Dimensions == null)
+                                projectRecord.Dimensions = new List<Dimension>();
 
-                            category.Project = projectRecord;
+                            dimension.Project = projectRecord;
 
                             // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
                             // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
-                            db.Categories.Attach(category);
-                            projectRecord.Categories.Add(category);
-                            db.Entry(category).State = EntityState.Added;
+                            db.Dimensions.Attach(dimension);
+                            projectRecord.Dimensions.Add(dimension);
+                            db.Entry(dimension).State = EntityState.Added;
 
                             db.SaveChanges();
 
-                            categoryId = category.Id;
+                            dimensionId = dimension.Id;
                         }
                     }
                 }
             }
 
             return
-                categoryId;
+                dimensionId;
         }
 
-        public void UpdateCategory(Category category)
+        public void UpdateDimension(Dimension dimension)
         {
-            if (category != null)
+            if (dimension != null)
             {
                 using (var db = new DatabaseContext())
                 {
                     if (db.Projects != null)
                     {
-                        Category categoryRecord = GetCategory(category.Id);
+                        Dimension dimensionRecord = GetDimension(dimension.Id);
 
-                        if (categoryRecord != null)
+                        if (dimensionRecord != null)
                         {
-                            categoryRecord.Name = category.Name;
-                            categoryRecord.Description = category.Description;
-                            db.Entry(categoryRecord).State = EntityState.Modified;
+                            dimensionRecord.Name = dimension.Name;
+                            dimensionRecord.Description = dimension.Description;
+                            db.Entry(dimensionRecord).State = EntityState.Modified;
 
                             db.SaveChanges();
                         }
@@ -188,8 +188,8 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 sketch = (from s in db.Sketches
                           where s.Id == sketchId
                           select s)
-                           .Include(e => e.Category)
-                           .Include(e => e.Category.Project)
+                           .Include(e => e.Dimension)
+                           .Include(e => e.Dimension.Project)
                            .Include(e => e.User)
                            .SingleOrDefault();
             }
@@ -198,7 +198,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 sketch;
         }
 
-        public int CreateSketch(int categoryId, int userId, Sketch sketch)
+        public int CreateSketch(int dimensionId, int userId, Sketch sketch)
         {
             int sketchId = -1;
 
@@ -210,21 +210,21 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                     {
                         ISecurityRepository securityRepository = new SecurityRepository();
 
-                        Category categoryRecord = GetCategory(categoryId);
+                        Dimension dimensionRecord = GetDimension(dimensionId);
                         User userRecord = securityRepository.GetUser(userId);
 
-                        if (categoryRecord != null && userRecord != null)
+                        if (dimensionRecord != null && userRecord != null)
                         {
-                            if (categoryRecord.Sketches == null)
-                                categoryRecord.Sketches = new List<Sketch>();
+                            if (dimensionRecord.Sketches == null)
+                                dimensionRecord.Sketches = new List<Sketch>();
 
-                            sketch.Category = categoryRecord;
+                            sketch.Dimension = dimensionRecord;
                             sketch.User = userRecord;
 
                             // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
                             // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
                             dbProject.Sketches.Attach(sketch);
-                            categoryRecord.Sketches.Add(sketch);
+                            dimensionRecord.Sketches.Add(sketch);
                             dbProject.Entry(sketch).State = EntityState.Added;
 
                             dbProject.SaveChanges();

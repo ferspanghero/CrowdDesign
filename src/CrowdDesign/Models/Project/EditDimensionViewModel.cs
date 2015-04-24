@@ -2,11 +2,11 @@
 
 namespace CrowdDesign.UI.Web.Models.Project
 {
-    public class EditCategoryViewModel
+    public class EditDimensionViewModel
     {
         #region Properties
         public int? ProjectId { get; set; }
-        public int? CategoryId { get; set; }
+        public int? DimensionId { get; set; }
         [Required]
         [StringLength(50)]
         public string Name { get; set; }

@@ -1,9 +1,9 @@
-﻿#divEditCategoryMain {
+﻿#divEditDimensionMain {
     display: inline;
     text-align: center;
 }
 
-.divEditCategoryField {
+.divEditDimensionField {
     margin: 5px;
     text-align: left;
 }

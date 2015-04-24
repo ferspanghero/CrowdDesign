@@ -132,13 +132,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Project\EditCategoryViewModel.cs" />
+    <Compile Include="Models\Project\EditDimensionViewModel.cs" />
     <Compile Include="Models\Project\EditSketchViewModel.cs" />
     <Compile Include="Models\Security\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\css\Project\EditCategory.css" />
+    <Content Include="Content\css\Project\EditDimension.css" />
     <Content Include="Content\css\Project\ManageProjects.css" />
     <Content Include="Content\css\Project\EditProject.css" />
     <Content Include="Content\css\Project\EditSketch.css" />
@@ -233,7 +233,7 @@
     <Content Include="Scripts\sketch.min.js.map">
       <DependentUpon>sketch.min.js</DependentUpon>
     </Content>
-    <Content Include="Views\Project\EditCategory.cshtml" />
+    <Content Include="Views\Project\EditDimension.cshtml" />
     <Content Include="Views\Security\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>

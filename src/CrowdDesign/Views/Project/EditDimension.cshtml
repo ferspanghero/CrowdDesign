@@ -1,20 +1,20 @@
 ﻿@{
-    ViewBag.Title = "Edit category";
+    ViewBag.Title = "Edit dimension";
 }
 
-@model CrowdDesign.UI.Web.Models.Project.EditCategoryViewModel
+@model CrowdDesign.UI.Web.Models.Project.EditDimensionViewModel
 
-<div id="divEditCategoryMain">
+<div id="divEditDimensionMain">
     @{
         string actionName;
 
-        if (Model == null || Model.CategoryId == null)
+        if (Model == null || Model.DimensionId == null)
         {
-            actionName = "CreateCategory";
+            actionName = "CreateDimension";
         }
         else
         {
-            actionName = "UpdateCategory";
+            actionName = "UpdateDimension";
         }
 
         Html.ValidationSummary(true);
@@ -24,9 +24,9 @@
         using (Html.BeginForm(actionName, "Project", FormMethod.Post))
         {
             @Html.HiddenFor(model => model.ProjectId)
-            @Html.HiddenFor(model => model.CategoryId)
+            @Html.HiddenFor(model => model.DimensionId)
 
-            <div class="divEditCategoryField">
+            <div class="divEditDimensionField">
                 <div>
                     @Html.LabelFor(model => model.Name, new { Class = "lblField" })
                 </div>
@@ -37,7 +37,7 @@
                 </div>
             </div>
 
-            <div class="divEditCategoryField">
+            <div class="divEditDimensionField">
                 <div>
                     @Html.LabelFor(model => model.Description, new { Class = "lblField" })
                 </div>
@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <div class="divEditCategoryField">
+            <div class="divEditDimensionField">
                 <input id="btnSaveSketch" type="submit" value="Save changes" />
             </div>
         }

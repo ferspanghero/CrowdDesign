@@ -2,7 +2,7 @@
 
 namespace CrowdDesign.Core.Entities
 {
-    public class Category
+    public class Dimension
     {
         #region Properties
         public int Id { get; set; }

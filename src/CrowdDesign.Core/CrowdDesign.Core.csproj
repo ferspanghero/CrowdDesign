@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\Category.cs" />
+    <Compile Include="Entities\Dimension.cs" />
     <Compile Include="Entities\Project.cs" />
     <Compile Include="Entities\Sketch.cs" />
     <Compile Include="Entities\User.cs" />
