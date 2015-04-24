@@ -26,28 +26,33 @@
     </div>
 
     @{
-        if (ViewBag.UserIsAdmin || (!Model.UserId.HasValue && ViewBag.UserId > 0) || (Model.UserId.HasValue && Model.UserId == ViewBag.UserId))
+
+        string actionName;
+
+        if (Model == null || !Model.SketchId.HasValue)
         {
-            string actionName;
+            actionName = "CreateSketch";
+        }
+        else
+        {
+            actionName = "UpdateSketch";
+        }
 
-            if (Model == null || Model.SketchId == null)
-            {
-                actionName = "CreateSketch";
-            }
-            else
-            {
-                actionName = "UpdateSketch";
-            }
+        using (Html.BeginForm(actionName, "Project", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.ProjectId)
+            @Html.HiddenFor(model => model.DimensionId)
+            @Html.HiddenFor(model => model.SketchId)
+            @Html.HiddenFor(model => model.Data)
+            @Html.HiddenFor(model => model.ImageURI)
 
-            using (Html.BeginForm(actionName, "Project", FormMethod.Post))
+            // Display the save button in the following situations:
+            // The user is an admin
+            // OR the model is null or there isn't a valid sketch id (the sketch is being created)
+            // OR the model is not null (the sketch is being updated) and the current user is the one that created the sketch
+            if (ViewBag.UserIsAdmin || (Model == null || !Model.SketchId.HasValue) || Model.UserId.HasValue && Model.UserId == ViewBag.UserId)
             {
-                @Html.HiddenFor(model => model.ProjectId)
-                @Html.HiddenFor(model => model.DimensionId)
-                @Html.HiddenFor(model => model.SketchId)
-                @Html.HiddenFor(model => model.Data)
-                @Html.HiddenFor(model => model.ImageURI)
-
-                <input id="btnSaveSketch" type="submit" value="Save changes" />
+                <input id="btnSaveSketch" type="submit" value="Save changes"/>
             }
         }
     }

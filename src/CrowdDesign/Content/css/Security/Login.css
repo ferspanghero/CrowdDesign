@@ -3,11 +3,10 @@
     left: 50%;
     text-align: center;
     border: 1px solid black;
-    width: 32em;
-    height: 18em;
+    width: 24em;
     margin-left: -15em;
 }
 
 .divLoginField {
-    text-align: left;
+    text-align: left;    
 }

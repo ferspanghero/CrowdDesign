@@ -39,6 +39,17 @@
 
             <div class="divEditDimensionField">
                 <div>
+                    @Html.LabelFor(model => model.SortCriteria, new { Class = "lblField" })
+                </div>
+
+                <div>
+                    @Html.TextBoxFor(model => model.SortCriteria)
+                    @Html.ValidationMessageFor(model => model.SortCriteria)
+                </div>
+            </div>
+
+            <div class="divEditDimensionField">
+                <div>
                     @Html.LabelFor(model => model.Description, new { Class = "lblField" })
                 </div>
 

@@ -13,6 +13,9 @@ namespace CrowdDesign.UI.Web.Models.Project
         [Required]
         [StringLength(200)]
         public string Description { get; set; }
+        [Display(Name="Sort criteria")]
+        [StringLength(50)]
+        public string SortCriteria { get; set; }
         #endregion        
     }
 }

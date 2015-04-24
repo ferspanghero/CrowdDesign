@@ -15,10 +15,28 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
         #region Methods
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            #region Project configuration
+            modelBuilder.Entity<Project>()
+                .Property(e => e.Name)
+                .IsRequired();
+            #endregion
+
+            #region Dimension configuration
+            modelBuilder.Entity<Dimension>()
+                .Property(e => e.Name)
+                .IsRequired();
+
+            modelBuilder.Entity<Dimension>()
+                .Property(e => e.Description)
+                .IsRequired();
+            #endregion
+
+            #region Sketch configuration
             modelBuilder.Entity<Sketch>()
                 .HasRequired(e => e.Dimension)
                 .WithMany()
                 .WillCascadeOnDelete();
+            #endregion
 
             base.OnModelCreating(modelBuilder);
         }

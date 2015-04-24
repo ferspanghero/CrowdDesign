@@ -170,6 +170,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                         {
                             dimensionRecord.Name = dimension.Name;
                             dimensionRecord.Description = dimension.Description;
+                            dimensionRecord.SortCriteria = dimension.SortCriteria;
                             db.Entry(dimensionRecord).State = EntityState.Modified;
 
                             db.SaveChanges();

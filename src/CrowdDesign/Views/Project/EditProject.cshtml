@@ -20,7 +20,7 @@
     <table id="tblMorphChart">
         <thead>
             <tr>
-                <th>Dimensions</th>
+                <th class="cellDimension">Dimensions</th>
                 @if (Model != null && Model.Dimensions != null)
                 {
                     if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
@@ -56,7 +56,7 @@
                 foreach (var dimension in Model.Dimensions)
                 {
                     <tr>
-                        <td>@Html.ActionLink(dimension.Name, "EditDimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description })</td>
+                        <td class="cellDimension">@Html.ActionLink(dimension.Name, "EditDimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description })</td>
 
                         @if (dimension.Sketches != null)
                         {

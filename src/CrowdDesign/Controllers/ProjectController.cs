@@ -109,6 +109,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 viewModel.DimensionId = dimension.Id;
                 viewModel.Name = dimension.Name;
                 viewModel.Description = dimension.Description;
+                viewModel.SortCriteria = dimension.SortCriteria;
             }
 
             return View("EditDimension", viewModel);
@@ -123,7 +124,16 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                int dimensionId = _repository.CreateDimension(viewModel.ProjectId.Value, new Dimension { Name = viewModel.Name, Description = viewModel.Description });
+                int dimensionId =
+                    _repository.CreateDimension
+                    (
+                        viewModel.ProjectId.Value,
+                        new Dimension
+                        {
+                            Name = viewModel.Name,
+                            Description = viewModel.Description,
+                            SortCriteria = viewModel.SortCriteria
+                        });
 
                 if (dimensionId > 0)
                     return RedirectToAction("EditProjectDetails", new { viewModel.ProjectId });
@@ -140,7 +150,15 @@ namespace CrowdDesign.UI.Web.Controllers
                 return View("Error");
 
             if (ModelState.IsValid)
-                _repository.UpdateDimension(new Dimension { Id = viewModel.DimensionId.Value, Name = viewModel.Name, Description = viewModel.Description });
+                _repository.UpdateDimension
+                (
+                    new Dimension
+                    {
+                        Id = viewModel.DimensionId.Value, 
+                        Name = viewModel.Name, 
+                        Description = viewModel.Description,
+                        SortCriteria = viewModel.SortCriteria
+                    });
 
             return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
         }

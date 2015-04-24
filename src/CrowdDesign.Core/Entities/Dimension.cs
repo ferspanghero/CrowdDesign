@@ -9,6 +9,7 @@ namespace CrowdDesign.Core.Entities
         public Project Project { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string SortCriteria { get; set; }
         public ICollection<Sketch> Sketches { get; set; }
         #endregion        
     }

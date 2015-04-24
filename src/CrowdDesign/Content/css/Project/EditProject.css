@@ -25,6 +25,10 @@
     border: none;
 }
 
+.cellDimension {
+    border-right: double;
+}
+
 .tdLoggedInUserSketch {
     background-color: #caf7ca;
 }

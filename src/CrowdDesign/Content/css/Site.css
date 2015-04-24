@@ -1,11 +1,4 @@
-﻿body {
-    font-size: .85em;
-    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
-    color: #232323;
-    background-color: #fff;
-}
-
-/* Styles for validation helpers
+﻿/* Styles for validation helpers
 -----------------------------------------------------------*/
 .field-validation-error {
     color: #f00;
@@ -31,8 +24,22 @@
 
 /* General custom styles
 -----------------------------------------------------------*/
+body {
+    font-size: 1.2em;
+    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    color: #232323;
+    background-color: #fff;
+}
+
+input[type=submit] {
+    font-size: 1em;
+    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    color: #232323;
+}
+
 input[type=submit]:hover {
     cursor: pointer;
+    animation: none;
 }
 
 table {
