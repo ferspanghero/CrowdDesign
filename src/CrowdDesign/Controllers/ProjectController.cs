@@ -186,7 +186,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 viewModel.SketchId = sketch.Id;
                 viewModel.UserId = sketch.User != null ? (int?)sketch.User.Id : null;
                 viewModel.Data = sketch.Data;
-                viewModel.ImageURI = sketch.ImageURI;
+                viewModel.ImageUri = sketch.ImageUri;
             }
 
             return View("EditSketch", viewModel);
@@ -202,7 +202,7 @@ namespace CrowdDesign.UI.Web.Controllers
             if (ModelState.IsValid)
             {
                 int userId = (int)System.Web.HttpContext.Current.Session["userId"];
-                int sketchId = _repository.CreateSketch(viewModel.DimensionId.Value, userId, new Sketch { Data = viewModel.Data, ImageURI = viewModel.ImageURI });
+                int sketchId = _repository.CreateSketch(viewModel.DimensionId.Value, userId, new Sketch { Data = viewModel.Data, ImageUri = viewModel.ImageUri });
 
                 if (sketchId > 0)
                     return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
@@ -219,7 +219,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 return View("Error");
 
             if (ModelState.IsValid)
-                _repository.UpdateSketch(new Sketch { Id = viewModel.SketchId.Value, Data = viewModel.Data, ImageURI = viewModel.ImageURI });
+                _repository.UpdateSketch(new Sketch { Id = viewModel.SketchId.Value, Data = viewModel.Data, ImageUri = viewModel.ImageUri });
 
             return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
         }

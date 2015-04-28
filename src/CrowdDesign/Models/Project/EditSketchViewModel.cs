@@ -8,7 +8,7 @@
         public int? SketchId { get; set; }
         public int? UserId { get; set; }
         public string Data { get; set; }
-        public string ImageURI { get; set; }
+        public string ImageUri { get; set; }
         #endregion        
     }
 }

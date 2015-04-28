@@ -23,7 +23,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             }
 
             return
-                projects;
+                projects;            
         }
 
         public Project GetProject(int projectId)
@@ -253,7 +253,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                         if (sketchRecord != null)
                         {
                             sketchRecord.Data = sketch.Data;
-                            sketchRecord.ImageURI = sketch.ImageURI;
+                            sketchRecord.ImageUri = sketch.ImageUri;
                             db.Entry(sketchRecord).State = EntityState.Modified;
 
                             db.SaveChanges();

@@ -18,7 +18,7 @@
 
     $("#btnSaveSketch").click(function () {
         $("#Data").val(JSON.stringify(sketchElement.sketch().actions));
-        $("#ImageURI").val(document.getElementById("cnvSketch").toDataURL());
+        $("#ImageUri").val(document.getElementById("cnvSketch").toDataURL());
     });
 
     $("#btnClearSketch").click(function () {

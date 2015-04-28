@@ -47,13 +47,13 @@ var __slice = Array.prototype.slice;
             this.canvas.bind('click mousedown mouseup mousemove mouseleave mouseout touchstart touchmove touchend touchcancel', this.onEvent);
             if (this.options.toolLinks) {
                 $('body').delegate("a[href=\"#" + (this.canvas.attr('id')) + "\"]", 'click', function (e) {
-                    var $canvas, $this, key, sketch, _i, _len, _ref;
+                    var $canvas, $this, key, sketch, i, len, ref;
                     $this = $(this);
                     $canvas = $($this.attr('href'));
                     sketch = $canvas.data('sketch');
-                    _ref = ['color', 'size', 'tool'];
-                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                        key = _ref[_i];
+                    ref = ['color', 'size', 'tool'];
+                    for (i = 0, len = ref.length; i < len; i++) {
+                        key = ref[i];
                         if ($this.attr("data-" + key)) {
                             sketch.set(key, $(this).attr("data-" + key));
                         }
@@ -147,14 +147,14 @@ var __slice = Array.prototype.slice;
             }
         },
         draw: function (action) {
-            var event, previous, _i, _len, _ref;
+            var event, previous, i, len, ref;
             this.context.lineJoin = "round";
             this.context.lineCap = "round";
             this.context.beginPath();
             this.context.moveTo(action.events[0].x, action.events[0].y);
-            _ref = action.events;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                event = _ref[_i];
+            ref = action.events;
+            for (i = 0, len = ref.length; i < len; i++) {
+                event = ref[i];
                 this.context.lineTo(event.x, event.y);
                 previous = event;
             }
