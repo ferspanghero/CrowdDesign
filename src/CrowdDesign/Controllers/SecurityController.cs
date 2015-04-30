@@ -39,6 +39,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 if (user != null && user.Id > 0)
                 {
                     FormsAuthentication.SetAuthCookie(viewModel.Username, false);
+
                     System.Web.HttpContext.Current.Session["userId"] = user.Id;
                     System.Web.HttpContext.Current.Session["userIsAdmin"] = user.IsAdmin;                    
 

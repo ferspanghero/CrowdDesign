@@ -1,10 +1,13 @@
-﻿using System.Web.Mvc;
+﻿using System.Net;
+using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
+using System.Linq;
 using CrowdDesign.Infrastructure.SQLServer;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
 using CrowdDesign.UI.Web.Models.Project;
+using System.Collections.Generic;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -26,7 +29,10 @@ namespace CrowdDesign.UI.Web.Controllers
         [Authorize]
         public ActionResult GetProjects()
         {
-            ViewBag.IsUserAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
+            if (System.Web.HttpContext.Current.Session["userIsAdmin"] != null)
+                ViewBag.IsUserAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
+            else
+                return RedirectToAction("Index", "Security");
 
             return View("ManageProjects", _repository.GetProjects());
         }
@@ -51,18 +57,23 @@ namespace CrowdDesign.UI.Web.Controllers
         [Authorize]
         public ActionResult EditProjectDetails(int? projectId)
         {
-            ViewBag.IsUserAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
-            ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
+            if (System.Web.HttpContext.Current.Session["userId"] != null)
+            {
+                ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
+                ViewBag.IsUserAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
 
-            if (projectId == null)
-                return View("Error");
+                if (projectId == null)
+                    return View("Error");
 
-            Project project = _repository.GetProject(projectId.Value);
+                Project project = _repository.GetProject(projectId.Value);
 
-            if (project == null)
-                return View("Error");
+                if (project == null)
+                    return View("Error");
 
-            return View("EditProject", project);
+                return View("EditProject", project);
+            }
+
+            return RedirectToAction("Index", "Security");
         }
 
         [Authorize]
@@ -100,17 +111,14 @@ namespace CrowdDesign.UI.Web.Controllers
             Dimension dimension = null;
 
             if (dimensionId != null)
-                dimension = _repository.GetDimension(dimensionId.Value);
+                dimension = _repository.GetDimensions(dimensionId.Value).SingleOrDefault();
 
-            EditDimensionViewModel viewModel = new EditDimensionViewModel { ProjectId = projectId };
+            EditDimensionViewModel viewModel;
 
             if (dimension != null)
-            {
-                viewModel.DimensionId = dimension.Id;
-                viewModel.Name = dimension.Name;
-                viewModel.Description = dimension.Description;
-                viewModel.SortCriteria = dimension.SortCriteria;
-            }
+                viewModel = new EditDimensionViewModel(dimension);
+            else
+                viewModel = new EditDimensionViewModel { ProjectId = projectId };
 
             return View("EditDimension", viewModel);
         }
@@ -124,16 +132,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                int dimensionId =
-                    _repository.CreateDimension
-                    (
-                        viewModel.ProjectId.Value,
-                        new Dimension
-                        {
-                            Name = viewModel.Name,
-                            Description = viewModel.Description,
-                            SortCriteria = viewModel.SortCriteria
-                        });
+                int dimensionId = _repository.CreateDimension(viewModel.ToDomainModel());
 
                 if (dimensionId > 0)
                     return RedirectToAction("EditProjectDetails", new { viewModel.ProjectId });
@@ -150,15 +149,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 return View("Error");
 
             if (ModelState.IsValid)
-                _repository.UpdateDimension
-                (
-                    new Dimension
-                    {
-                        Id = viewModel.DimensionId.Value, 
-                        Name = viewModel.Name, 
-                        Description = viewModel.Description,
-                        SortCriteria = viewModel.SortCriteria
-                    });
+                _repository.UpdateDimension(viewModel.ToDomainModel());
 
             return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
         }
@@ -171,25 +162,31 @@ namespace CrowdDesign.UI.Web.Controllers
             if (projectId == null || dimensionId == null)
                 return View("Error");
 
-            ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
-            ViewBag.UserIsAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
-
-            Sketch sketch = null;
-
-            if (sketchId != null)
-                sketch = _repository.GetSketch(sketchId.Value);
-
-            EditSketchViewModel viewModel = new EditSketchViewModel { ProjectId = projectId, DimensionId = dimensionId };
-
-            if (sketch != null)
+            if (System.Web.HttpContext.Current.Session["userId"] != null)
             {
-                viewModel.SketchId = sketch.Id;
-                viewModel.UserId = sketch.User != null ? (int?)sketch.User.Id : null;
-                viewModel.Data = sketch.Data;
-                viewModel.ImageUri = sketch.ImageUri;
+                ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
+                ViewBag.UserIsAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
+
+                Sketch sketch = null;
+
+                if (sketchId != null)
+                    sketch = _repository.GetSketch(sketchId.Value).SingleOrDefault();
+
+                EditSketchViewModel viewModel;
+
+                if (sketch != null)
+                    viewModel = new EditSketchViewModel(sketch);
+                else
+                    viewModel = new EditSketchViewModel
+                    {
+                        ProjectId = projectId,
+                        DimensionId = dimensionId
+                    };
+
+                return View("EditSketch", viewModel);
             }
 
-            return View("EditSketch", viewModel);
+            return RedirectToAction("Index", "Security");
         }
 
         [Authorize]
@@ -201,11 +198,17 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                int userId = (int)System.Web.HttpContext.Current.Session["userId"];
-                int sketchId = _repository.CreateSketch(viewModel.DimensionId.Value, userId, new Sketch { Data = viewModel.Data, ImageUri = viewModel.ImageUri });
+                if (System.Web.HttpContext.Current.Session["userId"] != null)
+                {
+                    viewModel.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
 
-                if (sketchId > 0)
-                    return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
+                    int sketchId = _repository.CreateSketch(viewModel.ToDomainModel());
+
+                    if (sketchId > 0)
+                        return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
+                }
+                else
+                    return RedirectToAction("Index", "Security");
             }
 
             return View("Error");
@@ -219,9 +222,47 @@ namespace CrowdDesign.UI.Web.Controllers
                 return View("Error");
 
             if (ModelState.IsValid)
-                _repository.UpdateSketch(new Sketch { Id = viewModel.SketchId.Value, Data = viewModel.Data, ImageUri = viewModel.ImageUri });
+                _repository.UpdateSketch(viewModel.ToDomainModel());
 
             return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
+        }
+
+        [HttpPost]
+        public JsonResult UpdateSketchDimension(int? dimensionId, int? sketchId)
+        {
+            if (dimensionId == null || sketchId == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                return Json("Failed to move the sketch");
+            }
+
+            if (ModelState.IsValid)
+            {
+                Sketch sketch = _repository.GetSketch(sketchId.Value).SingleOrDefault();
+
+                sketch.Dimension.Id = dimensionId.Value;
+
+                _repository.UpdateSketch(sketch);
+            }
+
+            return Json("Sketch moved successfully");
+        }
+
+        [HttpPost]
+        public JsonResult MergeDimensions(int? sourceDimensionId, int? targetDimensionId)
+        {
+            if (sourceDimensionId == null || targetDimensionId == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                return Json("Failed to merge dimensions");
+            }
+
+            if (ModelState.IsValid)
+                _repository.MergeDimensions(sourceDimensionId.Value, targetDimensionId.Value);
+
+            return Json("Dimensions merged successfully");
         }
         #endregion
         #endregion

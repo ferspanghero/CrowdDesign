@@ -8,7 +8,10 @@
 
 #tblMorphChart {
     width: 100%;
-    table-layout: fixed;
+}
+
+#tblMorphChart td {
+    word-wrap: break-word;
 }
 
 #imgSketchThumbnail {
@@ -16,19 +19,31 @@
     height: 50%;
 }
 
-.cellAddNewSketch {
+.tdAddNewSketch {
     text-align: left;
     border: none;
 }
 
-.cellAddNewDimension {
+.tdAddNewDimension {
     border: none;
 }
 
-.cellDimension {
+.tdDimension {
     border-right: double;
 }
 
 .tdLoggedInUserSketch {
     background-color: #caf7ca;
+}
+
+.tdSketchDraggable, .tdDimensionDraggable {
+    cursor: pointer;
+}
+
+.tdHoveredDroppable {
+    background-color: lightgray;
+}
+
+#divMergeConfirmationDialog {
+    display: none;
 }

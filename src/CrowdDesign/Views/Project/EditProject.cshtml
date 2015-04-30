@@ -19,75 +19,82 @@
 <div id="divMorphChart">
     <table id="tblMorphChart">
         <thead>
-            <tr>
-                <th class="cellDimension">Dimensions</th>
-                @if (Model != null && Model.Dimensions != null)
+        <tr>
+            <th class="tdDimension">Dimensions</th>
+            @if (Model != null && Model.Dimensions != null)
+            {
+                if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
                 {
-                    if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                    int proposedSolutionsCount = (from c in Model.Dimensions
+                        where c.Sketches != null && c.Sketches.Count > 0
+                        select c.Sketches.Count()).Max();
+
+                    if (proposedSolutionsCount > 0)
                     {
-                        int proposedSolutionsCount = (from c in Model.Dimensions
-                                                      where c.Sketches != null && c.Sketches.Count > 0
-                                                      select c.Sketches.Count()).Max();
-
-                        if (proposedSolutionsCount > 0)
+                        for (int i = 1; i <= proposedSolutionsCount; i++)
                         {
-                            for (int i = 1; i <= proposedSolutionsCount; i++)
-                            {
-                                string name = "Solution Candidate " + i;
+                            string name = "Solution Candidate " + i;
 
-                                <th>@name</th>
-                            }
+                            <th>@name</th>
                         }
                     }
                 }
-            </tr>
+            }
+        </tr>
         </thead>
         <tbody>
-            @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
+        @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
+        {
+            <tr>
+                <td class="tdAddNewDimension">
+                    @Html.ActionLink("Add dimension", "EditDimension", new {ProjectId = Model != null ? (int?) Model.Id : null})
+                </td>
+            </tr>
+        }
+        else
+        {
+            foreach (var dimension in Model.Dimensions)
             {
                 <tr>
-                    <td class="cellAddNewDimension">
-                        @Html.ActionLink("Create dimension", "EditDimension", new { ProjectId = Model != null ? (int?)Model.Id : null })
-                    </td>
-                </tr>
-            }
-            else
-            {
-                foreach (var dimension in Model.Dimensions)
-                {
-                    <tr>
-                        <td class="cellDimension">@Html.ActionLink(dimension.Name, "EditDimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description })</td>
+                    <td class="tdDimension tdDimensionDraggable tdDimensionDroppable" data-dimensionId=@dimension.Id>@Html.ActionLink(dimension.Name, "EditDimension", new {ProjectId = Model.Id, DimensionId = dimension.Id}, new {Title = dimension.Description})</td>
 
-                        @if (dimension.Sketches != null)
+                    @if (dimension.Sketches != null)
+                    {
+                        foreach (var sketch in dimension.Sketches)
                         {
-                            foreach (var sketch in dimension.Sketches)
-                            {
-                                string tdClass = (sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch";
-
-                                <td class=@tdClass>
-                                    <a href=@Url.Action("EditSketch", "Project", new { ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id })>
-                                        <img id="imgSketchThumbnail" src=@sketch.ImageUri />
-                                    </a>
-                                </td>
-                            }
-
-                            <td class="cellAddNewSketch">
-                                @Html.ActionLink("Add solution", "EditSketch", new { ProjectId = Model.Id, DimensionId = dimension.Id })
+                            <td class="tdSketchDraggable tdSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")"
+                                data-dimensionId=@sketch.Dimension.Id
+                                data-sketchId=@sketch.Id>
+                                <a href=@Url.Action("EditSketch", "Project", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
+                                    <img id="imgSketchThumbnail" src=@sketch.ImageUri/>
+                                </a>
                             </td>
                         }
-                    </tr>
-                }
 
-                <tr>
-                    <td class="cellAddNewDimension">
-                        @Html.ActionLink("Create dimension", "EditDimension", new { ProjectId = Model.Id })
-                    </td>
+                        <td class="tdAddNewSketch">
+                            @Html.ActionLink("Add solution", "EditSketch", new {ProjectId = Model.Id, DimensionId = dimension.Id})
+                        </td>
+                    }
                 </tr>
             }
+
+            <tr>
+                <td class="tdAddNewDimension">
+                    @Html.ActionLink("Add dimension", "EditDimension", new {ProjectId = Model.Id})
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>
+
+<div id="divMergeConfirmationDialog" title="Merge the dimensions?">
+    <p>Merging dimensions cannot be undone. Are you sure you want to continue?</p>
+</div>
+
 @section scripts
 {
+    @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+    @Scripts.Render("~/Scripts/Project/EditProject.js")
 }
