@@ -42,14 +42,14 @@ namespace CrowdDesign.UI.Web.Models.Project
         #region Methods
         public Dimension ToDomainModel()
         {
-            Dimension dimension = new Dimension();
-
-            dimension.Id = DimensionId ?? -1;
-            dimension.Name = Name;
-            dimension.Description = Description;
-            dimension.SortCriteria = SortCriteria;
-
-            dimension.Project = new Core.Entities.Project { Id = ProjectId ?? -1 };
+            Dimension dimension = new Dimension
+            {
+                Id = DimensionId ?? -1,
+                Name = Name,
+                Description = Description,
+                SortCriteria = SortCriteria,
+                Project = new Core.Entities.Project {Id = ProjectId ?? -1}
+            };
 
             return
                 dimension;

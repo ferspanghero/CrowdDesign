@@ -19,71 +19,69 @@
 <div id="divMorphChart">
     <table id="tblMorphChart">
         <thead>
-        <tr>
-            <th class="tdDimension">Dimensions</th>
-            @if (Model != null && Model.Dimensions != null)
-            {
-                if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+            <tr>
+                <th class="tdDimension">Dimensions</th>
+                @if (Model != null && Model.Dimensions != null)
                 {
-                    int proposedSolutionsCount = (from c in Model.Dimensions
-                        where c.Sketches != null && c.Sketches.Count > 0
-                        select c.Sketches.Count()).Max();
-
-                    if (proposedSolutionsCount > 0)
+                    if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
                     {
-                        for (int i = 1; i <= proposedSolutionsCount; i++)
-                        {
-                            string name = "Solution Candidate " + i;
+                        int proposedSolutionsCount = (from c in Model.Dimensions
+                                                      where c.Sketches != null && c.Sketches.Count > 0
+                                                      select c.Sketches.Count()).Max();
 
-                            <th>@name</th>
+                        if (proposedSolutionsCount > 0)
+                        {
+                            for (int i = 1; i <= proposedSolutionsCount; i++)
+                            {
+                                string name = "Solution Candidate " + i;
+
+                                <th>@name</th>
+                            }
                         }
                     }
                 }
-            }
-        </tr>
+            </tr>
         </thead>
         <tbody>
-        @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
-        {
-            <tr>
-                <td class="tdAddNewDimension">
-                    @Html.ActionLink("Add dimension", "EditDimension", new {ProjectId = Model != null ? (int?) Model.Id : null})
-                </td>
-            </tr>
-        }
-        else
-        {
-            foreach (var dimension in Model.Dimensions)
+            @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
             {
                 <tr>
-                    <td class="tdDimension tdDimensionDraggable tdDimensionDroppable" data-dimensionId=@dimension.Id>@Html.ActionLink(dimension.Name, "EditDimension", new {ProjectId = Model.Id, DimensionId = dimension.Id}, new {Title = dimension.Description})</td>
-
-                    @if (dimension.Sketches != null)
-                    {
-                        foreach (var sketch in dimension.Sketches)
-                        {
-                            <td class="tdSketchDraggable tdSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")"
-                                data-dimensionId=@sketch.Dimension.Id
-                                data-sketchId=@sketch.Id>
-                                <a href=@Url.Action("EditSketch", "Project", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
-                                    <img id="imgSketchThumbnail" src=@sketch.ImageUri/>
-                                </a>
-                            </td>
-                        }
-
-                        <td class="tdAddNewSketch">
-                            @Html.ActionLink("Add solution", "EditSketch", new {ProjectId = Model.Id, DimensionId = dimension.Id})
-                        </td>
-                    }
+                    <td class="tdAddNewDimension">
+                        @Html.ActionLink("Add dimension", "EditDimension", new { ProjectId = Model != null ? (int?)Model.Id : null })
+                    </td>
                 </tr>
             }
+            else
+            {
+                foreach (var dimension in Model.Dimensions)
+                {
+                    <tr>
+                        <td class="tdDimension tdDimensionDraggable tdDimensionDroppable" data-dimensionid=@dimension.Id>@Html.ActionLink(dimension.Name, "EditDimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description })</td>
 
-            <tr>
-                <td class="tdAddNewDimension">
-                    @Html.ActionLink("Add dimension", "EditDimension", new {ProjectId = Model.Id})
-                </td>
-            </tr>
-        }
+                        @if (dimension.Sketches != null)
+                        {
+                            foreach (var sketch in dimension.Sketches)
+                            {
+                                <td class="tdSketchDraggable tdSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
+                                    <a href=@Url.Action("EditSketch", "Project", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
+                                        <img id="imgSketchThumbnail" src=@sketch.ImageUri />
+                                    </a>
+                                </td>
+                            }
+
+                            <td class="tdAddNewSketch">
+                                @Html.ActionLink("Add solution", "EditSketch", new { ProjectId = Model.Id, DimensionId = dimension.Id })
+                            </td>
+                        }
+                    </tr>
+                }
+
+                <tr>
+                    <td class="tdAddNewDimension">
+                        @Html.ActionLink("Add dimension", "EditDimension", new { ProjectId = Model.Id })
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>

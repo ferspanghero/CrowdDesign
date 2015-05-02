@@ -26,6 +26,10 @@
         /// Gets or sets the URI of an image of the current state of the sketch.
         /// </summary>
         public string ImageUri { get; set; }
+        /// <summary>
+        /// Gets or sets the position of the sketch within the dimension it is part of.
+        /// </summary>        
+        public int Position { get; set; }
         #endregion
     }
 }

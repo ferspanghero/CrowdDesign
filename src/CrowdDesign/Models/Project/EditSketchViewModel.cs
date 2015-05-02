@@ -15,6 +15,7 @@ namespace CrowdDesign.UI.Web.Models.Project
                 SketchId = sketch.Id;
                 Data = sketch.Data;
                 ImageUri = sketch.ImageUri;
+                Position = sketch.Position;
 
                 if (sketch.Dimension != null)
                 {
@@ -37,22 +38,24 @@ namespace CrowdDesign.UI.Web.Models.Project
         public int? UserId { get; set; }
         public string Data { get; set; }
         public string ImageUri { get; set; }
+        public int Position { get; set; }
         #endregion
 
         #region Methods
         public Sketch ToDomainModel()
         {
-            Sketch sketch = new Sketch();
-
-            sketch.Id = SketchId ?? -1;
-            sketch.Data = Data;
-            sketch.ImageUri = ImageUri;
-
-            sketch.User = new User { Id = UserId ?? -1 };
-            sketch.Dimension = new Dimension
+            Sketch sketch = new Sketch
             {
-                Id = DimensionId ?? -1,
-                Project = new Core.Entities.Project { Id = ProjectId ?? -1 }
+                Id = SketchId ?? -1,
+                Data = Data,
+                ImageUri = ImageUri,
+                Position = Position,
+                User = new User {Id = UserId ?? -1},
+                Dimension = new Dimension
+                {
+                    Id = DimensionId ?? -1,
+                    Project = new Core.Entities.Project {Id = ProjectId ?? -1}
+                }
             };
 
             return

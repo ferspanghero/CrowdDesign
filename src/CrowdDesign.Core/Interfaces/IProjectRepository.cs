@@ -19,13 +19,6 @@ namespace CrowdDesign.Core.Interfaces
         IEnumerable<Project> GetProjects(params int[] projectIds);
 
         /// <summary>
-        /// Gets a project by its id.
-        /// </summary>
-        /// <param name="projectId">The id of the desired project.</param>
-        /// <returns>A project that matches the given id.</returns>
-        Project GetProject(int projectId);
-
-        /// <summary>
         /// Creates a new project.
         /// </summary>
         /// <param name="projectName">The name of the new project.</param>
@@ -87,7 +80,7 @@ namespace CrowdDesign.Core.Interfaces
         /// <param name="sketchIds">The ids of the desired sketches.</param>
         /// <returns>A collection of sketches that match the given ids.</returns>  
         /// <remarks>If no ids are provided, all existing sketches are returned</remarks>              
-        IEnumerable<Sketch> GetSketch(params int[] sketchIds);
+        IEnumerable<Sketch> GetSketches(params int[] sketchIds);
 
         /// <summary>
         /// Creates a new solution sketch in a dimension of a morphological chart.
@@ -106,8 +99,15 @@ namespace CrowdDesign.Core.Interfaces
         /// Deletes a sketch of a dimension of morphological chart.
         /// </summary>
         /// <param name="sketchId">The id of the sketch to be deleted.</param>
-        void DeleteSketch(int sketchId);    
+        void DeleteSketch(int sketchId);
+
+        /// <summary>
+        /// Moves a sketch to the position of another sketch.
+        /// </summary>
+        /// <param name="sourceSketchId">The id of the sketch being moved.</param>
+        /// <param name="targetSketchId">The id of the target sketch.</param>
+        void MoveSketch(int sourceSketchId, int targetSketchId);
         #endregion     
-        #endregion        
+        #endregion                   
     }
 }
