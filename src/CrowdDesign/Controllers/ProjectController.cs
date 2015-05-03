@@ -1,13 +1,10 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
-using System.Linq;
-using CrowdDesign.Infrastructure.SQLServer;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
-using CrowdDesign.UI.Web.Models;
 using CrowdDesign.UI.Web.Models.Project;
-using System.Collections.Generic;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -43,7 +40,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                int projectId = _repository.CreateProject("New Project");
+                int projectId = _repository.CreateProject(new Project { Name = "New Project" });
 
                 if (projectId > 0)
                     return RedirectToAction("GetProjects");
@@ -80,11 +77,10 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult EditProjectName(Project project)
         {
-            if (project == null)
+            if (project == null || !ModelState.IsValid)
                 return View("Error");
 
-            if (ModelState.IsValid)
-                _repository.UpdateProject(project);
+            _repository.UpdateProject(project);
 
             return RedirectToAction("EditProjectDetails", new { ProjectId = project.Id });
         }
@@ -93,11 +89,10 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult DeleteProject(int? projectid)
         {
-            if (projectid == null)
+            if (projectid == null || !ModelState.IsValid)
                 return View("Error");
 
-            if (ModelState.IsValid)
-                _repository.DeleteProject(projectid.Value);
+            _repository.DeleteProject(projectid.Value);
 
             return RedirectToAction("GetProjects");
         }
@@ -129,10 +124,7 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult CreateDimension(EditDimensionViewModel viewModel)
         {
-            if (viewModel == null || viewModel.ProjectId == null)
-                return View("Error");
-
-            if (ModelState.IsValid)
+            if (viewModel != null && viewModel.ProjectId != null && ModelState.IsValid)
             {
                 int dimensionId = _repository.CreateDimension(viewModel.ToDomainModel());
 
@@ -147,13 +139,15 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult UpdateDimension(EditDimensionViewModel viewModel)
         {
-            if (viewModel == null || viewModel.ProjectId == null || viewModel.DimensionId == null)
-                return View("Error");
-
-            if (ModelState.IsValid)
+            if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
+            {
                 _repository.UpdateDimension(viewModel.ToDomainModel());
 
-            return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
+                return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
+            }
+
+            return View("Error");
+
         }
         #endregion
 
@@ -161,56 +155,54 @@ namespace CrowdDesign.UI.Web.Controllers
         [Authorize]
         public ActionResult EditSketch(int? projectId, int? dimensionId, int? sketchId)
         {
-            if (projectId == null || dimensionId == null)
-                return View("Error");
-
-            if (System.Web.HttpContext.Current.Session["userId"] != null)
+            if (projectId != null && dimensionId != null)
             {
-                ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
-                ViewBag.UserIsAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
-
-                EditSketchViewModel viewModel;
-
-                if (sketchId != null)
+                if (System.Web.HttpContext.Current.Session["userId"] != null)
                 {
-                    Sketch sketch = _repository.GetSketches(sketchId.Value).SingleOrDefault();
+                    ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
+                    ViewBag.UserIsAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
 
-                    if (sketch == null)
-                        return View("Error");
+                    EditSketchViewModel viewModel;
 
-                    viewModel = new EditSketchViewModel(sketch);
-                }
-                else
-                {
-                    // TODO: Avoid loading the entire dimension with its sketches only to get the sketches count
-                    Dimension dimension = _repository.GetDimensions(dimensionId.Value).SingleOrDefault();
-
-                    if (dimension == null || dimension.Sketches == null)
-                        return View("Error");
-
-                    viewModel = new EditSketchViewModel
+                    if (sketchId != null)
                     {
-                        ProjectId = projectId,
-                        DimensionId = dimensionId,
-                        // TODO: This assignment is not thread-safe. There can be situations where the positions become corrupt
-                        Position = dimension.Sketches.Count + 1
-                    };
+                        Sketch sketch = _repository.GetSketches(sketchId.Value).SingleOrDefault();
+
+                        if (sketch == null)
+                            return View("Error");
+
+                        viewModel = new EditSketchViewModel(sketch);
+                    }
+                    else
+                    {
+                        // TODO: Avoid loading the entire dimension with its sketches only to get the sketches count
+                        Dimension dimension = _repository.GetDimensions(dimensionId.Value).SingleOrDefault();
+
+                        if (dimension == null || dimension.Sketches == null)
+                            return View("Error");
+
+                        viewModel = new EditSketchViewModel
+                        {
+                            ProjectId = projectId,
+                            DimensionId = dimensionId,
+                            Position = dimension.Sketches.Count + 1
+                        };
+                    }
+
+                    return View("EditSketch", viewModel);
                 }
 
-                return View("EditSketch", viewModel);
+                return RedirectToAction("Index", "Security");
             }
 
-            return RedirectToAction("Index", "Security");
+            return View("Error");
         }
 
         [Authorize]
         [HttpPost]
         public ActionResult CreateSketch(EditSketchViewModel viewModel)
         {
-            if (viewModel == null || viewModel.ProjectId == null || viewModel.DimensionId == null)
-                return View("Error");
-
-            if (ModelState.IsValid)
+            if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
                 if (System.Web.HttpContext.Current.Session["userId"] != null)
                 {
@@ -232,45 +224,62 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public ActionResult UpdateSketch(EditSketchViewModel viewModel)
         {
-            if (viewModel == null || viewModel.ProjectId == null || viewModel.SketchId == null)
-                return View("Error");
-
-            if (ModelState.IsValid)
+            if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
+            {
                 _repository.UpdateSketch(viewModel.ToDomainModel());
 
-            return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
-        }
-
-        [HttpPost]
-        public JsonResult MoveSketch(int? sourceSketchId, int? targetSketchId)
-        {
-            if (sourceSketchId == null || targetSketchId == null)
-            {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-                return Json("Failed to move the sketch");
+                return RedirectToAction("EditProjectDetails", new { ProjectId = viewModel.ProjectId.Value });
             }
 
-            if (ModelState.IsValid)
-                _repository.MoveSketch(sourceSketchId.Value, targetSketchId.Value);
-
-            return Json("Sketch moved successfully");
+            return View("Error");
         }
 
+        [Authorize]
+        [HttpPost]
+        public JsonResult ReplaceSketches(int? sourceSketchId, int? targetSketchId)
+        {
+            if (sourceSketchId != null && targetSketchId != null && ModelState.IsValid)
+            {
+                _repository.ReplaceSketches(sourceSketchId.Value, targetSketchId.Value);
+
+                return Json("Sketch moved successfully");
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+            return Json("Failed to move the sketch");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult MoveSketchToDimension(int? sourceSketchId, int? targetDimensionId)
+        {
+            if (sourceSketchId != null && targetDimensionId != null && ModelState.IsValid)
+            {
+                _repository.MoveSketchToDimension(sourceSketchId.Value, targetDimensionId.Value);
+
+                return Json("Sketch moved successfully");
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+            return Json("Failed to move the sketch");
+        }
+
+        [Authorize]
         [HttpPost]
         public JsonResult MergeDimensions(int? sourceDimensionId, int? targetDimensionId)
         {
-            if (sourceDimensionId == null || targetDimensionId == null)
+            if (sourceDimensionId != null && targetDimensionId != null && ModelState.IsValid)
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
-                return Json("Failed to merge dimensions");
-            }
-
-            if (ModelState.IsValid)
                 _repository.MergeDimensions(sourceDimensionId.Value, targetDimensionId.Value);
 
-            return Json("Dimensions merged successfully");
+                return Json("Dimensions merged successfully");
+            }
+
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+            return Json("Failed to merge dimensions");
         }
         #endregion
         #endregion

@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Transactions;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
+using CrowdDesign.Utils.Extensions;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 {
@@ -54,21 +56,18 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 projects;
         }
 
-        public int CreateProject(string projectName)
+        public int CreateProject(Project project)
         {
             int projectId = -1;
 
-            if (!string.IsNullOrEmpty(projectName))
+            project.TryThrowArgumentNullException("project");
+
+            using (var db = new DatabaseContext())
             {
-                using (var db = new DatabaseContext())
-                {
-                    Project project = new Project { Name = projectName };
+                db.Projects.Add(project);
+                db.SaveChanges();
 
-                    db.Projects.Add(project);
-                    db.SaveChanges();
-
-                    projectId = project.Id;
-                }
+                projectId = project.Id;
             }
 
             return
@@ -77,23 +76,19 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
         public void UpdateProject(Project project)
         {
-            if (project != null)
+            project.TryThrowArgumentNullException("project");
+
+            using (var db = new DatabaseContext())
             {
-                using (var db = new DatabaseContext())
-                {
-                    if (db.Projects != null)
-                    {
-                        Project projectRecord = GetProjects(project.Id).SingleOrDefault();
+                Project projectRecord = GetProjects(project.Id).SingleOrDefault();
 
-                        if (projectRecord != null)
-                        {
-                            projectRecord.Name = project.Name;
-                            db.Entry(projectRecord).State = EntityState.Modified;
+                if (projectRecord == null)
+                    throw new InvalidOperationException(Resources.ProjectStrings.ProjectNotFound);
 
-                            db.SaveChanges();
-                        }
-                    }
-                }
+                projectRecord.Name = project.Name;
+                db.Entry(projectRecord).State = EntityState.Modified;
+
+                db.SaveChanges();
             }
         }
 
@@ -101,15 +96,15 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             using (var db = new DatabaseContext())
             {
-                if (db.Projects != null)
-                {
-                    Project projectRecord = GetProjects(projectId).SingleOrDefault();
+                Project projectRecord = GetProjects(projectId).SingleOrDefault();
 
-                    if (projectRecord != null)
-                        db.Entry(projectRecord).State = EntityState.Deleted;
+                if (projectRecord == null)
+                    throw new InvalidOperationException(Resources.ProjectStrings.ProjectNotFound);
 
-                    db.SaveChanges();
-                }
+                db.Entry(projectRecord).State = EntityState.Deleted;
+
+                db.SaveChanges();
+
             }
         }
 
@@ -161,32 +156,32 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             int dimensionId = -1;
 
-            if (dimension != null && dimension.Project != null)
+            dimension.TryThrowArgumentNullException("dimension");
+            dimension.Project.TryThrowArgumentNullException("dimension.Project");
+
+            using (var db = new DatabaseContext())
             {
-                using (var db = new DatabaseContext())
+                if (db.Projects != null)
                 {
-                    if (db.Projects != null)
-                    {
-                        Project projectRecord = GetProjects(dimension.Project.Id).SingleOrDefault();
+                    Project projectRecord = GetProjects(dimension.Project.Id).SingleOrDefault();
 
-                        if (projectRecord != null)
-                        {
-                            if (projectRecord.Dimensions == null)
-                                projectRecord.Dimensions = new List<Dimension>();
+                    if (projectRecord == null)
+                        throw new InvalidOperationException(Resources.ProjectStrings.ProjectNotFound);
 
-                            dimension.Project = projectRecord;
+                    if (projectRecord.Dimensions == null)
+                        projectRecord.Dimensions = new List<Dimension>();
 
-                            // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
-                            // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
-                            db.Dimensions.Attach(dimension);
-                            projectRecord.Dimensions.Add(dimension);
-                            db.Entry(dimension).State = EntityState.Added;
+                    dimension.Project = projectRecord;
 
-                            db.SaveChanges();
+                    // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
+                    // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
+                    db.Dimensions.Attach(dimension);
+                    projectRecord.Dimensions.Add(dimension);
+                    db.Entry(dimension).State = EntityState.Added;
 
-                            dimensionId = dimension.Id;
-                        }
-                    }
+                    db.SaveChanges();
+
+                    dimensionId = dimension.Id;
                 }
             }
 
@@ -196,25 +191,21 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
         public void UpdateDimension(Dimension dimension)
         {
-            if (dimension != null)
+            dimension.TryThrowArgumentNullException("dimension");
+
+            using (var db = new DatabaseContext())
             {
-                using (var db = new DatabaseContext())
-                {
-                    if (db.Projects != null)
-                    {
-                        Dimension dimensionRecord = GetDimensions(dimension.Id).SingleOrDefault();
+                Dimension dimensionRecord = GetDimensions(dimension.Id).SingleOrDefault();
 
-                        if (dimensionRecord != null)
-                        {
-                            dimensionRecord.Name = dimension.Name;
-                            dimensionRecord.Description = dimension.Description;
-                            dimensionRecord.SortCriteria = dimension.SortCriteria;
-                            db.Entry(dimensionRecord).State = EntityState.Modified;
+                if (dimensionRecord == null)
+                    throw new InvalidOperationException(Resources.ProjectStrings.DimensionNotFound);
 
-                            db.SaveChanges();
-                        }
-                    }
-                }
+                dimensionRecord.Name = dimension.Name;
+                dimensionRecord.Description = dimension.Description;
+                dimensionRecord.SortCriteria = dimension.SortCriteria;
+                db.Entry(dimensionRecord).State = EntityState.Modified;
+
+                db.SaveChanges();
             }
         }
 
@@ -222,60 +213,61 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             using (var db = new DatabaseContext())
             {
-                if (db.Dimensions != null)
-                {
-                    Dimension dimensionRecord = GetDimensions(dimensionId).SingleOrDefault();
+                Dimension dimensionRecord = GetDimensions(dimensionId).SingleOrDefault();
 
-                    if (dimensionRecord != null)
-                        db.Entry(dimensionRecord).State = EntityState.Deleted;
+                if (dimensionRecord == null)
+                    throw new InvalidOperationException(Resources.ProjectStrings.DimensionNotFound);
 
-                    db.SaveChanges();
-                }
+                db.Entry(dimensionRecord).State = EntityState.Deleted;
+
+                db.SaveChanges();
             }
         }
 
         public void MergeDimensions(params int[] dimensionIds)
         {
-            if (dimensionIds != null && dimensionIds.Length > 1)
+            dimensionIds.TryThrowArgumentNullException("dimensionIds");
+
+            using (var db = new DatabaseContext())
             {
-                using (var db = new DatabaseContext())
+                // The merge algorithm below assumes that the dimensions should be merged to the one whose id is in the last position of the dimensionIds array
+                // For example: given an id array [10, 5, 2], [10, 5] will be merged to [2]
+                // Consequently, it is necessary to ensure that the dimensions retrieved from the database are ordered exactly like the dimensionIds array
+                // The Lookup below is used for this purpose
+                var dimensionsLookup = GetDimensions(dimensionIds).ToLookup(d => d.Id);
+                var dimensionRecords = dimensionIds.SelectMany(id => dimensionsLookup[id]).ToList();
+
+                if (dimensionIds.Length != dimensionRecords.Count)
+                    throw new InvalidOperationException(Resources.ProjectStrings.DimensionsNotFound);
+
+                // If there is more than one dimension being merged
+                if (dimensionRecords.Count > 1)
                 {
-                    // The merge algorithm below assumes that the dimensions should be merged to the one whose id is in the last position of the dimensionIds array
-                    // For example: given an id array [10, 5, 2], [10, 5] will be merged to [2]
-                    // Consequently, it is necessary to ensure that the dimensions retrieved from the database are ordered exactly like the dimensionIds array
-                    // The Lookup below is used for this purpose
-                    var dimensionsLookup = GetDimensions(dimensionIds).ToLookup(d => d.Id);
-                    var dimensionRecords = dimensionIds.SelectMany(id => dimensionsLookup[id]).ToList();
+                    Dimension targetDimension = dimensionRecords[dimensionRecords.Count - 1];
+                    int position = targetDimension.Sketches.Count + 1;
 
-                    // If there is more than one dimension being merged
-                    if (dimensionRecords.Count > 1)
+                    for (int i = 0; i < dimensionRecords.Count - 1; i++)
                     {
-                        Dimension targetDimension = dimensionRecords[dimensionRecords.Count - 1];
-                        int position = targetDimension.Sketches.Count + 1;
+                        var sketches = dimensionRecords[i].Sketches != null ? new List<Sketch>(dimensionRecords[i].Sketches) : null;
 
-                        for (int i = 0; i < dimensionRecords.Count - 1; i++)
+                        db.Dimensions.Attach(dimensionRecords[i]);
+                        db.Dimensions.Remove(dimensionRecords[i]);
+
+                        if (sketches != null)
                         {
-                            var sketches = dimensionRecords[i].Sketches != null ? new List<Sketch>(dimensionRecords[i].Sketches) : null;
-
-                            db.Dimensions.Attach(dimensionRecords[i]);
-                            db.Dimensions.Remove(dimensionRecords[i]);
-
-                            if (sketches != null)
+                            foreach (var sketch in sketches)
                             {
-                                foreach (var sketch in sketches)
-                                {
-                                    db.Entry(sketch).State = EntityState.Modified;
+                                db.Entry(sketch).State = EntityState.Modified;
 
-                                    sketch.Position = position++;
-                                    sketch.Dimension = targetDimension;
+                                sketch.Position = position++;
+                                sketch.Dimension = targetDimension;
 
-                                    targetDimension.Sketches.Add(sketch);
-                                }
+                                targetDimension.Sketches.Add(sketch);
                             }
                         }
-
-                        db.SaveChanges();
                     }
+
+                    db.SaveChanges();
                 }
             }
         }
@@ -324,37 +316,39 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             int sketchId = -1;
 
-            if (sketch != null && sketch.User != null && sketch.Dimension != null)
+            sketch.TryThrowArgumentNullException("sketch");
+            sketch.User.TryThrowArgumentNullException("sketch.User");
+            sketch.Dimension.TryThrowArgumentNullException("sketch.Dimension");
+
+            using (var db = new DatabaseContext())
             {
-                using (var db = new DatabaseContext())
-                {
-                    if (db.Projects != null)
-                    {
-                        ISecurityRepository securityRepository = new SecurityRepository();
+                // TODO: This dependency should be injected
+                ISecurityRepository securityRepository = new SecurityRepository();
 
-                        Dimension dimensionRecord = GetDimensions(sketch.Dimension.Id).SingleOrDefault();
-                        User userRecord = securityRepository.GetUser(sketch.User.Id);
+                Dimension dimensionRecord = GetDimensions(sketch.Dimension.Id).SingleOrDefault();
+                User userRecord = securityRepository.GetUser(sketch.User.Id);
 
-                        if (dimensionRecord != null && userRecord != null)
-                        {
-                            if (dimensionRecord.Sketches == null)
-                                dimensionRecord.Sketches = new List<Sketch>();
+                if (dimensionRecord == null)
+                    throw new InvalidOperationException(Resources.ProjectStrings.DimensionNotFound);
 
-                            sketch.Dimension = dimensionRecord;
-                            sketch.User = userRecord;
+                if (userRecord == null)
+                    throw new InvalidOperationException(Resources.SecurityStrings.UserNotFound);
 
-                            // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
-                            // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
-                            db.Sketches.Attach(sketch);
-                            dimensionRecord.Sketches.Add(sketch);
-                            db.Entry(sketch).State = EntityState.Added;
+                if (dimensionRecord.Sketches == null)
+                    dimensionRecord.Sketches = new List<Sketch>();
 
-                            db.SaveChanges();
+                sketch.Dimension = dimensionRecord;
+                sketch.User = userRecord;
 
-                            sketchId = sketch.Id;
-                        }
-                    }
-                }
+                // For some reason if we do a db.Table.Add(element), all objects in the graph will be marked as "Added". Therefore, 
+                // the below code attaches the element as in a disconnected scenario and later changes its state to "Added" manually.
+                db.Sketches.Attach(sketch);
+                dimensionRecord.Sketches.Add(sketch);
+                db.Entry(sketch).State = EntityState.Added;
+
+                db.SaveChanges();
+
+                sketchId = sketch.Id;
             }
 
             return
@@ -363,25 +357,34 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
         public void UpdateSketch(Sketch sketch)
         {
-            if (sketch != null && sketch.Dimension != null)
+            sketch.TryThrowArgumentNullException("sketch");
+            sketch.Dimension.TryThrowArgumentNullException("sketch.Dimension");
+
+            using (var db = new DatabaseContext())
             {
-                using (var db = new DatabaseContext())
+                Sketch sketchRecord = GetSketches(sketch.Id).SingleOrDefault();
+
+                if (sketchRecord == null)
+                    throw new InvalidOperationException(Resources.ProjectStrings.SketchNotFound);
+
+                sketchRecord.Data = sketch.Data;
+                sketchRecord.ImageUri = sketch.ImageUri;
+                sketchRecord.Position = sketch.Position;
+
+                if (sketch.Dimension != null && sketch.Dimension.Id != sketchRecord.Dimension.Id)
                 {
-                    if (db.Projects != null)
-                    {
-                        Sketch sketchRecord = GetSketches(sketch.Id).SingleOrDefault();
+                    sketchRecord.Dimension = sketch.Dimension;
 
-                        if (sketchRecord != null)
-                        {
-                            sketchRecord.Data = sketch.Data;
-                            sketchRecord.ImageUri = sketch.ImageUri;
-                            sketchRecord.Position = sketch.Position;
-
-                            db.Entry(sketchRecord).State = EntityState.Modified;
-
-                            db.SaveChanges();
-                        }
-                    }
+                    // TODO: This is definitely not the most efficient way to change a child's element parent. Best would be to do it 
+                    // within one EF context and avoid using a TransactionScope. However, as of now, I was not able to make EF 
+                    // update the relationships correctly within one context
+                    DeleteSketch(sketchRecord.Id);
+                    CreateSketch(sketchRecord);
+                }
+                else
+                {
+                    db.Entry(sketchRecord).State = EntityState.Modified;
+                    db.SaveChanges();
                 }
             }
         }
@@ -390,30 +393,34 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             using (var db = new DatabaseContext())
             {
-                if (db.Sketches != null)
-                {
-                    Sketch sketchRecord = GetSketches(sketchId).SingleOrDefault();
+                Sketch sketchRecord = GetSketches(sketchId).SingleOrDefault();
 
-                    if (sketchRecord != null)
-                        db.Entry(sketchRecord).State = EntityState.Deleted;
+                if (sketchRecord == null)
+                    throw new InvalidOperationException(Resources.ProjectStrings.SketchNotFound);
 
-                    db.SaveChanges();
-                }
+                db.Entry(sketchRecord).State = EntityState.Deleted;
+
+                db.SaveChanges();
             }
         }
-        public void MoveSketch(int sourceSketchId, int targetSketchId)
+
+        public void ReplaceSketches(int sourceSketchId, int targetSketchId)
         {
             using (var db = new DatabaseContext())
             {
                 var sketches = GetSketches(sourceSketchId, targetSketchId).ToDictionary(s => s.Id, s => s);
+
+                if (sketches.Count != 2)
+                    throw new InvalidOperationException(Resources.ProjectStrings.SketchesNotFound);
+
                 Sketch sourceSketch = sketches[sourceSketchId];
                 Sketch targetSketch = sketches[targetSketchId];
 
                 using (var transaction = new TransactionScope())
-                {                    
+                {
                     // CASE 1: If the sketch is being moved within its current dimension
                     if (sourceSketch.Dimension.Id == targetSketch.Dimension.Id)
-                    {                        
+                    {
                         int targetSketchOriginalPosition = targetSketch.Position;
 
                         // CASE 1.1: If the sketch is being moved to a superior position
@@ -424,12 +431,13 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                                 // Decrements the position of sketches that belong to the moved sketch dimension
                                 // For example: for sketches in positions [1, 2, 3, 4, 5], if [2] is moved to the position of [4], 
                                 //              resulting in [1, 3, 4, 4, 5], then [3, 4] need to be decremented                                
-                                if (sketch.Position > sourceSketch.Position && sketch.Position <= targetSketch.Position)
+                                if (sketch.Position > sourceSketch.Position &&
+                                    sketch.Position <= targetSketch.Position)
                                 {
                                     sketch.Position--;
                                     db.Entry(sketch).State = EntityState.Modified;
                                 }
-                            }    
+                            }
                         }
                         // CASE 1.2: If the sketch is being moved to an inferior position
                         else if (sourceSketch.Position > targetSketch.Position)
@@ -439,12 +447,13 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                                 // Increments the position of sketches that belong to the moved sketch dimension
                                 // For example: for sketches in positions [1, 2, 3, 4, 5], if [4] is moved to the position of [2], 
                                 //              resulting in [1, 2, 2, 3, 5], then [2, 3] need to be incremented
-                                if (sketch.Position >= targetSketch.Position && sketch.Position < sourceSketch.Position)
+                                if (sketch.Position >= targetSketch.Position &&
+                                    sketch.Position < sourceSketch.Position)
                                 {
                                     sketch.Position++;
                                     db.Entry(sketch).State = EntityState.Modified;
                                 }
-                            } 
+                            }
                         }
 
                         // Assigns to the moved sketch the position of the target sketch
@@ -455,7 +464,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                     }
                     // CASE 2: If the sketch is being moved to a new dimension
                     else
-                    {                        
+                    {
                         // Decrements the position of all sketches that belong to the moved sketch original dimension that were in a position after it
                         // For example: for sketches in positions [1, 2, 3, 4], if [2] is moved, then [3, 4] need to be updated
                         //              the updated positions will then be [1, 2, 3]
@@ -489,15 +498,83 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                         // Assigns to the moved sketch the dimension of the target sketch
                         sourceSketch.Dimension = targetSketch.Dimension;
 
-                        // This is definitely not the most efficient way to change a child's element parent. Best would be to do it 
-                        // within one EF context and avoid using a TransactionScope. However, as of now, I was not able to make EF 
-                        // update the relationships correctly within one context
-                        DeleteSketch(sourceSketch.Id);
-                        CreateSketch(sourceSketch);
+                        UpdateSketch(sourceSketch);
                     }
-                    
+
                     transaction.Complete();
                 }
+            }
+        }
+
+        public void MoveSketchToDimension(int sourceSketchId, int targetDimensionId)
+        {
+            using (var db = new DatabaseContext())
+            {
+                Sketch sourceSketch = GetSketches(sourceSketchId).SingleOrDefault();                
+
+                if (sourceSketch == null)
+                    throw new InvalidOperationException(Resources.ProjectStrings.SketchNotFound);                
+
+                // The general idea of this algorithm is that if a sketch is moved directly to a dimension,
+                // it will be placed in the end position
+                // For example: if a sketch [5] is moved to the dimension with sketches [1, 2, 3, 4], then
+                //              it will become [1, 2, 3, 4, 5]
+
+                using (var transaction = new TransactionScope())
+                {
+                    // CASE 1: If the sketch is being moved to its current dimension
+                    if (sourceSketch.Dimension.Id == targetDimensionId)
+                    {
+                        foreach (var sketch in sourceSketch.Dimension.Sketches)
+                        {
+                            // Decrements the position of sketches that belong to the moved sketch dimension
+                            // For example: for sketches in positions [1, 2, 3, 4, 5], if [2] is moved,
+                            //              resulting in [1, 3, 4, 5, 5], then [3, 4, 5] need to be decremented                                
+                            if (sketch.Position > sourceSketch.Position && sketch.Position <= sourceSketch.Dimension.Sketches.Count)
+                            {
+                                sketch.Position--;
+                                db.Entry(sketch).State = EntityState.Modified;
+                            }
+                        }
+
+                        sourceSketch.Position = sourceSketch.Dimension.Sketches.Count == 0 ? 1 : sourceSketch.Dimension.Sketches.Count;
+
+                        db.Entry(sourceSketch).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    // CASE 2: If the sketch is being moved to a new dimension
+                    else
+                    {
+                        Dimension targetDimension = GetDimensions(targetDimensionId).SingleOrDefault();
+
+                        if (targetDimension == null)
+                            throw new InvalidOperationException(Resources.ProjectStrings.DimensionNotFound);
+
+                        // Decrements the position of all sketches that belong to the moved sketch original dimension that were in a position after it
+                        // For example: for sketches in positions [1, 2, 3, 4], if [2] is moved, then [3, 4] need to be updated
+                        //              the updated positions will then be [1, 2, 3]
+                        foreach (var sketch in sourceSketch.Dimension.Sketches)
+                        {
+                            if (sketch.Position > sourceSketch.Position)
+                            {
+                                sketch.Position--;
+                                db.Entry(sketch).State = EntityState.Modified;
+                            }
+                        }
+
+                        // Assigns to the moved sketch the end position of the target dimension
+                        sourceSketch.Position = targetDimension.Sketches.Count == 0 ? 1 : targetDimension.Sketches.Count;
+
+                        db.SaveChanges();
+
+                        // Assigns to the moved sketch the dimension of the target sketch
+                        sourceSketch.Dimension = targetDimension;
+
+                        UpdateSketch(sourceSketch);
+                    }
+
+                    transaction.Complete();
+                }               
             }
         }
         #endregion

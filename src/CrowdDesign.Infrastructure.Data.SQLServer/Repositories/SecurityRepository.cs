@@ -1,5 +1,4 @@
-﻿using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;

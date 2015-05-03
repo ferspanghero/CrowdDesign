@@ -21,9 +21,9 @@ namespace CrowdDesign.Core.Interfaces
         /// <summary>
         /// Creates a new project.
         /// </summary>
-        /// <param name="projectName">The name of the new project.</param>
+        /// <param name="project">The new project to be created.</param>
         /// <returns>The new project id.</returns>
-        int CreateProject(string projectName);
+        int CreateProject(Project project);
 
         /// <summary>
         /// Updates an existing project.
@@ -106,8 +106,17 @@ namespace CrowdDesign.Core.Interfaces
         /// </summary>
         /// <param name="sourceSketchId">The id of the sketch being moved.</param>
         /// <param name="targetSketchId">The id of the target sketch.</param>
-        void MoveSketch(int sourceSketchId, int targetSketchId);
-        #endregion     
-        #endregion                   
+        void ReplaceSketches(int sourceSketchId, int targetSketchId);
+
+        /// <summary>
+        /// Moves a sketch to the end position within a dimension.
+        /// </summary>
+        /// <param name="sourceSketchId">The id of the sketch being moved.</param>
+        /// <param name="targetDimensionId">The id of the target dimension.</param>
+        void MoveSketchToDimension(int sourceSketchId, int targetDimensionId);
+
+        #endregion
+
+        #endregion
     }
 }
