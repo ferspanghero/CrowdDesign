@@ -3,7 +3,7 @@
 namespace CrowdDesign.Core.Entities
 {
     /// <summary>
-    /// Represents a dimension of morphological chart..
+    /// Represents a dimension of morphological chart.
     /// </summary>
     public class Dimension
     {
