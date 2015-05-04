@@ -1,4 +1,5 @@
 ﻿using CrowdDesign.Core.Entities;
+
 namespace CrowdDesign.UI.Web.Models.Project
 {
     public class EditSketchViewModel

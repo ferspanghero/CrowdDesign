@@ -6,6 +6,7 @@ using System.Transactions;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
+using CrowdDesign.Infrastructure.SQLServer.Resources;
 using CrowdDesign.Utils.Extensions;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
@@ -83,7 +84,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 Project projectRecord = GetProjects(project.Id).SingleOrDefault();
 
                 if (projectRecord == null)
-                    throw new InvalidOperationException(Resources.ProjectStrings.ProjectNotFound);
+                    throw new InvalidOperationException(ProjectStrings.ProjectNotFound);
 
                 projectRecord.Name = project.Name;
                 db.Entry(projectRecord).State = EntityState.Modified;
@@ -99,7 +100,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 Project projectRecord = GetProjects(projectId).SingleOrDefault();
 
                 if (projectRecord == null)
-                    throw new InvalidOperationException(Resources.ProjectStrings.ProjectNotFound);
+                    throw new InvalidOperationException(ProjectStrings.ProjectNotFound);
 
                 db.Entry(projectRecord).State = EntityState.Deleted;
 
@@ -166,7 +167,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                     Project projectRecord = GetProjects(dimension.Project.Id).SingleOrDefault();
 
                     if (projectRecord == null)
-                        throw new InvalidOperationException(Resources.ProjectStrings.ProjectNotFound);
+                        throw new InvalidOperationException(ProjectStrings.ProjectNotFound);
 
                     if (projectRecord.Dimensions == null)
                         projectRecord.Dimensions = new List<Dimension>();
@@ -198,7 +199,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 Dimension dimensionRecord = GetDimensions(dimension.Id).SingleOrDefault();
 
                 if (dimensionRecord == null)
-                    throw new InvalidOperationException(Resources.ProjectStrings.DimensionNotFound);
+                    throw new InvalidOperationException(ProjectStrings.DimensionNotFound);
 
                 dimensionRecord.Name = dimension.Name;
                 dimensionRecord.Description = dimension.Description;
@@ -216,7 +217,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 Dimension dimensionRecord = GetDimensions(dimensionId).SingleOrDefault();
 
                 if (dimensionRecord == null)
-                    throw new InvalidOperationException(Resources.ProjectStrings.DimensionNotFound);
+                    throw new InvalidOperationException(ProjectStrings.DimensionNotFound);
 
                 db.Entry(dimensionRecord).State = EntityState.Deleted;
 
@@ -238,7 +239,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 var dimensionRecords = dimensionIds.SelectMany(id => dimensionsLookup[id]).ToList();
 
                 if (dimensionIds.Length != dimensionRecords.Count)
-                    throw new InvalidOperationException(Resources.ProjectStrings.DimensionsNotFound);
+                    throw new InvalidOperationException(ProjectStrings.DimensionsNotFound);
 
                 // If there is more than one dimension being merged
                 if (dimensionRecords.Count > 1)
@@ -329,10 +330,10 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 User userRecord = securityRepository.GetUser(sketch.User.Id);
 
                 if (dimensionRecord == null)
-                    throw new InvalidOperationException(Resources.ProjectStrings.DimensionNotFound);
+                    throw new InvalidOperationException(ProjectStrings.DimensionNotFound);
 
                 if (userRecord == null)
-                    throw new InvalidOperationException(Resources.SecurityStrings.UserNotFound);
+                    throw new InvalidOperationException(SecurityStrings.UserNotFound);
 
                 if (dimensionRecord.Sketches == null)
                     dimensionRecord.Sketches = new List<Sketch>();
@@ -365,7 +366,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 Sketch sketchRecord = GetSketches(sketch.Id).SingleOrDefault();
 
                 if (sketchRecord == null)
-                    throw new InvalidOperationException(Resources.ProjectStrings.SketchNotFound);
+                    throw new InvalidOperationException(ProjectStrings.SketchNotFound);
 
                 sketchRecord.Data = sketch.Data;
                 sketchRecord.ImageUri = sketch.ImageUri;
@@ -396,7 +397,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 Sketch sketchRecord = GetSketches(sketchId).SingleOrDefault();
 
                 if (sketchRecord == null)
-                    throw new InvalidOperationException(Resources.ProjectStrings.SketchNotFound);
+                    throw new InvalidOperationException(ProjectStrings.SketchNotFound);
 
                 db.Entry(sketchRecord).State = EntityState.Deleted;
 
@@ -411,7 +412,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 var sketches = GetSketches(sourceSketchId, targetSketchId).ToDictionary(s => s.Id, s => s);
 
                 if (sketches.Count != 2)
-                    throw new InvalidOperationException(Resources.ProjectStrings.SketchesNotFound);
+                    throw new InvalidOperationException(ProjectStrings.SketchesNotFound);
 
                 Sketch sourceSketch = sketches[sourceSketchId];
                 Sketch targetSketch = sketches[targetSketchId];
@@ -513,7 +514,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 Sketch sourceSketch = GetSketches(sourceSketchId).SingleOrDefault();                
 
                 if (sourceSketch == null)
-                    throw new InvalidOperationException(Resources.ProjectStrings.SketchNotFound);                
+                    throw new InvalidOperationException(ProjectStrings.SketchNotFound);                
 
                 // The general idea of this algorithm is that if a sketch is moved directly to a dimension,
                 // it will be placed in the end position
@@ -548,7 +549,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                         Dimension targetDimension = GetDimensions(targetDimensionId).SingleOrDefault();
 
                         if (targetDimension == null)
-                            throw new InvalidOperationException(Resources.ProjectStrings.DimensionNotFound);
+                            throw new InvalidOperationException(ProjectStrings.DimensionNotFound);
 
                         // Decrements the position of all sketches that belong to the moved sketch original dimension that were in a position after it
                         // For example: for sketches in positions [1, 2, 3, 4], if [2] is moved, then [3, 4] need to be updated

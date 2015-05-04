@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using CrowdDesign.Core.Entities;
+﻿using CrowdDesign.Core.Entities;
 
 namespace CrowdDesign.Core.Interfaces
 {

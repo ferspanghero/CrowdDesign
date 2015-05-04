@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CrowdDesign.Utils.Extensions
 {
@@ -17,7 +15,6 @@ namespace CrowdDesign.Utils.Extensions
         /// <typeparam name="T">The type of the object to be checked.</typeparam>
         /// <param name="obj">The object to be checked.</param>
         /// <param name="objName">The name of the object.</param>
-        /// <param name="message">An error message to be displayed by the exception.</param>
         public static void TryThrowArgumentNullException<T>(this T obj, string objName)
         {
             if (obj == null)

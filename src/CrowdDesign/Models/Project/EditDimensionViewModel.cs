@@ -1,5 +1,5 @@
-﻿using CrowdDesign.Core.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using CrowdDesign.Core.Entities;
 
 namespace CrowdDesign.UI.Web.Models.Project
 {
