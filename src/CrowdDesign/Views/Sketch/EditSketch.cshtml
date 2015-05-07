@@ -2,7 +2,7 @@
     ViewBag.Title = "Edit sketch";
 }
 
-@model CrowdDesign.UI.Web.Models.Project.EditSketchViewModel
+@model CrowdDesign.UI.Web.Models.EditSketchViewModel
 
 <div id="divEditSketchMain">
     <div id="divSketchTools">
@@ -38,7 +38,7 @@
             actionName = "UpdateSketch";
         }
 
-        using (Html.BeginForm(actionName, "Project", FormMethod.Post))
+        using (Html.BeginForm(actionName, "Sketch", FormMethod.Post))
         {
             @Html.HiddenFor(model => model.ProjectId)
             @Html.HiddenFor(model => model.DimensionId)
@@ -53,7 +53,7 @@
             // OR the model is not null (the sketch is being updated) and the current user is the one that created the sketch
             if (ViewBag.UserIsAdmin || (Model == null || !Model.SketchId.HasValue) || Model.UserId.HasValue && Model.UserId == ViewBag.UserId)
             {
-                <input id="btnSaveSketch" type="submit" value="Save changes"/>
+                <input id="btnSaveSketch" type="submit" value="Save changes" />
             }
         }
     }
@@ -62,5 +62,5 @@
 @section scripts
 {
     @Scripts.Render("~/Scripts/sketch.js")
-    @Scripts.Render("~/Scripts/Project/EditSketch.js")
+    @Scripts.Render("~/Scripts/Custom/EditSketch.js")
 }

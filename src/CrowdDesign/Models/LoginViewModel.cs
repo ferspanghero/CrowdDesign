@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CrowdDesign.UI.Web.Models.Security
+namespace CrowdDesign.UI.Web.Models
 {
     public class LoginViewModel
     {

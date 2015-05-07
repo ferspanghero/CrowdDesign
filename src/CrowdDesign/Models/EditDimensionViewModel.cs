@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using CrowdDesign.Core.Entities;
 
-namespace CrowdDesign.UI.Web.Models.Project
+namespace CrowdDesign.UI.Web.Models
 {
     public class EditDimensionViewModel
     {

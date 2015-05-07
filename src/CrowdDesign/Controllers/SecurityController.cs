@@ -3,7 +3,7 @@ using System.Web.Security;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
-using CrowdDesign.UI.Web.Models.Security;
+using CrowdDesign.UI.Web.Models;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -47,6 +47,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 }
 
                 ModelState.AddModelError("Username", "The user name or password is incorrect");
+                ModelState.AddModelError("Password", " ");
             }
 
             return View("Login");

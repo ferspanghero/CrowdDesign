@@ -49,9 +49,21 @@
   <ItemGroup>
     <Compile Include="Contexts\DatabaseContext.cs" />
     <Compile Include="Contexts\DatabaseInitializer.cs" />
+    <Compile Include="Repositories\DimensionRepository.cs" />
+    <Compile Include="Repositories\SketchRepository.cs" />
     <Compile Include="Repositories\SecurityRepository.cs" />
     <Compile Include="Repositories\ProjectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\SketchStrings.Designer.cs">
+      <DependentUpon>SketchStrings.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\DimensionStrings.Designer.cs">
+      <DependentUpon>DimensionStrings.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Resources\ProjectStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -78,6 +90,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\SketchStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SketchStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\DimensionStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DimensionStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\ProjectStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ProjectStrings.Designer.cs</LastGenOutput>

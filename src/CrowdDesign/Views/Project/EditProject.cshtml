@@ -6,7 +6,7 @@
 @if (ViewBag.IsUserAdmin)
 {
     <div id="divProjectGeneralData">
-        @using (Html.BeginForm("EditProjectName", "Project", FormMethod.Post))
+        @using (Html.BeginForm("UpdateProject", "Project", FormMethod.Post))
         {
             @Html.HiddenFor(model => model.Id)
             @Html.EditorFor(model => model.Name)
@@ -47,7 +47,7 @@
             {
                 <tr>
                     <td class="tdAddNewDimension">
-                        @Html.ActionLink("Add dimension", "EditDimension", new { ProjectId = Model != null ? (int?)Model.Id : null })
+                        @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model != null ? (int?)Model.Id : null }, null)
                     </td>
                 </tr>
             }
@@ -56,21 +56,21 @@
                 foreach (var dimension in Model.Dimensions)
                 {
                     <tr>
-                        <td class="tdDimension tdDimensionDraggable tdDimensionDroppable" data-dimensionid=@dimension.Id>@Html.ActionLink(dimension.Name, "EditDimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })</td>
+                        <td class="tdDimension tdDimensionDraggable tdDimensionDroppable" data-dimensionid=@dimension.Id>@Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })</td>
 
                         @if (dimension.Sketches != null)
                         {
                             foreach (var sketch in dimension.Sketches)
                             {
                                 <td class="tdSketchDraggable tdSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
-                                    <a href=@Url.Action("EditSketch", "Project", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
+                                    <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
                                         <img id="imgSketchThumbnail" src=@sketch.ImageUri />
                                     </a>
                                 </td>
                             }
 
                             <td class="tdAddNewSketch">
-                                @Html.ActionLink("Add solution", "EditSketch", new { ProjectId = Model.Id, DimensionId = dimension.Id })
+                                @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
                             </td>
                         }
                     </tr>
@@ -78,7 +78,7 @@
 
                 <tr>
                     <td class="tdAddNewDimension">
-                        @Html.ActionLink("Add dimension", "EditDimension", new { ProjectId = Model.Id })
+                        @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model.Id }, null)
                     </td>
                 </tr>
             }
@@ -94,5 +94,5 @@
 {
     @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
-    @Scripts.Render("~/Scripts/Project/EditProject.js")
+    @Scripts.Render("~/Scripts/Custom/EditProject.js")
 }

@@ -2,7 +2,7 @@
     ViewBag.Title = "Edit dimension";
 }
 
-@model CrowdDesign.UI.Web.Models.Project.EditDimensionViewModel
+@model CrowdDesign.UI.Web.Models.EditDimensionViewModel
 
 <div id="divEditDimensionMain">
     @{
@@ -21,7 +21,7 @@
 
         <br />
 
-        using (Html.BeginForm(actionName, "Project", FormMethod.Post))
+        using (Html.BeginForm(actionName, "Dimension", FormMethod.Post))
         {
             @Html.HiddenFor(model => model.ProjectId)
             @Html.HiddenFor(model => model.DimensionId)

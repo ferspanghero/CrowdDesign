@@ -7,26 +7,26 @@
 <div id="divProjectsTable">
     <table id="tblProjects">
         <thead>
-        <tr>
-            <th>Project Name</th>
-        </tr>
+            <tr>
+                <th>Project Name</th>
+            </tr>
         </thead>
         <tbody>
-        @if (Model != null)
-        {
-            foreach (var project in Model)
+            @if (Model != null)
             {
-                <tr>
-                    <td>@Html.ActionLink(project.Name, "EditProjectDetails", new {ProjectId = project.Id})</td>
-                    <td id="tdDelete">
-                        @using (Html.BeginForm("DeleteProject", "Project", new {ProjectId = project.Id}, FormMethod.Post))
-                        {
-                            <input id="btnDeleteProject" type="submit" value=""/>
-                        }
-                    </td>
-                </tr>
+                foreach (var project in Model)
+                {
+                    <tr>
+                        <td>@Html.ActionLink(project.Name, "EditProject", "Project", new { ProjectId = project.Id }, null)</td>
+                        <td id="tdDelete">
+                            @using (Html.BeginForm("DeleteProject", "Project", new { ProjectId = project.Id }, FormMethod.Post))
+                            {
+                                <input id="btnDeleteProject" type="submit" value="" />
+                            }
+                        </td>
+                    </tr>
+                }
             }
-        }
         </tbody>
     </table>
 </div>
@@ -36,7 +36,7 @@
     <div id="divProjectsActions">
         @using (Html.BeginForm("CreateProject", "Project", FormMethod.Post))
         {
-            <input id="btnCreateProject" type="submit" value="Create project"/>
+            <input id="btnCreateProject" type="submit" value="Create project" />
         }
     </div>
 }

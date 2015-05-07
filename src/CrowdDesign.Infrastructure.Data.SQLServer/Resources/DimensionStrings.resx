@@ -117,7 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ProjectNotFound" xml:space="preserve">
-    <value>Unable to find project</value>
+  <data name="DimensionNotFound" xml:space="preserve">
+    <value>Unable to find dimension</value>
+  </data>
+  <data name="DimensionsNotFound" xml:space="preserve">
+    <value>Unable to find one or more dimensions</value>
   </data>
 </root>

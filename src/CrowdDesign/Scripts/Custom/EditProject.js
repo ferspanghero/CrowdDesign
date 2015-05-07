@@ -38,7 +38,7 @@ function sketchDropped(event, ui) {
     var targetSketchId = $(this).attr("data-sketchId");
 
     $.ajax({
-        url: "/Project/ReplaceSketches?sourceSketchId=" + sourceSketchId + "&targetSketchId=" + targetSketchId,
+        url: "/Sketch/ReplaceSketches?sourceSketchId=" + sourceSketchId + "&targetSketchId=" + targetSketchId,
         type: "POST",
         async: true,
         processData: false,
@@ -66,7 +66,7 @@ function dimensionDropped(event, ui) {
             buttons: {
                 Yes: function () {
                     $.ajax({
-                        url: "/Project/MergeDimensions?sourceDimensionId=" + sourceDimensionId + "&targetDimensionId=" + targetDimensionId,
+                        url: "/Dimension/MergeDimensions?sourceDimensionId=" + sourceDimensionId + "&targetDimensionId=" + targetDimensionId,
                         type: "POST",
                         async: true,
                         processData: false,
@@ -91,7 +91,7 @@ function dimensionDropped(event, ui) {
         var sourceSketchId = ui.draggable.attr("data-sketchId");
 
         $.ajax({
-            url: "/Project/MoveSketchToDimension?sourceSketchId=" + sourceSketchId + "&targetDimensionId=" + targetDimensionId,
+            url: "/Sketch/MoveSketchToDimension?sourceSketchId=" + sourceSketchId + "&targetDimensionId=" + targetDimensionId,
             type: "POST",
             async: true,
             processData: false,

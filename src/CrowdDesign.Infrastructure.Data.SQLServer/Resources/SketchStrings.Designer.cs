@@ -22,14 +22,14 @@ namespace CrowdDesign.Infrastructure.SQLServer.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ProjectStrings {
+    internal class SketchStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ProjectStrings() {
+        internal SketchStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CrowdDesign.Infrastructure.SQLServer.Resources.ProjectStrings", typeof(ProjectStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CrowdDesign.Infrastructure.SQLServer.Resources.SketchStrings", typeof(SketchStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,20 @@ namespace CrowdDesign.Infrastructure.SQLServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to find project.
+        ///   Looks up a localized string similar to Unable to find one or more sketches.
         /// </summary>
-        internal static string ProjectNotFound {
+        internal static string SketchesNotFound {
             get {
-                return ResourceManager.GetString("ProjectNotFound", resourceCulture);
+                return ResourceManager.GetString("SketchesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to find sketch.
+        /// </summary>
+        internal static string SketchNotFound {
+            get {
+                return ResourceManager.GetString("SketchNotFound", resourceCulture);
             }
         }
     }
