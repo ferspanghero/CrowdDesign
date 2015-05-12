@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using CrowdDesign.Core.Entities;
+using System;
 
 namespace CrowdDesign.Core.Interfaces
 {
     /// <summary>
     /// Defines a repository of projects that contain a morphological chart.
     /// </summary>
-    public interface IProjectRepository
+    public interface IProjectRepository : IDisposable
     {
         #region Methods
         /// <summary>

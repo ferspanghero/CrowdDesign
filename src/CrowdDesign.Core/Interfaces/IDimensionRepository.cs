@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using CrowdDesign.Core.Entities;
+using System;
 
 namespace CrowdDesign.Core.Interfaces
 {
     /// <summary>
     /// Defines a repository of dimensions of a morphological chart.
     /// </summary>
-    public interface IDimensionRepository
+    public interface IDimensionRepository : IDisposable
     {
         #region Methods
         /// <summary>

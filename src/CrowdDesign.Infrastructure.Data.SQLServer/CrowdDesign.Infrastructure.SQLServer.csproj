@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contexts\Configurations\SketchConfiguration.cs" />
+    <Compile Include="Contexts\Configurations\DimensionConfiguration.cs" />
+    <Compile Include="Contexts\Configurations\ProjectConfiguration.cs" />
     <Compile Include="Contexts\DatabaseContext.cs" />
     <Compile Include="Contexts\DatabaseInitializer.cs" />
     <Compile Include="Repositories\DimensionRepository.cs" />
@@ -107,6 +110,7 @@
       <LastGenOutput>SecurityStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

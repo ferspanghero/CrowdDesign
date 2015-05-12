@@ -3,6 +3,7 @@ using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
 
@@ -14,7 +15,7 @@ namespace CrowdDesign.UI.Web.Controllers
         #region Constructors
         public DimensionController()
         {
-            _repository = new DimensionRepository();
+            _repository = new DimensionRepository(new DatabaseContext());
         }
         #endregion
 
@@ -86,6 +87,14 @@ namespace CrowdDesign.UI.Web.Controllers
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             return Json("Failed to merge dimensions");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _repository.Dispose();
+
+            base.Dispose(disposing);
         }
         #endregion
     }

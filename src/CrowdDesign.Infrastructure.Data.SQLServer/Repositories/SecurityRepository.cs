@@ -1,23 +1,37 @@
-﻿using System.Linq;
+﻿using System.Data.Entity;
+using System.Linq;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
+using CrowdDesign.Utils.Extensions;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 {
     public class SecurityRepository : ISecurityRepository
     {
+        #region Constructors
+        public SecurityRepository(DbContext context)
+        {
+            context.TryThrowArgumentNullException("context");
+
+            _context = context;
+            _disposed = false;
+        }
+        #endregion
+
+        #region Fields
+        private readonly DbContext _context;
+        private bool _disposed;
+        #endregion
+
         #region Methods
         public User Login(string userName, string password)
         {
             User user;
 
-            using (var db = new DatabaseContext())
-            {
-                user = (from u in db.Users
-                        where u.Username.Equals(userName) && u.Password.Equals(password)
-                        select u).SingleOrDefault();
-            }
+            user = (from u in _context.Set<User>()
+                    where u.Username.Equals(userName) && u.Password.Equals(password)
+                    select u).SingleOrDefault();
 
             return
                 user;
@@ -27,15 +41,21 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             User user;
 
-            using (var db = new DatabaseContext())
-            {
-                user = (from u in db.Users
-                        where u.Id == userId
-                        select u).SingleOrDefault();
-            }
+            user = (from u in _context.Set<User>()
+                    where u.Id == userId
+                    select u).SingleOrDefault();
 
             return
                 user;
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                _context.Dispose();
+                _disposed = true;
+            }
         }
         #endregion
     }

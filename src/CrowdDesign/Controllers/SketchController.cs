@@ -3,6 +3,7 @@ using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
 
@@ -14,7 +15,7 @@ namespace CrowdDesign.UI.Web.Controllers
         #region Constructors
         public SketchController()
         {
-            _repository = new SketchRepository();
+            _repository = new SketchRepository(new DatabaseContext());
         }
         #endregion
 
@@ -46,7 +47,7 @@ namespace CrowdDesign.UI.Web.Controllers
                     else
                     {
                         // TODO: Avoid loading the entire dimension with its sketches only to get the sketches count
-                        IDimensionRepository dimensionRepository = new DimensionRepository();
+                        IDimensionRepository dimensionRepository = new DimensionRepository(new DatabaseContext());
                         Dimension dimension = dimensionRepository.GetDimensions(dimensionId.Value).SingleOrDefault();
 
                         if (dimension == null || dimension.Sketches == null)
@@ -131,6 +132,14 @@ namespace CrowdDesign.UI.Web.Controllers
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             return Json("Failed to move the sketch");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _repository.Dispose();
+
+            base.Dispose(disposing);
         }
         #endregion
     }

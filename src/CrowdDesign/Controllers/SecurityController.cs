@@ -2,6 +2,7 @@
 using System.Web.Security;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
 
@@ -12,7 +13,7 @@ namespace CrowdDesign.UI.Web.Controllers
         #region Constructors
         public SecurityController()
         {
-            _repository = new SecurityRepository();
+            _repository = new SecurityRepository(new DatabaseContext());
         }
         #endregion
 
@@ -41,7 +42,7 @@ namespace CrowdDesign.UI.Web.Controllers
                     FormsAuthentication.SetAuthCookie(viewModel.Username, false);
 
                     System.Web.HttpContext.Current.Session["userId"] = user.Id;
-                    System.Web.HttpContext.Current.Session["userIsAdmin"] = user.IsAdmin;                    
+                    System.Web.HttpContext.Current.Session["userIsAdmin"] = user.IsAdmin;
 
                     return RedirectToAction("GetProjects", "Project");
                 }
@@ -51,6 +52,14 @@ namespace CrowdDesign.UI.Web.Controllers
             }
 
             return View("Login");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _repository.Dispose();
+
+            base.Dispose(disposing);
         }
         #endregion
     }

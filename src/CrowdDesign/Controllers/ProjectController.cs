@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
+using CrowdDesign.Infrastructure.SQLServer.Contexts;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -13,7 +14,7 @@ namespace CrowdDesign.UI.Web.Controllers
         #region Constructors
         public ProjectController()
         {
-            _repository = new ProjectRepository();
+            _repository = new ProjectRepository(new DatabaseContext());
         }
         #endregion
 
@@ -87,6 +88,14 @@ namespace CrowdDesign.UI.Web.Controllers
             _repository.DeleteProject(projectid.Value);
 
             return RedirectToAction("GetProjects");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _repository.Dispose();
+
+            base.Dispose(disposing);
         }
         #endregion
     }
