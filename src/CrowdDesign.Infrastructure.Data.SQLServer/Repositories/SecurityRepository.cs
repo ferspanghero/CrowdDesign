@@ -1,56 +1,42 @@
 ﻿using System.Data.Entity;
 using System.Linq;
 using CrowdDesign.Core.Entities;
-using CrowdDesign.Core.Interfaces;
-using CrowdDesign.Utils.Extensions;
+using CrowdDesign.Core.Interfaces.Repositories;
+using CrowdDesign.Infrastructure.SQLServer.Resources;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 {
-    public class SecurityRepository : ISecurityRepository
+    public class SecurityRepository : BaseRepository<User, int>, ISecurityRepository
     {
         #region Constructors
         public SecurityRepository(DbContext context)
-        {
-            context.TryThrowArgumentNullException("context");
+            : base(context)
+        { }
+        #endregion
 
-            _context = context;
-            _disposed = false;
+        #region Properties
+        protected override string EntityNotFoundMessage
+        {
+            get { return SecurityStrings.UserNotFound; }
         }
         #endregion
 
-        #region Fields
-        private readonly DbContext _context;
-        private bool _disposed;
-        #endregion
-
         #region Methods
+        protected override IQueryable<User> GetRelatedEntities(IQueryable<User> entitiesQuery)
+        {
+            return
+                entitiesQuery
+                    .Include(e => e.Sketches);
+        }
+
         public User Login(string userName, string password)
         {
-            User user = (from u in _context.Set<User>()
+            User user = (from u in Context.Set<User>()
                          where u.Username.Equals(userName) && u.Password.Equals(password)
                          select u).SingleOrDefault();
 
             return
                 user;
-        }
-
-        public User GetUser(int userId)
-        {
-            User user = (from u in _context.Set<User>()
-                         where u.Id == userId
-                         select u).SingleOrDefault();
-
-            return
-                user;
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                _context.Dispose();
-                _disposed = true;
-            }
         }
         #endregion
     }

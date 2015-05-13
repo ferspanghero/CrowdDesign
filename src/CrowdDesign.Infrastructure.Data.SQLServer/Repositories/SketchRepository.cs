@@ -3,75 +3,49 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using CrowdDesign.Core.Entities;
-using CrowdDesign.Core.Interfaces;
-using CrowdDesign.Infrastructure.SQLServer.Contexts;
+using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Resources;
 using CrowdDesign.Utils.Extensions;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 {
-    public class SketchRepository : ISketchRepository
+    public class SketchRepository : BaseRepository<Sketch, int>, ISketchRepository
     {
         #region Constructors
         public SketchRepository(DbContext context)
-        {
-            context.TryThrowArgumentNullException("context");
-
-            _context = context;
-            _disposed = false;
-        }
+            : base(context)
+        { }
         #endregion
 
-        #region Fields
-        private readonly DbContext _context;
-        private bool _disposed;
+        #region Properties
+        protected override string EntityNotFoundMessage
+        {
+            get { return SketchStrings.SketchNotFound; }
+        }
         #endregion
 
         #region Methods
-        public IEnumerable<Sketch> GetSketches(params int[] sketchIds)
+        protected override IQueryable<Sketch> GetRelatedEntities(IQueryable<Sketch> entitiesQuery)
         {
-            IQueryable<Sketch> sketchesQuery;
-
-            // This if block is necessary because Entity Framework does not support checking if a collection is null or empty 
-            // inside a LINQ query. This happens because it cannot convert this kind of query to SQL code               
-            if (sketchIds == null || sketchIds.Length == 0)
-            {
-                sketchesQuery = from e in _context.Set<Sketch>()
-                                orderby e.Position
-                                select e;
-            }
-            else
-            {
-                sketchesQuery = from e in _context.Set<Sketch>()
-                                where sketchIds.Contains(e.Id)
-                                orderby e.Position
-                                select e;
-            }
-
-            // Avoids lazy evaluation issues after the DbContext is disposed by forcing data to be retrieved with IEnumerable.ToList()
-            IEnumerable<Sketch> sketches = sketchesQuery
-                                    .Include(e => e.Dimension)
-                                    .Include(e => e.Dimension.Project)
-                                    .Include(e => e.Dimension.Sketches)
-                                    .Include(e => e.User)
-                                    .ToList();
-
             return
-                sketches;
+                entitiesQuery
+                    .Include(e => e.Dimension)
+                    .Include(e => e.Dimension.Project)
+                    .Include(e => e.Dimension.Sketches)
+                    .Include(e => e.User);
         }
 
-        public int CreateSketch(Sketch sketch)
+        protected override void CreateEntityRelationships(Sketch entity)
         {
-            sketch.TryThrowArgumentNullException("sketch");
-            sketch.User.TryThrowArgumentNullException("sketch.User");
-            sketch.Dimension.TryThrowArgumentNullException("sketch.Dimension");
+            entity.User.TryThrowArgumentNullException("sketch.User");
+            entity.Dimension.TryThrowArgumentNullException("sketch.Dimension");
 
             // TODO: These dependencies should be injected
-            ISecurityRepository securityRepository = new SecurityRepository(_context);
-            IDimensionRepository dimensionRepository = new DimensionRepository(_context);
+            ISecurityRepository securityRepository = new SecurityRepository(Context);
+            IDimensionRepository dimensionRepository = new DimensionRepository(Context);
 
-            Dimension dimensionRecord = dimensionRepository.GetDimensions(sketch.Dimension.Id).SingleOrDefault();
-            User userRecord = securityRepository.GetUser(sketch.User.Id);
+            Dimension dimensionRecord = dimensionRepository.Get(entity.Dimension.Id).SingleOrDefault();
+            User userRecord = securityRepository.Get(entity.User.Id).SingleOrDefault();
 
             if (dimensionRecord == null)
                 throw new InvalidOperationException(DimensionStrings.DimensionNotFound);
@@ -82,54 +56,15 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             if (dimensionRecord.Sketches == null)
                 dimensionRecord.Sketches = new List<Sketch>();
 
-            sketch.Dimension = dimensionRecord;
-            sketch.User = userRecord;
+            entity.Dimension = dimensionRecord;
+            entity.User = userRecord;
 
-            dimensionRecord.Sketches.Add(sketch);
-
-            _context.SaveChanges();
-
-            int sketchId = sketch.Id;
-
-            return
-                sketchId;
-        }
-
-        public void UpdateSketch(Sketch sketch)
-        {
-            sketch.TryThrowArgumentNullException("sketch");
-            sketch.Dimension.TryThrowArgumentNullException("sketch.Dimension");
-
-            Sketch sketchRecord = GetSketches(sketch.Id).SingleOrDefault();
-
-            if (sketchRecord == null)
-                throw new InvalidOperationException(SketchStrings.SketchNotFound);
-
-            sketchRecord.Data = sketch.Data;
-            sketchRecord.ImageUri = sketch.ImageUri;
-            sketchRecord.Position = sketch.Position;
-
-            _context.SaveChanges();
-        }
-
-        public void DeleteSketch(int sketchId)
-        {
-            using (var db = new DatabaseContext())
-            {
-                Sketch sketchRecord = GetSketches(sketchId).SingleOrDefault();
-
-                if (sketchRecord == null)
-                    throw new InvalidOperationException(SketchStrings.SketchNotFound);
-
-                _context.Set<Sketch>().Remove(sketchRecord);
-
-                db.SaveChanges();
-            }
+            dimensionRecord.Sketches.Add(entity);
         }
 
         public void ReplaceSketches(int sourceSketchId, int targetSketchId)
         {
-            var sketches = GetSketches(sourceSketchId, targetSketchId).ToDictionary(s => s.Id, s => s);
+            var sketches = Get(sourceSketchId, targetSketchId).ToDictionary(s => s.Id, s => s);
 
             if (sketches.Count != 2)
                 throw new InvalidOperationException(SketchStrings.SketchesNotFound);
@@ -199,12 +134,12 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 sourceSketch.Dimension = targetSketch.Dimension;
             }
 
-            _context.SaveChanges();
+            Context.SaveChanges();
         }
 
         public void MoveSketchToDimension(int sourceSketchId, int targetDimensionId)
         {
-            Sketch sourceSketch = GetSketches(sourceSketchId).SingleOrDefault();
+            Sketch sourceSketch = Get(sourceSketchId).SingleOrDefault();
 
             if (sourceSketch == null)
                 throw new InvalidOperationException(SketchStrings.SketchNotFound);
@@ -232,9 +167,9 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             else
             {
                 // TODO: These dependencies should be injected
-                IDimensionRepository dimensionRepository = new DimensionRepository(_context);
+                IDimensionRepository dimensionRepository = new DimensionRepository(Context);
 
-                Dimension targetDimension = dimensionRepository.GetDimensions(targetDimensionId).SingleOrDefault();
+                Dimension targetDimension = dimensionRepository.Get(targetDimensionId).SingleOrDefault();
 
                 if (targetDimension == null)
                     throw new InvalidOperationException(DimensionStrings.DimensionNotFound);
@@ -255,16 +190,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 sourceSketch.Dimension = targetDimension;
             }
 
-            _context.SaveChanges();
-        }
-
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                _context.Dispose();
-                _disposed = true;
-            }
+            Context.SaveChanges();
         }
         #endregion
     }

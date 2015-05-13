@@ -2,7 +2,7 @@
 using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
-using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
@@ -37,7 +37,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
                     if (sketchId != null)
                     {
-                        Sketch sketch = _repository.GetSketches(sketchId.Value).SingleOrDefault();
+                        Sketch sketch = _repository.Get(sketchId.Value).SingleOrDefault();
 
                         if (sketch == null)
                             return View("Error");
@@ -48,7 +48,7 @@ namespace CrowdDesign.UI.Web.Controllers
                     {
                         // TODO: Avoid loading the entire dimension with its sketches only to get the sketches count
                         IDimensionRepository dimensionRepository = new DimensionRepository(new DatabaseContext());
-                        Dimension dimension = dimensionRepository.GetDimensions(dimensionId.Value).SingleOrDefault();
+                        Dimension dimension = dimensionRepository.Get(dimensionId.Value).SingleOrDefault();
 
                         if (dimension == null || dimension.Sketches == null)
                             return View("Error");
@@ -79,7 +79,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 {
                     viewModel.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
 
-                    int sketchId = _repository.CreateSketch(viewModel.ToDomainModel());
+                    int sketchId = _repository.Create(viewModel.ToDomainModel());
 
                     if (sketchId > 0)
                         return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
@@ -96,7 +96,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
             {
-                _repository.UpdateSketch(viewModel.ToDomainModel());
+                _repository.Update(viewModel.ToDomainModel());
 
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
             }

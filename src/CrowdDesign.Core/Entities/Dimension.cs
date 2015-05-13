@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CrowdDesign.Core.Interfaces.Entities;
 
 namespace CrowdDesign.Core.Entities
 {
     /// <summary>
     /// Represents a dimension of morphological chart.
     /// </summary>
-    public class Dimension
+    public class Dimension : IDomainEntity<int>
     {
         #region Properties
         /// <summary>

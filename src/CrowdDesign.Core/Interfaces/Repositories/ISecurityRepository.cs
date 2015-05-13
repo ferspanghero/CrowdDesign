@@ -1,12 +1,11 @@
-﻿using System;
-using CrowdDesign.Core.Entities;
+﻿using CrowdDesign.Core.Entities;
 
-namespace CrowdDesign.Core.Interfaces
+namespace CrowdDesign.Core.Interfaces.Repositories
 {
     /// <summary>
     /// Defines a repository of all data related to the system's security.
     /// </summary>
-    public interface ISecurityRepository : IDisposable
+    public interface ISecurityRepository : IBaseRepository<User, int>
     {
         #region Methods
         /// <summary>
@@ -16,13 +15,6 @@ namespace CrowdDesign.Core.Interfaces
         /// <param name="password">The password of the user.</param>
         /// <returns>The logged user.</returns>
         User Login(string userName, string password);
-
-        /// <summary>
-        /// Gets a user by its id.
-        /// </summary>
-        /// <param name="userId">The id of the desired user.</param>
-        /// <returns>The user that matches the given id.</returns>
-        User GetUser(int userId);
         #endregion
     }
 }

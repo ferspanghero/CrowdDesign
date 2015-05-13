@@ -1,9 +1,11 @@
-﻿namespace CrowdDesign.Core.Entities
+﻿using CrowdDesign.Core.Interfaces.Entities;
+
+namespace CrowdDesign.Core.Entities
 {
     /// <summary>
     /// Represents a sketch of a solution candidate for a dimension in a morphological chart.
     /// </summary>
-    public class Sketch
+    public class Sketch : IDomainEntity<int>
     {
         #region Properties
         /// <summary>

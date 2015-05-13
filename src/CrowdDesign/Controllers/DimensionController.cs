@@ -2,7 +2,7 @@
 using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
-using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
@@ -33,7 +33,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (dimensionId != null)
             {
-                Dimension dimension = _repository.GetDimensions(dimensionId.Value).SingleOrDefault();
+                Dimension dimension = _repository.Get(dimensionId.Value).SingleOrDefault();
 
                 if (dimension == null)
                     return View("Error");
@@ -51,7 +51,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && ModelState.IsValid)
             {
-                int dimensionId = _repository.CreateDimension(viewModel.ToDomainModel());
+                int dimensionId = _repository.Create(viewModel.ToDomainModel());
 
                 if (dimensionId > 0)
                     return RedirectToAction("EditProject", "Project", new { viewModel.ProjectId });
@@ -65,7 +65,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
-                _repository.UpdateDimension(viewModel.ToDomainModel());
+                _repository.Update(viewModel.ToDomainModel());
 
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
             }
