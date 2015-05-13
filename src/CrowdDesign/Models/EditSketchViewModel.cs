@@ -55,7 +55,7 @@ namespace CrowdDesign.UI.Web.Models
                 Dimension = new Dimension
                 {
                     Id = DimensionId ?? -1,
-                    Project = new Core.Entities.Project {Id = ProjectId ?? -1}
+                    Project = new Project {Id = ProjectId ?? -1}
                 }
             };
 

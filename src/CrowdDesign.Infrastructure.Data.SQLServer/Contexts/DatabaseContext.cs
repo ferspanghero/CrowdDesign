@@ -1,9 +1,6 @@
-﻿using System;
-using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration;
-using CrowdDesign.Core.Entities;
+﻿using System.Data.Entity;
 using System.Reflection;
-using CrowdDesign.Infrastructure.SQLServer.Contexts.Configurations;
+using CrowdDesign.Core.Entities;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Contexts
 {

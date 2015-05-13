@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CrowdDesign.Core.Entities;
-using System;
 
 namespace CrowdDesign.Core.Interfaces
 {

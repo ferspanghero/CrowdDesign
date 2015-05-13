@@ -1,11 +1,5 @@
-﻿using CrowdDesign.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Data.Entity.ModelConfiguration.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Entity.ModelConfiguration;
+using CrowdDesign.Core.Entities;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Contexts.Configurations
 {

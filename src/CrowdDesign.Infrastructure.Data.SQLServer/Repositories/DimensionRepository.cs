@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Transactions;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
-using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Resources;
 using CrowdDesign.Utils.Extensions;
 
@@ -66,32 +64,27 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
         public int CreateDimension(Dimension dimension)
         {
-            int dimensionId = -1;
-
             dimension.TryThrowArgumentNullException("dimension");
             dimension.Project.TryThrowArgumentNullException("dimension.Project");
 
-            if (_context.Set<Project>() != null)
-            {
-                // TODO: These dependencies should be injected
-                IProjectRepository projectRepository = new ProjectRepository(_context);
+            // TODO: These dependencies should be injected
+            IProjectRepository projectRepository = new ProjectRepository(_context);
 
-                Project projectRecord = projectRepository.GetProjects(dimension.Project.Id).SingleOrDefault();
+            Project projectRecord = projectRepository.GetProjects(dimension.Project.Id).SingleOrDefault();
 
-                if (projectRecord == null)
-                    throw new InvalidOperationException(ProjectStrings.ProjectNotFound);
+            if (projectRecord == null)
+                throw new InvalidOperationException(ProjectStrings.ProjectNotFound);
 
-                if (projectRecord.Dimensions == null)
-                    projectRecord.Dimensions = new List<Dimension>();
+            if (projectRecord.Dimensions == null)
+                projectRecord.Dimensions = new List<Dimension>();
 
-                dimension.Project = projectRecord;
+            dimension.Project = projectRecord;
 
-                projectRecord.Dimensions.Add(dimension);
+            projectRecord.Dimensions.Add(dimension);
 
-                _context.SaveChanges();
+            _context.SaveChanges();
 
-                dimensionId = dimension.Id;
-            }
+            int dimensionId = dimension.Id;
 
             return
                 dimensionId;

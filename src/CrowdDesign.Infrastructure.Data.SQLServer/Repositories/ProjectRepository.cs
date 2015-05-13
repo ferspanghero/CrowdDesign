@@ -65,14 +65,12 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
         public int CreateProject(Project project)
         {
-            int projectId = -1;
-
             project.TryThrowArgumentNullException("project");
 
             _context.Set<Project>().Add(project);
             _context.SaveChanges();
 
-            projectId = project.Id;
+            int projectId = project.Id;
 
             return
                 projectId;

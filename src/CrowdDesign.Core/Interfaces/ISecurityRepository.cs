@@ -1,5 +1,5 @@
-﻿using CrowdDesign.Core.Entities;
-using System;
+﻿using System;
+using CrowdDesign.Core.Entities;
 
 namespace CrowdDesign.Core.Interfaces
 {

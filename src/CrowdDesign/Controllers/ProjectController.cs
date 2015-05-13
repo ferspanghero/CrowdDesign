@@ -1,10 +1,9 @@
 ﻿using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
-using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
+using CrowdDesign.Infrastructure.SQLServer.Repositories;
 
 namespace CrowdDesign.UI.Web.Controllers
 {

@@ -2,7 +2,6 @@
 using System.Linq;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
-using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Utils.Extensions;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
@@ -27,11 +26,9 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         #region Methods
         public User Login(string userName, string password)
         {
-            User user;
-
-            user = (from u in _context.Set<User>()
-                    where u.Username.Equals(userName) && u.Password.Equals(password)
-                    select u).SingleOrDefault();
+            User user = (from u in _context.Set<User>()
+                         where u.Username.Equals(userName) && u.Password.Equals(password)
+                         select u).SingleOrDefault();
 
             return
                 user;
@@ -39,11 +36,9 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
         public User GetUser(int userId)
         {
-            User user;
-
-            user = (from u in _context.Set<User>()
-                    where u.Id == userId
-                    select u).SingleOrDefault();
+            User user = (from u in _context.Set<User>()
+                         where u.Id == userId
+                         select u).SingleOrDefault();
 
             return
                 user;

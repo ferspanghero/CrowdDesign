@@ -48,7 +48,7 @@ namespace CrowdDesign.UI.Web.Models
                 Name = Name,
                 Description = Description,
                 SortCriteria = SortCriteria,
-                Project = new Core.Entities.Project {Id = ProjectId ?? -1}
+                Project = new Project {Id = ProjectId ?? -1}
             };
 
             return

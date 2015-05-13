@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Transactions;
 using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
@@ -63,8 +62,6 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
         public int CreateSketch(Sketch sketch)
         {
-            int sketchId = -1;
-
             sketch.TryThrowArgumentNullException("sketch");
             sketch.User.TryThrowArgumentNullException("sketch.User");
             sketch.Dimension.TryThrowArgumentNullException("sketch.Dimension");
@@ -92,7 +89,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
             _context.SaveChanges();
 
-            sketchId = sketch.Id;
+            int sketchId = sketch.Id;
 
             return
                 sketchId;
