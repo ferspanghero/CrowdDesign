@@ -50,20 +50,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             entity.Project.TryThrowArgumentNullException("dimension.Project");
 
-            // TODO: These dependencies should be injected
-            BaseRepository<Project, int> projectRepository = new ProjectRepository(Context);
-
-            Project projectRecord = projectRepository.Get(entity.Project.Id).SingleOrDefault();
-
-            if (projectRecord == null)
-                throw new InvalidOperationException(ProjectStrings.ProjectNotFound);
-
-            if (projectRecord.Dimensions == null)
-                projectRecord.Dimensions = new List<Dimension>();
-
-            entity.Project = projectRecord;
-
-            projectRecord.Dimensions.Add(entity);
+            Context.Set<Project>().Attach(entity.Project);
         }
 
         public void MergeDimensions(params int[] dimensionIds)

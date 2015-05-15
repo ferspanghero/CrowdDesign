@@ -3,9 +3,9 @@
 namespace CrowdDesign.Core.Interfaces.Repositories
 {
     /// <summary>
-    /// Defines a repository of all data related to the system's security.
+    /// Defines a repository of all data related to the system's users.
     /// </summary>
-    public interface ISecurityRepository : IBaseRepository<User, int>
+    public interface IUserRepository : IBaseRepository<User, int>
     {
         #region Methods
         /// <summary>

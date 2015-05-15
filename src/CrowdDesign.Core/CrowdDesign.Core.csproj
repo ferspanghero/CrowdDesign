@@ -46,9 +46,8 @@
     <Compile Include="Interfaces\Entities\IDomainEntity.cs" />
     <Compile Include="Interfaces\Repositories\IBaseRepository.cs" />
     <Compile Include="Interfaces\Repositories\IDimensionRepository.cs" />
-    <Compile Include="Interfaces\Repositories\IRepositoriesCoordinator.cs" />
     <Compile Include="Interfaces\Repositories\ISketchRepository.cs" />
-    <Compile Include="Interfaces\Repositories\ISecurityRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

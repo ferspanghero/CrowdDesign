@@ -6,10 +6,10 @@ using CrowdDesign.Infrastructure.SQLServer.Resources;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 {
-    public class SecurityRepository : BaseRepository<User, int>, ISecurityRepository
+    public class UserRepository : BaseRepository<User, int>, IUserRepository
     {
         #region Constructors
-        public SecurityRepository(DbContext context)
+        public UserRepository(DbContext context)
             : base(context)
         { }
         #endregion

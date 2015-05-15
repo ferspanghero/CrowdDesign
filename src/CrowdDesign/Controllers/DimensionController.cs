@@ -10,17 +10,12 @@ using CrowdDesign.UI.Web.Models;
 namespace CrowdDesign.UI.Web.Controllers
 {
     [Authorize]
-    public class DimensionController : Controller
+    public class DimensionController : BaseController<IDimensionRepository, Dimension, int>
     {
         #region Constructors
         public DimensionController()
-        {
-            _repository = new DimensionRepository(new DatabaseContext());
-        }
-        #endregion
-
-        #region Fields
-        private readonly IDimensionRepository _repository;
+            : base(new DimensionRepository(new DatabaseContext()))
+        { }
         #endregion
 
         #region Methods
@@ -33,7 +28,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (dimensionId != null)
             {
-                Dimension dimension = _repository.Get(dimensionId.Value).SingleOrDefault();
+                Dimension dimension = Repository.Get(dimensionId.Value).SingleOrDefault();
 
                 if (dimension == null)
                     return View("Error");
@@ -51,7 +46,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && ModelState.IsValid)
             {
-                int dimensionId = _repository.Create(viewModel.ToDomainModel());
+                int dimensionId = Repository.Create(viewModel.ToDomainModel());
 
                 if (dimensionId > 0)
                     return RedirectToAction("EditProject", "Project", new { viewModel.ProjectId });
@@ -65,7 +60,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
-                _repository.Update(viewModel.ToDomainModel());
+                Repository.Update(viewModel.ToDomainModel());
 
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
             }
@@ -79,7 +74,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (sourceDimensionId != null && targetDimensionId != null && ModelState.IsValid)
             {
-                _repository.MergeDimensions(sourceDimensionId.Value, targetDimensionId.Value);
+                Repository.MergeDimensions(sourceDimensionId.Value, targetDimensionId.Value);
 
                 return Json("Dimensions merged successfully");
             }
@@ -87,14 +82,6 @@ namespace CrowdDesign.UI.Web.Controllers
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             return Json("Failed to merge dimensions");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-                _repository.Dispose();
-
-            base.Dispose(disposing);
         }
         #endregion
     }

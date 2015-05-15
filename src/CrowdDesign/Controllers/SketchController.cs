@@ -10,17 +10,13 @@ using CrowdDesign.UI.Web.Models;
 namespace CrowdDesign.UI.Web.Controllers
 {
     [Authorize]
-    public class SketchController : Controller
+    public class SketchController : BaseController<ISketchRepository, Sketch, int>
     {
         #region Constructors
         public SketchController()
+            : base(new SketchRepository(new DatabaseContext()))
         {
-            _repository = new SketchRepository(new DatabaseContext());
         }
-        #endregion
-
-        #region Fields
-        private readonly ISketchRepository _repository;
         #endregion
 
         #region Methods
@@ -37,7 +33,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
                     if (sketchId != null)
                     {
-                        Sketch sketch = _repository.Get(sketchId.Value).SingleOrDefault();
+                        Sketch sketch = Repository.Get(sketchId.Value).SingleOrDefault();
 
                         if (sketch == null)
                             return View("Error");
@@ -79,7 +75,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 {
                     viewModel.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
 
-                    int sketchId = _repository.Create(viewModel.ToDomainModel());
+                    int sketchId = Repository.Create(viewModel.ToDomainModel());
 
                     if (sketchId > 0)
                         return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
@@ -96,7 +92,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
             {
-                _repository.Update(viewModel.ToDomainModel());
+                Repository.Update(viewModel.ToDomainModel());
 
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
             }
@@ -109,7 +105,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (sourceSketchId != null && targetSketchId != null && ModelState.IsValid)
             {
-                _repository.ReplaceSketches(sourceSketchId.Value, targetSketchId.Value);
+                Repository.ReplaceSketches(sourceSketchId.Value, targetSketchId.Value);
 
                 return Json("Sketch moved successfully");
             }
@@ -124,7 +120,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (sourceSketchId != null && targetDimensionId != null && ModelState.IsValid)
             {
-                _repository.MoveSketchToDimension(sourceSketchId.Value, targetDimensionId.Value);
+                Repository.MoveSketchToDimension(sourceSketchId.Value, targetDimensionId.Value);
 
                 return Json("Sketch moved successfully");
             }
@@ -132,14 +128,6 @@ namespace CrowdDesign.UI.Web.Controllers
             Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             return Json("Failed to move the sketch");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-                _repository.Dispose();
-
-            base.Dispose(disposing);
         }
         #endregion
     }

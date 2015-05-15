@@ -40,26 +40,8 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             entity.User.TryThrowArgumentNullException("sketch.User");
             entity.Dimension.TryThrowArgumentNullException("sketch.Dimension");
 
-            // TODO: These dependencies should be injected
-            ISecurityRepository securityRepository = new SecurityRepository(Context);
-            IDimensionRepository dimensionRepository = new DimensionRepository(Context);
-
-            Dimension dimensionRecord = dimensionRepository.Get(entity.Dimension.Id).SingleOrDefault();
-            User userRecord = securityRepository.Get(entity.User.Id).SingleOrDefault();
-
-            if (dimensionRecord == null)
-                throw new InvalidOperationException(DimensionStrings.DimensionNotFound);
-
-            if (userRecord == null)
-                throw new InvalidOperationException(SecurityStrings.UserNotFound);
-
-            if (dimensionRecord.Sketches == null)
-                dimensionRecord.Sketches = new List<Sketch>();
-
-            entity.Dimension = dimensionRecord;
-            entity.User = userRecord;
-
-            dimensionRecord.Sketches.Add(entity);
+            Context.Set<User>().Attach(entity.User);
+            Context.Set<Dimension>().Attach(entity.Dimension);
         }
 
         public void ReplaceSketches(int sourceSketchId, int targetSketchId)

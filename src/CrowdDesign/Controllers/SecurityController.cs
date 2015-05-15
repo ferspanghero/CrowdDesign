@@ -8,17 +8,13 @@ using CrowdDesign.UI.Web.Models;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
-    public class SecurityController : Controller
+    public class SecurityController : BaseController<IUserRepository, User, int>
     {
         #region Constructors
         public SecurityController()
+            : base(new UserRepository(new DatabaseContext()))
         {
-            _repository = new SecurityRepository(new DatabaseContext());
         }
-        #endregion
-
-        #region Fields
-        private readonly ISecurityRepository _repository;
         #endregion
 
         #region Methods
@@ -35,7 +31,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                User user = _repository.Login(viewModel.Username, viewModel.Password);
+                User user = Repository.Login(viewModel.Username, viewModel.Password);
 
                 if (user != null && user.Id > 0)
                 {
@@ -52,14 +48,6 @@ namespace CrowdDesign.UI.Web.Controllers
             }
 
             return View("Login");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-                _repository.Dispose();
-
-            base.Dispose(disposing);
         }
         #endregion
     }

@@ -54,7 +54,7 @@
     <Compile Include="Repositories\DimensionRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\SketchRepository.cs" />
-    <Compile Include="Repositories\SecurityRepository.cs" />
+    <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\ProjectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\SketchStrings.Designer.cs">

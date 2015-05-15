@@ -127,6 +127,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DimensionController.cs" />
     <Compile Include="Controllers\SketchController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
@@ -253,6 +254,10 @@
     <ProjectReference Include="..\CrowdDesign.Infrastructure.Data.SQLServer\CrowdDesign.Infrastructure.SQLServer.csproj">
       <Project>{455c8984-e357-4484-a6ac-f2aef4133956}</Project>
       <Name>CrowdDesign.Infrastructure.SQLServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CrowdDesign.Utils\CrowdDesign.Utils.csproj">
+      <Project>{0e61db7c-3527-4ecc-830b-e824b1ef9d52}</Project>
+      <Name>CrowdDesign.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
