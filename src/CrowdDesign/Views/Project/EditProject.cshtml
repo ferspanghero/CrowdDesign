@@ -20,7 +20,7 @@
     <table id="tblMorphChart">
         <thead>
             <tr>
-                <th class="tdDimension">Dimensions</th>
+                <th>Dimensions</th>
                 @if (Model != null && Model.Dimensions != null)
                 {
                     if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
@@ -31,18 +31,15 @@
 
                         if (proposedSolutionsCount > 0)
                         {
-                            for (int i = 1; i <= proposedSolutionsCount; i++)
-                            {
-                                string name = "Solution Candidate " + i;
-
-                                <th>@name</th>
-                            }
+                            int i = proposedSolutionsCount + 1;
+                            <th colspan="@i">Solution Alternatives</th>
                         }
                     }
                 }
             </tr>
         </thead>
         <tbody>
+
             @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
             {
                 <tr>
@@ -56,31 +53,80 @@
                 foreach (var dimension in Model.Dimensions)
                 {
                     <tr>
-                        <td class="tdDimension tdDimensionDraggable tdDimensionDroppable" data-dimensionid=@dimension.Id>@Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })</td>
-
+                        <td>
+                            @* Removed the whole class and tags from the table cell to the div. The class names need to be changed! *@
+                            <div class="tdDimension tdDimensionDraggable tdDimensionDroppable" data-dimensionid=@dimension.Id>
+                                @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })
+                                <p class="pDimensionDescription">
+                                    @dimension.Description
+                                </p>
+                                </div>
+                        </td>
                         @if (dimension.Sketches != null)
                         {
+
+                            int amountOfSolutionsInRow = 0;
                             foreach (var sketch in dimension.Sketches)
                             {
-                                <td class="tdSketchDraggable tdSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
-                                    <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
-                                        <img id="imgSketchThumbnail" src=@sketch.ImageUri />
-                                    </a>
+                                <td>
+                                    @* Removed the whole class and tags from the table cell to the div. The class names need to be changed! *@
+                                    <div class="divSolutionAlternative tdSketchDraggable tdSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
+                                        <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
+                                            <img id="imgSketchThumbnail" src=@sketch.ImageUri />
+                                        </a>
+                                    </div>
                                 </td>
+
+                                amountOfSolutionsInRow++;
                             }
 
+                            //add new solution box to the row
                             <td class="tdAddNewSketch">
-                                @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
+                                <div class="divSolutionAlternative">
+                                    @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
+                                </div>
                             </td>
+
+                            int proposedSolutionsCount = (from c in Model.Dimensions
+                                                          where c.Sketches != null && c.Sketches.Count > 0
+                                                          select c.Sketches.Count()).Max();
+
+                            //add an empty cell to make a block
+                            for (int i = 0; i < proposedSolutionsCount - amountOfSolutionsInRow; i++)
+                            {
+                                <td></td>
+                            }
+
+
                         }
                     </tr>
                 }
 
                 <tr>
-                    <td class="tdAddNewDimension">
+                    <td>
+                        @* Removed the whole class and tags from the table cell to the div. The class names need to be changed! *@
+                    <div class="tdDimension tdAddNewDimension">
                         @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model.Id }, null)
+                        <p>
+                         @* Here we need a plus icon *@
+                        </p>
+
+                    </div>
+
                     </td>
-                </tr>
+
+                    @{
+                        int emptyCellsNeeded = (from c in Model.Dimensions
+                                                where c.Sketches != null && c.Sketches.Count > 0
+                                                select c.Sketches.Count()).Max();
+
+                        //add an empty cell to make a block
+                        for (int i = 0; i <= emptyCellsNeeded; i++)
+                        {
+                            <td></td>
+                        }
+                    }
+            </tr>
             }
         </tbody>
     </table>
