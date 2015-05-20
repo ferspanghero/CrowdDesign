@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CrowdDesign.Core.Interfaces.Entities;
 
 namespace CrowdDesign.Core.Entities
 {
     /// <summary>
     /// Represents a design project that employs a morphological chart.
     /// </summary>
-    public class Project
+    public class Project : IDomainEntity<int>
     {
         #region Properties
         /// <summary>

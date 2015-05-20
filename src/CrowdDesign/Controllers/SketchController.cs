@@ -2,24 +2,21 @@
 using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
-using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Core.Interfaces.Repositories;
+using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
     [Authorize]
-    public class SketchController : Controller
+    public class SketchController : BaseController<ISketchRepository, Sketch, int>
     {
         #region Constructors
         public SketchController()
+            : base(new SketchRepository(new DatabaseContext()))
         {
-            _repository = new SketchRepository();
         }
-        #endregion
-
-        #region Fields
-        private readonly ISketchRepository _repository;
         #endregion
 
         #region Methods
@@ -36,7 +33,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
                     if (sketchId != null)
                     {
-                        Sketch sketch = _repository.GetSketches(sketchId.Value).SingleOrDefault();
+                        Sketch sketch = Repository.Get(sketchId.Value).SingleOrDefault();
 
                         if (sketch == null)
                             return View("Error");
@@ -46,8 +43,8 @@ namespace CrowdDesign.UI.Web.Controllers
                     else
                     {
                         // TODO: Avoid loading the entire dimension with its sketches only to get the sketches count
-                        IDimensionRepository dimensionRepository = new DimensionRepository();
-                        Dimension dimension = dimensionRepository.GetDimensions(dimensionId.Value).SingleOrDefault();
+                        IDimensionRepository dimensionRepository = new DimensionRepository(new DatabaseContext());
+                        Dimension dimension = dimensionRepository.Get(dimensionId.Value).SingleOrDefault();
 
                         if (dimension == null || dimension.Sketches == null)
                             return View("Error");
@@ -78,7 +75,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 {
                     viewModel.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
 
-                    int sketchId = _repository.CreateSketch(viewModel.ToDomainModel());
+                    int sketchId = Repository.Create(viewModel.ToDomainModel());
 
                     if (sketchId > 0)
                         return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
@@ -95,7 +92,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
             {
-                _repository.UpdateSketch(viewModel.ToDomainModel());
+                Repository.Update(viewModel.ToDomainModel());
 
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
             }
@@ -108,7 +105,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (sourceSketchId != null && targetSketchId != null && ModelState.IsValid)
             {
-                _repository.ReplaceSketches(sourceSketchId.Value, targetSketchId.Value);
+                Repository.ReplaceSketches(sourceSketchId.Value, targetSketchId.Value);
 
                 return Json("Sketch moved successfully");
             }
@@ -123,7 +120,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (sourceSketchId != null && targetDimensionId != null && ModelState.IsValid)
             {
-                _repository.MoveSketchToDimension(sourceSketchId.Value, targetDimensionId.Value);
+                Repository.MoveSketchToDimension(sourceSketchId.Value, targetDimensionId.Value);
 
                 return Json("Sketch moved successfully");
             }

@@ -1,24 +1,19 @@
 ﻿using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
-using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Core.Interfaces.Repositories;
+using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
     [Authorize]
-    public class ProjectController : Controller
+    public class ProjectController : BaseController<IBaseRepository<Project, int>, Project, int>
     {
         #region Constructors
         public ProjectController()
-        {
-            _repository = new ProjectRepository();
-        }
-        #endregion
-
-        #region Fields
-        private readonly IProjectRepository _repository;
+            : base(new ProjectRepository(new DatabaseContext()))
+        { }
         #endregion
 
         #region Methods
@@ -29,7 +24,7 @@ namespace CrowdDesign.UI.Web.Controllers
             else
                 return RedirectToAction("Index", "Security");
 
-            return View("ManageProjects", _repository.GetProjects());
+            return View("ManageProjects", Repository.Get());
         }
 
         [HttpPost]
@@ -37,7 +32,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                int projectId = _repository.CreateProject(new Project { Name = "New Project" });
+                int projectId = Repository.Create(new Project { Name = "New Project" });
 
                 if (projectId > 0)
                     return RedirectToAction("GetProjects");
@@ -56,7 +51,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 if (projectId == null)
                     return View("Error");
 
-                Project project = _repository.GetProjects(projectId.Value).SingleOrDefault();
+                Project project = Repository.Get(projectId.Value).SingleOrDefault();
 
                 if (project == null)
                     return View("Error");
@@ -73,7 +68,7 @@ namespace CrowdDesign.UI.Web.Controllers
             if (project == null || !ModelState.IsValid)
                 return View("Error");
 
-            _repository.UpdateProject(project);
+            Repository.Update(project);
 
             return RedirectToAction("EditProject", new { ProjectId = project.Id });
         }
@@ -84,7 +79,7 @@ namespace CrowdDesign.UI.Web.Controllers
             if (projectid == null || !ModelState.IsValid)
                 return View("Error");
 
-            _repository.DeleteProject(projectid.Value);
+            Repository.Delete(projectid.Value);
 
             return RedirectToAction("GetProjects");
         }

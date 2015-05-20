@@ -1,23 +1,20 @@
 ﻿using System.Web.Mvc;
 using System.Web.Security;
 using CrowdDesign.Core.Entities;
-using CrowdDesign.Core.Interfaces;
+using CrowdDesign.Core.Interfaces.Repositories;
+using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
-    public class SecurityController : Controller
+    public class SecurityController : BaseController<IUserRepository, User, int>
     {
         #region Constructors
         public SecurityController()
+            : base(new UserRepository(new DatabaseContext()))
         {
-            _repository = new SecurityRepository();
         }
-        #endregion
-
-        #region Fields
-        private readonly ISecurityRepository _repository;
         #endregion
 
         #region Methods
@@ -34,14 +31,14 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                User user = _repository.Login(viewModel.Username, viewModel.Password);
+                User user = Repository.Login(viewModel.Username, viewModel.Password);
 
                 if (user != null && user.Id > 0)
                 {
                     FormsAuthentication.SetAuthCookie(viewModel.Username, false);
 
                     System.Web.HttpContext.Current.Session["userId"] = user.Id;
-                    System.Web.HttpContext.Current.Session["userIsAdmin"] = user.IsAdmin;                    
+                    System.Web.HttpContext.Current.Session["userIsAdmin"] = user.IsAdmin;
 
                     return RedirectToAction("GetProjects", "Project");
                 }

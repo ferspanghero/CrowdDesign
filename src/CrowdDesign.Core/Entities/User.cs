@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using CrowdDesign.Core.Interfaces.Entities;
 
 namespace CrowdDesign.Core.Entities
 {
     /// <summary>
     /// Represents a user of the system
     /// </summary>
-    public class User
+    public class User : IDomainEntity<int>
     {
         #region Properties
         /// <summary>

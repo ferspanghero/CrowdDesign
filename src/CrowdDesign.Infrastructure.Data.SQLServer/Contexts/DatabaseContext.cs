@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Reflection;
 using CrowdDesign.Core.Entities;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Contexts
@@ -26,30 +27,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
         #region Methods
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            #region Relationships and constraints configuration
-            #region Projects
-            modelBuilder.Entity<Project>()
-                .Property(e => e.Name)
-                .IsRequired();
-            #endregion
-
-            #region Dimensions
-            modelBuilder.Entity<Dimension>()
-                .Property(e => e.Name)
-                .IsRequired();
-
-            modelBuilder.Entity<Dimension>()
-                .Property(e => e.Description)
-                .IsRequired();
-            #endregion
-
-            #region Sketches
-            modelBuilder.Entity<Sketch>()
-                .HasRequired(e => e.Dimension)
-                .WithMany()
-                .WillCascadeOnDelete();
-            #endregion
-            #endregion
+            modelBuilder.Configurations.AddFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(modelBuilder);
         }

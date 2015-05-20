@@ -31,8 +31,17 @@
 
                         if (proposedSolutionsCount > 0)
                         {
+<<<<<<< HEAD
                             int i = proposedSolutionsCount + 1;
                             <th colspan="@i">Solution Alternatives</th>
+=======
+                            for (int i = 1; i <= proposedSolutionsCount; i++)
+                            {
+                                string name = "Solution Alternative " + i;
+
+                                <th>@name</th>
+                            }
+>>>>>>> master
                         }
                     }
                 }
