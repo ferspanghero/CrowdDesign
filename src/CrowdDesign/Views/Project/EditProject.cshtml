@@ -26,8 +26,8 @@
                     if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
                     {
                         int proposedSolutionsCount = (from c in Model.Dimensions
-                                                      where c.Sketches != null && c.Sketches.Count > 0
-                                                      select c.Sketches.Count()).Max();
+                            where c.Sketches != null && c.Sketches.Count > 0
+                            select c.Sketches.Count()).Max();
 
                         if (proposedSolutionsCount > 0)
                         {
@@ -35,7 +35,12 @@
                             <th colspan="@i">Solution Alternatives</th>
                         }
                     }
+                    else
+                    {
+                        <th>Solution Alternatives</th>
+                    }
                 }
+                
             </tr>
         </thead>
         <tbody>
@@ -87,10 +92,14 @@
                                 </div>
                             </td>
 
-                            int proposedSolutionsCount = (from c in Model.Dimensions
-                                                          where c.Sketches != null && c.Sketches.Count > 0
-                                                          select c.Sketches.Count()).Max();
-
+                            int proposedSolutionsCount = 0;
+                            
+                            if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                            {
+                                proposedSolutionsCount = (from c in Model.Dimensions
+                                    where c.Sketches != null && c.Sketches.Count > 0
+                                    select c.Sketches.Count()).Max();
+                            }
                             //add an empty cell to make a block
                             for (int i = 0; i < proposedSolutionsCount - amountOfSolutionsInRow; i++)
                             {
@@ -116,15 +125,20 @@
                     </td>
 
                     @{
-                int emptyCellsNeeded = (from c in Model.Dimensions
-                                        where c.Sketches != null && c.Sketches.Count > 0
-                                        select c.Sketches.Count()).Max();
+                        
+                        int emptyCellsNeeded = 0;
 
-                //add an empty cell to make a block
-                for (int i = 0; i <= emptyCellsNeeded; i++)
-                {
-                    <td></td>
-                }
+                        if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                        {
+                            emptyCellsNeeded = (from c in Model.Dimensions
+                                where c.Sketches != null && c.Sketches.Count > 0
+                                select c.Sketches.Count()).Max();
+                        }
+                        //add an empty cell to make a block
+                        for (int i = 0; i <= emptyCellsNeeded; i++)
+                        {
+                        <td></td>
+                        }
                     }
                 </tr>
             }
