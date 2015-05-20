@@ -1,5 +1,13 @@
 ﻿div {
-    padding: 5px;
+    position: relative; 
+    padding: 10px;
+    width: 90%;
+    height: 90%;
+    /*margin-top: 40px;
+    position: relative;
+    height: 0;
+    padding: 0 56.25% 0 0;*/
+}
 }
 
 #divProjectGeneralData {
@@ -7,29 +15,71 @@
 }
 
 #tblMorphChart {
-    width: 100%;
+    border: 0; 
+    border-collapse:collapse;
 }
 
-#tblMorphChart td {
-    word-wrap: break-word;
+#tblMorphChart th {
+    border-bottom: 7px double black;
+    height: 50px;
 }
 
-#imgSketchThumbnail {
-    width: 50%;
-    height: 50%;
+#tblMorphChart th:first-child {
+    border-right: 7px double black;
 }
 
-.tdAddNewSketch {
-    text-align: left;
-    border: none;
+#tblMorphChart > tbody > tr > td:first-child {
+    border-right: 7px double;
 }
 
-.tdAddNewDimension {
-    border: none;
+#tblMorphChart td:first-child{
+    border-left: 1px solid black;
+}
+
+#tblMorphChart td:last-child{
+    border-right: 1px solid black;
 }
 
 .tdDimension {
-    border-right: double;
+    min-width: 300px;
+    /*min-height: 150px;*/
+    text-align: center;
+    font-size: 0.9em; 
+
+}
+
+.pDimensionDescription {
+    font-size: 0.8em; 
+
+}
+
+#tblMorphChart td{
+    /*can't use margin because it's a table cell*/
+    border-right: none;
+    border-left: none;
+    word-wrap: break-word; 
+    height: 100px;
+    width: 150px;
+    min-height: 100px;
+    min-width: 150px;
+}
+
+.divSolutionAlternative{
+    border: 1px solid black;
+    margin: 20px;
+    height: 150px;
+    width: 200px;   
+    min-height: 100px;
+    min-width: 150px;
+}
+
+#imgSketchThumbnail {
+    width: 100%;
+    height: 100%;
+}
+
+.tdAddNewSketch {
+    text-align: center;
 }
 
 .tdLoggedInUserSketch {
