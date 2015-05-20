@@ -59,7 +59,6 @@
                 {
                     <tr>
                         <td class="tdDimensionDraggable tdDimensionDroppable" data-dimensionid=@dimension.Id>
-                            @* Removed the whole class and tags from the table cell to the div. The class names need to be changed! *@
                             <div class="tdDimension">
                                 @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })
                                 <p class="pDimensionDescription">
