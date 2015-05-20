@@ -31,17 +31,8 @@
 
                         if (proposedSolutionsCount > 0)
                         {
-<<<<<<< HEAD
                             int i = proposedSolutionsCount + 1;
                             <th colspan="@i">Solution Alternatives</th>
-=======
-                            for (int i = 1; i <= proposedSolutionsCount; i++)
-                            {
-                                string name = "Solution Alternative " + i;
-
-                                <th>@name</th>
-                            }
->>>>>>> master
                         }
                     }
                 }
@@ -69,7 +60,7 @@
                                 <p class="pDimensionDescription">
                                     @dimension.Description
                                 </p>
-                                </div>
+                            </div>
                         </td>
                         @if (dimension.Sketches != null)
                         {
@@ -114,28 +105,28 @@
                 <tr>
                     <td>
                         @* Removed the whole class and tags from the table cell to the div. The class names need to be changed! *@
-                    <div class="tdDimension tdAddNewDimension">
-                        @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model.Id }, null)
-                        <p>
-                         @* Here we need a plus icon *@
-                        </p>
+                        <div class="tdDimension tdAddNewDimension">
+                            @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model.Id }, null)
+                            <p>
+                                @* Here we need a plus icon *@
+                            </p>
 
-                    </div>
+                        </div>
 
                     </td>
 
                     @{
-                        int emptyCellsNeeded = (from c in Model.Dimensions
-                                                where c.Sketches != null && c.Sketches.Count > 0
-                                                select c.Sketches.Count()).Max();
+                int emptyCellsNeeded = (from c in Model.Dimensions
+                                        where c.Sketches != null && c.Sketches.Count > 0
+                                        select c.Sketches.Count()).Max();
 
-                        //add an empty cell to make a block
-                        for (int i = 0; i <= emptyCellsNeeded; i++)
-                        {
-                            <td></td>
-                        }
+                //add an empty cell to make a block
+                for (int i = 0; i <= emptyCellsNeeded; i++)
+                {
+                    <td></td>
+                }
                     }
-            </tr>
+                </tr>
             }
         </tbody>
     </table>
