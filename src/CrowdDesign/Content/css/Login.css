@@ -5,6 +5,7 @@
     border: 1px solid black;
     width: 24em;
     margin-left: -15em;
+    max-height: 400px; 
 }
 
 .divLoginField {

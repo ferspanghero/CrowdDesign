@@ -20,9 +20,11 @@
     <table id="tblMorphChart">
         <thead>
             <tr>
-                <th class="tdDimension">Dimensions</th>
+                <th>Dimensions</th>
                 @if (Model != null && Model.Dimensions != null)
                 {
+                    int i = 1;
+
                     if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
                     {
                         int proposedSolutionsCount = (from c in Model.Dimensions
@@ -31,23 +33,24 @@
 
                         if (proposedSolutionsCount > 0)
                         {
-                            for (int i = 1; i <= proposedSolutionsCount; i++)
-                            {
-                                string name = "Solution Alternative " + i;
-
-                                <th>@name</th>
-                            }
+                            i += proposedSolutionsCount;
                         }
                     }
+
+                    <th colspan="@i">Solution Alternatives</th>
                 }
+
             </tr>
         </thead>
         <tbody>
+
             @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
             {
                 <tr>
-                    <td class="tdAddNewDimension">
-                        @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model != null ? (int?)Model.Id : null }, null)
+                    <td>
+                        <div class="divDimension">
+                            @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model != null ? (int?)Model.Id : null }, null)
+                        </div>
                     </td>
                 </tr>
             }
@@ -56,29 +59,52 @@
                 foreach (var dimension in Model.Dimensions)
                 {
                     <tr>
-                        <td class="tdDimension tdDimensionDraggable tdDimensionDroppable" data-dimensionid=@dimension.Id>@Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })</td>
-
+                        <td class="divDimensionDraggable divDimensionDroppable" data-dimensionid=@dimension.Id>
+                            <div class="divDimension">
+                                @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })
+                                <p class="pDimensionDescription">
+                                    @dimension.Description
+                                </p>
+                            </div>
+                        </td>
                         @if (dimension.Sketches != null)
                         {
+
+                            int amountOfSolutionsInRow = 0;
                             foreach (var sketch in dimension.Sketches)
                             {
-                                <td class="tdSketchDraggable tdSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
-                                    <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
-                                        <img id="imgSketchThumbnail" src=@sketch.ImageUri />
-                                    </a>
+                                <td>
+                                    <div class="divSolutionAlternative divSketchDraggable divSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
+                                        <p class="pSolutionTitle">Solution Title</p>
+                                        <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
+                                            <img id="imgSketchThumbnail" src=@sketch.ImageUri />
+                                        </a>
+                                    </div>
                                 </td>
+
+                                amountOfSolutionsInRow++;
                             }
 
+                            //add new solution box to the row
                             <td class="tdAddNewSketch">
-                                @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
+                                <div class="divSolutionAlternative pSolutionTitle">
+                                    @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
+                                </div>
                             </td>
                         }
                     </tr>
                 }
 
                 <tr>
-                    <td class="tdAddNewDimension">
-                        @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model.Id }, null)
+                    <td>
+                        <div class="divDimension">
+                            @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model.Id }, null)
+                            <p>
+                                @* Here we need a plus icon *@
+                            </p>
+
+                        </div>
+
                     </td>
                 </tr>
             }

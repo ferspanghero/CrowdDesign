@@ -1,27 +1,27 @@
 ﻿$(document).ready(function () {
-    $(".tdSketchDraggable").draggable({
+    $(".divSketchDraggable").draggable({
         helper: "clone",
         opacity: 0.7,
         containment: "tbody",
         start: resizeDraggable
     });
 
-    $(".tdDimensionDraggable").draggable({
+    $(".divDimensionDraggable").draggable({
         helper: "clone",
         opacity: 0.7,
         containment: "tbody",
         start: resizeDraggable
     });
 
-    $(".tdSketchDroppable").droppable({
-        accept: ".tdSketchDraggable",
-        hoverClass: "tdHoveredDroppable",
+    $(".divSketchDroppable").droppable({
+        accept: ".divSketchDraggable",
+        hoverClass: "divHoveredDroppable",
         drop: sketchDropped
     });
 
-    $(".tdDimensionDroppable").droppable({
-        accept: ".tdDimensionDraggable, .tdSketchDraggable",
-        hoverClass: "tdHoveredDroppable",
+    $(".divDimensionDroppable").droppable({
+        accept: ".divDimensionDraggable, .divSketchDraggable",
+        hoverClass: "divHoveredDroppable",
         drop: dimensionDropped
     });
 });
@@ -55,7 +55,7 @@ function sketchDropped(event, ui) {
 function dimensionDropped(event, ui) {
     var targetDimensionId = $(this).attr("data-dimensionId");
 
-    if (ui.draggable.hasClass("tdDimensionDraggable")) {
+    if (ui.draggable.hasClass("divDimensionDraggable")) {
         var sourceDimensionId = ui.draggable.attr("data-dimensionId");
 
         $("#divMergeConfirmationDialog").dialog({
@@ -87,7 +87,7 @@ function dimensionDropped(event, ui) {
             }
         });
     }
-    else if (ui.draggable.hasClass("tdSketchDraggable")) {
+    else if (ui.draggable.hasClass("divSketchDraggable")) {
         var sourceSketchId = ui.draggable.attr("data-sketchId");
 
         $.ajax({
