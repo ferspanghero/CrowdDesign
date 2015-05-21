@@ -23,24 +23,23 @@
                 <th>Dimensions</th>
                 @if (Model != null && Model.Dimensions != null)
                 {
+                    int i = 1;
+
                     if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
                     {
                         int proposedSolutionsCount = (from c in Model.Dimensions
-                            where c.Sketches != null && c.Sketches.Count > 0
-                            select c.Sketches.Count()).Max();
+                                                      where c.Sketches != null && c.Sketches.Count > 0
+                                                      select c.Sketches.Count()).Max();
 
                         if (proposedSolutionsCount > 0)
                         {
-                            int i = proposedSolutionsCount + 1;
-                            <th colspan="@i">Solution Alternatives</th>
+                            i += proposedSolutionsCount;
                         }
                     }
-                    else
-                    {
-                        <th>Solution Alternatives</th>
-                    }
+
+                    <th colspan="@i">Solution Alternatives</th>
                 }
-                
+
             </tr>
         </thead>
         <tbody>
@@ -48,8 +47,10 @@
             @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
             {
                 <tr>
-                    <td class="tdAddNewDimension">
-                        @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model != null ? (int?)Model.Id : null }, null)
+                    <td>
+                        <div class="divDimension">
+                            @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model != null ? (int?)Model.Id : null }, null)
+                        </div>
                     </td>
                 </tr>
             }
@@ -58,8 +59,8 @@
                 foreach (var dimension in Model.Dimensions)
                 {
                     <tr>
-                        <td class="tdDimensionDraggable tdDimensionDroppable" data-dimensionid=@dimension.Id>
-                            <div class="tdDimension">
+                        <td class="divDimensionDraggable divDimensionDroppable" data-dimensionid=@dimension.Id>
+                            <div class="divDimension">
                                 @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })
                                 <p class="pDimensionDescription">
                                     @dimension.Description
@@ -73,8 +74,8 @@
                             foreach (var sketch in dimension.Sketches)
                             {
                                 <td>
-                                    @* Removed the whole class and tags from the table cell to the div. The class names need to be changed! *@
-                                    <div class="divSolutionAlternative tdSketchDraggable tdSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
+                                    <div class="divSolutionAlternative divSketchDraggable divSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
+                                        <p class="pSolutionTitle">Solution Title</p>
                                         <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
                                             <img id="imgSketchThumbnail" src=@sketch.ImageUri />
                                         </a>
@@ -86,34 +87,17 @@
 
                             //add new solution box to the row
                             <td class="tdAddNewSketch">
-                                <div class="divSolutionAlternative">
+                                <div class="divSolutionAlternative pSolutionTitle">
                                     @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
                                 </div>
                             </td>
-
-                            int proposedSolutionsCount = 0;
-                            
-                            if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
-                            {
-                                proposedSolutionsCount = (from c in Model.Dimensions
-                                    where c.Sketches != null && c.Sketches.Count > 0
-                                    select c.Sketches.Count()).Max();
-                            }
-                            //add an empty cell to make a block
-                            for (int i = 0; i < proposedSolutionsCount - amountOfSolutionsInRow; i++)
-                            {
-                                <td></td>
-                            }
-
-
                         }
                     </tr>
                 }
 
                 <tr>
                     <td>
-                        @* Removed the whole class and tags from the table cell to the div. The class names need to be changed! *@
-                        <div class="tdDimension tdAddNewDimension">
+                        <div class="divDimension">
                             @Html.ActionLink("Add dimension", "EditDimension", "Dimension", new { ProjectId = Model.Id }, null)
                             <p>
                                 @* Here we need a plus icon *@
@@ -122,23 +106,6 @@
                         </div>
 
                     </td>
-
-                    @{
-                        
-                        int emptyCellsNeeded = 0;
-
-                        if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
-                        {
-                            emptyCellsNeeded = (from c in Model.Dimensions
-                                where c.Sketches != null && c.Sketches.Count > 0
-                                select c.Sketches.Count()).Max();
-                        }
-                        //add an empty cell to make a block
-                        for (int i = 0; i <= emptyCellsNeeded; i++)
-                        {
-                        <td></td>
-                        }
-                    }
                 </tr>
             }
         </tbody>

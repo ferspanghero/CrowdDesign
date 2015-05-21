@@ -1,13 +1,12 @@
 ﻿div {
     position: relative; 
     padding: 10px;
-    width: 90%;
-    height: 90%;
-    /*margin-top: 40px;
-    position: relative;
-    height: 0;
-    padding: 0 56.25% 0 0;*/
 }
+
+#divMorphChart {
+    border: 1px solid black;
+    padding: 0;
+    display: table;
 }
 
 #divProjectGeneralData {
@@ -40,33 +39,32 @@
     border-right: 1px solid black;
 }
 
-.tdDimension {
+.divDimension {
     min-width: 300px;
-    /*min-height: 150px;*/
+    min-height: 160px;
     text-align: center;
-    font-size: 0.9em; 
-
+    font-size: 0.9em;
 }
 
 .pDimensionDescription {
     font-size: 0.8em; 
-
 }
 
 #tblMorphChart td{
-    /*can't use margin because it's a table cell*/
     border-right: none;
     border-left: none;
     word-wrap: break-word; 
-    height: 100px;
-    width: 150px;
-    min-height: 100px;
-    min-width: 150px;
+}
+
+.pSolutionTitle {
+    margin: 0 auto; 
+    font-size: 0.8em; 
 }
 
 .divSolutionAlternative{
+    padding: 1px; 
     border: 1px solid black;
-    margin: 20px;
+    margin: 5px 5px 5px 5px; 
     height: 150px;
     width: 200px;   
     min-height: 100px;
@@ -74,8 +72,8 @@
 }
 
 #imgSketchThumbnail {
-    width: 100%;
-    height: 100%;
+    width: 85%;
+    height: 85%;
 }
 
 .tdAddNewSketch {
@@ -86,14 +84,15 @@
     background-color: #caf7ca;
 }
 
-.tdSketchDraggable, .tdDimensionDraggable {
+.divSketchDraggable, .divDimensionDraggable {
     cursor: pointer;
 }
 
-.tdHoveredDroppable {
+.divHoveredDroppable {
     background-color: lightgray;
 }
 
 #divMergeConfirmationDialog {
     display: none;
 }
+
