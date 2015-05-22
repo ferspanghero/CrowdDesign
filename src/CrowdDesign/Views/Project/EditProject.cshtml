@@ -16,7 +16,7 @@
     </div>
 }
 
-<div id="divMorphChart">
+<div>
     <table id="tblMorphChart">
         <thead>
             <tr>
@@ -91,6 +91,19 @@
                                     @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
                                 </div>
                             </td>
+                            int proposedSolutionsCount = 0;
+
+                            if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                            {
+                                proposedSolutionsCount = (from c in Model.Dimensions
+                                                          where c.Sketches != null && c.Sketches.Count > 0
+                                                          select c.Sketches.Count()).Max();
+                            }
+                            //add an empty cell to make a block
+                            for (int i = 0; i < proposedSolutionsCount - amountOfSolutionsInRow; i++)
+                            {
+                                <td></td>
+                            }
                         }
                     </tr>
                 }
@@ -106,6 +119,23 @@
                         </div>
 
                     </td>
+
+                    @{
+
+                int emptyCellsNeeded = 0;
+
+                if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                {
+                    emptyCellsNeeded = (from c in Model.Dimensions
+                                        where c.Sketches != null && c.Sketches.Count > 0
+                                        select c.Sketches.Count()).Max();
+                }
+                //add an empty cell to make a block
+                for (int i = 0; i <= emptyCellsNeeded; i++)
+                {
+                    <td></td>
+                }
+                    }
                 </tr>
             }
         </tbody>
