@@ -3,12 +3,6 @@
     padding: 10px;
 }
 
-#divMorphChart {
-    border: 1px solid black;
-    padding: 0;
-    display: table;
-}
-
 #divProjectGeneralData {
     text-align: left;
 }
@@ -64,7 +58,7 @@
 .divSolutionAlternative{
     padding: 1px; 
     border: 1px solid black;
-    margin: 5px 5px 5px 5px; 
+    margin: 10px; 
     height: 150px;
     width: 200px;   
     min-height: 100px;
