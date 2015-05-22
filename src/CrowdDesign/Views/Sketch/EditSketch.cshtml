@@ -47,6 +47,14 @@
             @Html.HiddenFor(model => model.ImageUri)
             @Html.HiddenFor(model => model.Position)
 
+            <div class="divEditSketchField">
+                @Html.LabelFor(model => model.Title)
+                @Html.TextBoxFor(model => model.Title)
+                @Html.ValidationMessageFor(model => model.Title)
+            </div>
+
+            <div>
+                @{
             // Display the save button in the following situations:
             // The user is an admin
             // OR the model is null or there isn't a valid sketch id (the sketch is being created)
@@ -55,6 +63,8 @@
             {
                 <input id="btnSaveSketch" type="submit" value="Save changes" />
             }
+                }
+            </div>
         }
     }
 </div>
@@ -63,4 +73,5 @@
 {
     @Scripts.Render("~/Scripts/sketch.js")
     @Scripts.Render("~/Scripts/Custom/EditSketch.js")
+    @Scripts.Render("~/bundles/jqueryval")
 }

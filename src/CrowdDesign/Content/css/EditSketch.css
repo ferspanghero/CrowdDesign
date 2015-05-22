@@ -11,3 +11,8 @@
     display: inline-block;
     text-align: center;
 }
+
+.divEditSketchField {
+    display: inline;
+    padding: 20px;
+}

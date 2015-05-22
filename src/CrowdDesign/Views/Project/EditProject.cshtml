@@ -75,7 +75,7 @@
                             {
                                 <td>
                                     <div class="divSolutionAlternative divSketchDraggable divSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
-                                        <p class="pSolutionTitle">Solution Title</p>
+                                        <p class="pSolutionTitle">@sketch.Title</p>
                                         <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
                                             <img id="imgSketchThumbnail" src=@sketch.ImageUri />
                                         </a>
@@ -85,12 +85,13 @@
                                 amountOfSolutionsInRow++;
                             }
 
-                            //add new solution box to the row
+                            // Add new solution box to the row
                             <td class="tdAddNewSketch">
                                 <div class="divSolutionAlternative pSolutionTitle">
-                                    @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
+                                    @Html.ActionLink("Add solution", "EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id}, null)
                                 </div>
                             </td>
+                            
                             int proposedSolutionsCount = 0;
 
                             if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
@@ -99,7 +100,8 @@
                                                           where c.Sketches != null && c.Sketches.Count > 0
                                                           select c.Sketches.Count()).Max();
                             }
-                            //add an empty cell to make a block
+                            
+                            // Add an empty cell to make a block
                             for (int i = 0; i < proposedSolutionsCount - amountOfSolutionsInRow; i++)
                             {
                                 <td></td>
