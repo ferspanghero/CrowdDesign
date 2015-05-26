@@ -6,6 +6,7 @@ using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
+using CrowdDesign.Utils.AspNet.Mvc;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -67,6 +68,7 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public ActionResult CreateSketch(EditSketchViewModel viewModel)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
@@ -75,9 +77,13 @@ namespace CrowdDesign.UI.Web.Controllers
                 {
                     viewModel.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
 
-                    int sketchId = Repository.Create(viewModel.ToDomainModel());
+                    bool hasMultipleRequests = ViewData.ContainsKey("MultipleRequests");
+                    int sketchId = -1;                    
 
-                    if (sketchId > 0)
+                    if (!hasMultipleRequests)
+                        sketchId = Repository.Create(viewModel.ToDomainModel());
+
+                    if (sketchId > 0 || hasMultipleRequests)
                         return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
                 }
                 else
@@ -88,6 +94,7 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public ActionResult UpdateSketch(EditSketchViewModel viewModel)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
@@ -101,11 +108,13 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public JsonResult ReplaceSketches(int? sourceSketchId, int? targetSketchId)
         {
             if (sourceSketchId != null && targetSketchId != null && ModelState.IsValid)
             {
-                Repository.ReplaceSketches(sourceSketchId.Value, targetSketchId.Value);
+                if (!ViewData.ContainsKey("MultipleRequests"))
+                    Repository.ReplaceSketches(sourceSketchId.Value, targetSketchId.Value);
 
                 return Json("Sketch moved successfully");
             }
@@ -116,11 +125,13 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public ActionResult MoveSketchToDimension(int? sourceSketchId, int? targetDimensionId)
         {
             if (sourceSketchId != null && targetDimensionId != null && ModelState.IsValid)
             {
-                Repository.MoveSketchToDimension(sourceSketchId.Value, targetDimensionId.Value);
+                if (!ViewData.ContainsKey("MultipleRequests"))
+                    Repository.MoveSketchToDimension(sourceSketchId.Value, targetDimensionId.Value);
 
                 return Json("Sketch moved successfully");
             }
