@@ -10,6 +10,8 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts.Configurations
             HasRequired(e => e.Dimension).WithMany(e => e.Sketches);
 
             HasRequired(e => e.User).WithMany(e => e.Sketches);
+
+            Property(e => e.Title).IsRequired();
         }
     }
 }

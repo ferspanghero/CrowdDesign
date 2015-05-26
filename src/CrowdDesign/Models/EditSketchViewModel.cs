@@ -1,4 +1,5 @@
-﻿using CrowdDesign.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using CrowdDesign.Core.Entities;
 
 namespace CrowdDesign.UI.Web.Models
 {
@@ -17,6 +18,7 @@ namespace CrowdDesign.UI.Web.Models
                 Data = sketch.Data;
                 ImageUri = sketch.ImageUri;
                 Position = sketch.Position;
+                Title = sketch.Title;
 
                 if (sketch.Dimension != null)
                 {
@@ -40,6 +42,10 @@ namespace CrowdDesign.UI.Web.Models
         public string Data { get; set; }
         public string ImageUri { get; set; }
         public int Position { get; set; }
+        
+        [Required]
+        [StringLength(25)]
+        public string Title { get; set; }
         #endregion
 
         #region Methods
@@ -51,6 +57,7 @@ namespace CrowdDesign.UI.Web.Models
                 Data = Data,
                 ImageUri = ImageUri,
                 Position = Position,
+                Title = Title,
                 User = new User {Id = UserId ?? -1},
                 Dimension = new Dimension
                 {

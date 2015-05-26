@@ -4,6 +4,7 @@ using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
+using CrowdDesign.Utils.AspNet.Mvc;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -28,13 +29,18 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public ActionResult CreateProject()
         {
             if (ModelState.IsValid)
             {
-                int projectId = Repository.Create(new Project { Name = "New Project" });
+                bool hasMultipleRequests = ViewData.ContainsKey("MultipleRequests");
+                int projectId = -1;
 
-                if (projectId > 0)
+                if (!hasMultipleRequests)
+                    projectId = Repository.Create(new Project { Name = "New Project" });
+
+                if (projectId > 0 || hasMultipleRequests)
                     return RedirectToAction("GetProjects");
             }
 
@@ -63,23 +69,27 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public ActionResult UpdateProject(Project project)
         {
             if (project == null || !ModelState.IsValid)
                 return View("Error");
 
-            Repository.Update(project);
+            if (!ViewData.ContainsKey("MultipleRequests"))
+                Repository.Update(project);
 
             return RedirectToAction("EditProject", new { ProjectId = project.Id });
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public ActionResult DeleteProject(int? projectid)
         {
             if (projectid == null || !ModelState.IsValid)
                 return View("Error");
 
-            Repository.Delete(projectid.Value);
+            if (!ViewData.ContainsKey("MultipleRequests"))
+                Repository.Delete(projectid.Value);
 
             return RedirectToAction("GetProjects");
         }

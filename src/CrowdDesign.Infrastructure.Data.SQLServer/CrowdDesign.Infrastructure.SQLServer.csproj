@@ -51,6 +51,7 @@
     <Compile Include="Contexts\Configurations\ProjectConfiguration.cs" />
     <Compile Include="Contexts\DatabaseContext.cs" />
     <Compile Include="Contexts\DatabaseInitializer.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\DimensionRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
     <Compile Include="Repositories\SketchRepository.cs" />

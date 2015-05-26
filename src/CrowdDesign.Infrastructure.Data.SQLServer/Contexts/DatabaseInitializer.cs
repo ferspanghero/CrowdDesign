@@ -8,7 +8,11 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
     /// </summary>
     public class DatabaseInitializer : CreateDatabaseIfNotExists<DatabaseContext>
     {
-        protected override void Seed(DatabaseContext context)
+        /// <summary>
+        /// Creates the database initialization data
+        /// </summary>
+        /// <param name="context">The database Entity Framework context</param>
+        public void CreateInitializationData(DatabaseContext context)
         {
             // Adds default users to the database
             // TODO: The password should be encrypted
@@ -21,16 +25,11 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
                     IsAdmin = true
                 }
             );
+        }
 
-            context.Users.Add
-            (
-                new User
-                {
-                    Username = "user",
-                    Password = "password",
-                    IsAdmin = false
-                }
-            );
+        protected override void Seed(DatabaseContext context)
+        {
+            CreateInitializationData(context);
 
             base.Seed(context);
         }

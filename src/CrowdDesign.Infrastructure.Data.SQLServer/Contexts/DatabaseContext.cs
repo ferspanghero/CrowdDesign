@@ -12,6 +12,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
         #region Constructors
 
         public DatabaseContext()
+            : base("DefaultConnection")
         {
             Database.SetInitializer(new DatabaseInitializer());
         }

@@ -6,6 +6,7 @@ using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
+using CrowdDesign.Utils.AspNet.Mvc;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -42,13 +43,18 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public ActionResult CreateDimension(EditDimensionViewModel viewModel)
         {
             if (viewModel != null && viewModel.ProjectId != null && ModelState.IsValid)
             {
-                int dimensionId = Repository.Create(viewModel.ToDomainModel());
+                bool hasMultipleRequests = ViewData.ContainsKey("MultipleRequests");
+                int dimensionId = -1;
 
-                if (dimensionId > 0)
+                if (!hasMultipleRequests)
+                    dimensionId = Repository.Create(viewModel.ToDomainModel());
+
+                if (dimensionId > 0 || hasMultipleRequests)
                     return RedirectToAction("EditProject", "Project", new { viewModel.ProjectId });
             }
 
@@ -56,11 +62,13 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public ActionResult UpdateDimension(EditDimensionViewModel viewModel)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
-                Repository.Update(viewModel.ToDomainModel());
+                if (!ViewData.ContainsKey("MultipleRequests"))
+                    Repository.Update(viewModel.ToDomainModel());
 
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
             }
@@ -70,11 +78,13 @@ namespace CrowdDesign.UI.Web.Controllers
         }
 
         [HttpPost]
+        [DetectMultipleRequests]
         public JsonResult MergeDimensions(int? sourceDimensionId, int? targetDimensionId)
         {
             if (sourceDimensionId != null && targetDimensionId != null && ModelState.IsValid)
             {
-                Repository.MergeDimensions(sourceDimensionId.Value, targetDimensionId.Value);
+                if (!ViewData.ContainsKey("MultipleRequests"))
+                    Repository.MergeDimensions(sourceDimensionId.Value, targetDimensionId.Value);
 
                 return Json("Dimensions merged successfully");
             }

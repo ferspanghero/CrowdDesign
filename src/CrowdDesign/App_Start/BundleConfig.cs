@@ -23,7 +23,7 @@ namespace CrowdDesign.UI.Web
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
+            bundles.Add(new StyleBundle("~/Content/custom").Include(
                         "~/Content/css/Site.css",
                         "~/Content/css/ManageProjects.css",
                         "~/Content/css/EditProject.css",
@@ -44,6 +44,8 @@ namespace CrowdDesign.UI.Web
                         "~/Content/themes/base/datepicker.css",
                         "~/Content/themes/base/progressbar.css",
                         "~/Content/themes/base/theme.css"));
+
+            bundles.IgnoreList.Clear();
         }
     }
 }
