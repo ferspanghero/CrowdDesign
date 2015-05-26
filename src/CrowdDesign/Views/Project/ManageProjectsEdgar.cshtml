@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Manage projects";
+}
+
+@model IEnumerable<CrowdDesign.Core.Entities.Project>
+
+<div id="divProjects">
+    <p id="pTitle">Crowd Design Project's</p>
+
+    <div id="divProjectMenu">
+
+        @if (Model != null)
+        {
+            foreach (var project in Model)
+            {
+                <div class="divProjectBox">@Html.ActionLink(project.Name, "EditProject", "Project", new { ProjectId = project.Id }, null)
+                    <p class="pProjectDelete">
+                        @using (Html.BeginForm("DeleteProject", "Project", new { ProjectId = project.Id }, FormMethod.Post))
+                        {
+                            <input id="btnDeleteProject" type="submit" value="" />
+                        }
+                    </p>
+                </div>
+            }
+        }
+
+    </div>
+
+    @if (ViewBag.IsUserAdmin)
+    {
+        <div id="divProjectsActions">
+            @using (Html.BeginForm("CreateProject", "Project", FormMethod.Post))
+            {
+                <input id="btnCreateProject" type="submit" value="Create project" />
+            }
+        </div>
+    }
+
+</div>
