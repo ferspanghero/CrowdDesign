@@ -61,8 +61,8 @@
     margin: 10px; 
     height: 150px;
     width: 200px;   
-    min-height: 100px;
-    min-width: 150px;
+    min-height: 150px;
+    min-width: 200px;
 }
 
 #imgSketchThumbnail {
