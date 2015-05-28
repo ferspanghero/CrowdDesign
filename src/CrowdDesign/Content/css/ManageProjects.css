@@ -1,18 +1,17 @@
 ﻿#divProjectsTable, #divProjectsActions {
     text-align: center;
-
-}
-
-#tdDelete {
-    border: none;
-    width: 5%;
 }
 
 #tblProjects {
     display: inline;
     border: none;
     text-align: center;
-    border-spacing: 0.5rem; 
+    border-spacing: 0.5rem;
+}
+
+#tdDelete {
+    border: none;
+    width: 5%;
 }
 
 #btnDeleteProject {
