@@ -51,7 +51,6 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (System.Web.HttpContext.Current.Session["userId"] != null)
             {
-                ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
                 ViewBag.IsUserAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
 
                 if (projectId == null)
