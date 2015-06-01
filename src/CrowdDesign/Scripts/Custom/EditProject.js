@@ -2,15 +2,13 @@
     $(".divSketchDraggable").draggable({
         helper: "clone",
         opacity: 0.7,
-        containment: "tbody",
-        start: resizeDraggable
+        containment: "tbody"
     });
 
     $(".divDimensionDraggable").draggable({
         helper: "clone",
         opacity: 0.7,
-        containment: "tbody",
-        start: resizeDraggable
+        containment: "tbody"
     });
 
     $(".divSketchDroppable").droppable({
@@ -25,13 +23,6 @@
         drop: dimensionDropped
     });
 });
-
-function resizeDraggable(event, ui) {
-    var element = $(event.target);
-
-    ui.helper.width(element.width() / 2);
-    ui.helper.height(element.height() / 2);
-}
 
 function sketchDropped(event, ui) {
     var sourceSketchId = ui.draggable.attr("data-sketchId");

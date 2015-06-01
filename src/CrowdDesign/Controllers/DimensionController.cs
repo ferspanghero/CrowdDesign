@@ -79,6 +79,19 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
+        public ActionResult DeleteDimension(int? dimensionId, int? projectId)
+        {
+            if (dimensionId == null || projectId == null || !ModelState.IsValid)
+                return View("Error");
+
+            if (!ViewData.ContainsKey("MultipleRequests"))
+                Repository.Delete(dimensionId.Value);
+
+            return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
+        }
+
+        [HttpPost]
+        [DetectMultipleRequests]
         public JsonResult MergeDimensions(int? sourceDimensionId, int? targetDimensionId)
         {
             if (sourceDimensionId != null && targetDimensionId != null && ModelState.IsValid)

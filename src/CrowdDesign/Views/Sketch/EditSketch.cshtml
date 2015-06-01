@@ -5,26 +5,6 @@
 @model CrowdDesign.UI.Web.Models.EditSketchViewModel
 
 <div id="divEditSketchMain">
-    <div id="divSketchTools">
-        <a href="#cnvSketch" data-color="#000000" title="Black"><img src="~/Content/resources/images/black_icon.png" alt="Black" /></a>
-        <a href="#cnvSketch" data-color="#ff0000" title="Red"><img src="~/Content/resources/images/red_icon.png" alt="Red" /></a>
-        <a href="#cnvSketch" data-color="#00ff00" title="Green"><img src="~/Content/resources/images/green_icon.png" alt="Green" /></a>
-        <a href="#cnvSketch" data-color="#0000ff" title="Blue"><img src="~/Content/resources/images/blue_icon.png" alt="Blue" /></a>
-        <a href="#cnvSketch" data-color="#ffff00" title="Yellow"><img src="~/Content/resources/images/yellow_icon.png" alt="Yellow" /></a>
-        <a href="#cnvSketch" data-color="#00ffff" title="Cyan"><img src="~/Content/resources/images/cyan_icon.png" alt="Cyan" /></a>
-        <a href="#cnvSketch" data-color="#ffffff" title="Eraser"><img src="~/Content/resources/images/eraser_icon.png" alt="Eraser" /></a>
-        <a href="#cnvSketch" data-size="1"><img src="~/Content/resources/images/pencil_icon.png" alt="Pencil" /></a>
-        <a href="#cnvSketch" data-size="3"><img src="~/Content/resources/images/pen_icon.png" alt="Pen" /></a>
-        <a href="#cnvSketch" data-size="5"><img src="~/Content/resources/images/stick_icon.png" alt="Stick" /></a>
-        <a href="#cnvSketch" data-size="9"><img src="~/Content/resources/images/smallbrush_icon.png" alt="Small brush" /></a>
-        <a href="#cnvSketch" data-size="15"><img src="~/Content/resources/images/mediumbrush_icon.png" alt="Medium brush" /></a>
-        <a href="#cnvSketch" data-size="30"><img src="~/Content/resources/images/bigbrush_icon.png" alt="Big brush" /></a>
-        <a href="#cnvSketch" data-size="60"><img src="~/Content/resources/images/bucket_icon.png" alt="Huge bucket" /></a>
-    </div>
-    <div id="divCanvas">
-        <canvas id="cnvSketch"></canvas>
-    </div>
-
     @{
 
         string actionName;
@@ -47,10 +27,31 @@
             @Html.HiddenFor(model => model.ImageUri)
             @Html.HiddenFor(model => model.Position)
 
-            <div class="divEditSketchField">
+            <div class="divSketchField">
                 @Html.LabelFor(model => model.Title)
                 @Html.TextBoxFor(model => model.Title)
                 @Html.ValidationMessageFor(model => model.Title)
+            </div>
+
+            <div id="divSketchTools">
+                <a href="#cnvSketch" data-color="#000000" title="Black"><img src="~/Content/resources/images/black_icon.png" alt="Black" /></a>
+                <a href="#cnvSketch" data-color="#ff0000" title="Red"><img src="~/Content/resources/images/red_icon.png" alt="Red" /></a>
+                <a href="#cnvSketch" data-color="#00ff00" title="Green"><img src="~/Content/resources/images/green_icon.png" alt="Green" /></a>
+                <a href="#cnvSketch" data-color="#0000ff" title="Blue"><img src="~/Content/resources/images/blue_icon.png" alt="Blue" /></a>
+                <a href="#cnvSketch" data-color="#ffff00" title="Yellow"><img src="~/Content/resources/images/yellow_icon.png" alt="Yellow" /></a>
+                <a href="#cnvSketch" data-color="#00ffff" title="Cyan"><img src="~/Content/resources/images/cyan_icon.png" alt="Cyan" /></a>
+                <a href="#cnvSketch" data-color="#ffffff" title="Eraser"><img src="~/Content/resources/images/eraser_icon.png" alt="Eraser" /></a>
+                <a href="#cnvSketch" data-size="1"><img src="~/Content/resources/images/pencil_icon.png" alt="Pencil" /></a>
+                <a href="#cnvSketch" data-size="3"><img src="~/Content/resources/images/pen_icon.png" alt="Pen" /></a>
+                <a href="#cnvSketch" data-size="5"><img src="~/Content/resources/images/stick_icon.png" alt="Stick" /></a>
+                <a href="#cnvSketch" data-size="9"><img src="~/Content/resources/images/smallbrush_icon.png" alt="Small brush" /></a>
+                <a href="#cnvSketch" data-size="15"><img src="~/Content/resources/images/mediumbrush_icon.png" alt="Medium brush" /></a>
+                <a href="#cnvSketch" data-size="30"><img src="~/Content/resources/images/bigbrush_icon.png" alt="Big brush" /></a>
+                <a href="#cnvSketch" data-size="60"><img src="~/Content/resources/images/bucket_icon.png" alt="Huge bucket" /></a>
+            </div>
+
+            <div id="divCanvas">
+                <canvas id="cnvSketch"></canvas>
             </div>
 
             <div>
@@ -65,6 +66,16 @@
             }
                 }
             </div>
+        }
+
+        if (Model != null && Model.SketchId.HasValue)
+        {
+            using (Html.BeginForm("DeleteSketch", "Sketch", new { Model.SketchId, Model.ProjectId }, FormMethod.Post, new { onclick = "return confirm('This operation cannot be undone. Are you sure you want to continue?');" }))
+            {
+                <div class="divSketchField">
+                    <input type="submit" value="Delete" />
+                </div>
+            }
         }
     }
 </div>

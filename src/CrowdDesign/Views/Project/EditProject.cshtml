@@ -67,7 +67,7 @@
                     <tr>
                         <td class="divDimensionDraggable divDimensionDroppable" data-dimensionid=@dimension.Id>
                             <div class="divDimension">
-                                @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = dimension.Description + "\n\nSort criteria: " + dimension.SortCriteria })
+                                @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = "Sort criteria: " + dimension.SortCriteria })
                                 <p class="pDimensionDescription">
                                     @dimension.Description
                                 </p>
@@ -80,7 +80,7 @@
                             foreach (var sketch in dimension.Sketches)
                             {
                                 <td>
-                                    <div class="divSolutionAlternative divSketchDraggable divSketchDroppable @((sketch.User != null && sketch.User.Id == ViewBag.UserId) ? "tdLoggedInUserSketch" : "tdLoggedOffUserSketch")" data-sketchid=@sketch.Id>
+                                    <div class="divSolutionAlternative divSketchDraggable divSketchDroppable" data-sketchid=@sketch.Id>
                                         <p class="pSolutionTitle">@sketch.Title</p>
                                         <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
                                             <img id="imgSketchThumbnail" src=@sketch.ImageUri />
@@ -156,7 +156,7 @@
 </div>
 
 <div id="divMergeConfirmationDialog" title="Merge the dimensions?">
-    <p>Merging dimensions cannot be undone. Are you sure you want to continue?</p>
+    <p>This operation cannot be undone. Are you sure you want to continue?</p>
 </div>
 
 @section scripts

@@ -109,6 +109,19 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
+        public ActionResult DeleteSketch(int? sketchId, int? projectId)
+        {
+            if (sketchId == null || projectId == null || !ModelState.IsValid)
+                return View("Error");
+
+            if (!ViewData.ContainsKey("MultipleRequests"))
+                Repository.Delete(sketchId.Value);
+
+            return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
+        }
+
+        [HttpPost]
+        [DetectMultipleRequests]
         public JsonResult ReplaceSketches(int? sourceSketchId, int? targetSketchId)
         {
             if (sourceSketchId != null && targetSketchId != null && ModelState.IsValid)

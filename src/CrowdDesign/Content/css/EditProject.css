@@ -1,7 +1,7 @@
 ﻿div {
     position: relative; 
     padding: 10px;
-    overflow:auto;
+    overflow: auto; 
 }
 
 #divProjectGeneralData {
@@ -76,12 +76,9 @@
     text-align: center;
 }
 
-.tdLoggedInUserSketch {
-    background-color: #caf7ca;
-}
-
 .divSketchDraggable, .divDimensionDraggable {
     cursor: pointer;
+    overflow: visible;
 }
 
 .divHoveredDroppable {

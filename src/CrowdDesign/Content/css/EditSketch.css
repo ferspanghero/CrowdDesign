@@ -4,7 +4,7 @@
 }
 
 #cnvSketch {
-    border: 2px solid black;       
+    border: 2px solid black;
 }
 
 #divSketchTools {
@@ -12,7 +12,6 @@
     text-align: center;
 }
 
-.divEditSketchField {
+.divSketchField {
     display: inline;
-    padding: 20px;
 }
