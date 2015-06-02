@@ -1,4 +1,4 @@
-﻿$(document).ready(function() {
+﻿$(document).ready(function () {
     var jsonSketchData = $("#Data").val();
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
     var sketchElement = $("#cnvSketch");
@@ -9,11 +9,11 @@
     sketchElement.sketch();
 
     if (sketchData) {
-        $.each(sketchData, function() {
+        $.each(sketchData, function () {
             sketchElement.sketch().actions.push(this);
         });
 
-        sketchElement.sketch().redraw();             
+        sketchElement.sketch().redraw();
     }
 
     $("#btnSaveSketch").click(function () {

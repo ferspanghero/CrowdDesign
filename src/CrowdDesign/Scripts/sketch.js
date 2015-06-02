@@ -96,7 +96,7 @@ var __slice = Array.prototype.slice;
             return this.redraw();
         };
         Sketch.prototype.onEvent = function (e) {
-            if (e.originalEvent && e.originalEvent.targetTouches) {
+            if (e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 0) {
                 e.pageX = e.originalEvent.targetTouches[0].pageX;
                 e.pageY = e.originalEvent.targetTouches[0].pageY;
             }
@@ -128,6 +128,10 @@ var __slice = Array.prototype.slice;
             switch (e.type) {
                 case 'mousedown':
                 case 'touchstart':
+                    if (this.painting) {
+                        this.stopPainting();
+                    }
+
                     this.startPainting();
                     break;
                 case 'mouseup':
@@ -163,6 +167,95 @@ var __slice = Array.prototype.slice;
             return this.context.stroke();
         }
     };
+
+    // Represents a tool where users can input text in the canvas
+    $.sketch.tools.text = {
+        onEvent: function (e) {
+            switch (e.type) {
+                case 'mousedown':
+                case 'touchstart':
+                    // If the event is a mousedown, only triggers if the left button was pressed
+                    if ((e.type === "mousedown" && e.button === 0) || e.type === "touchstart") {
+                        this.startPainting();
+
+                        var tempTextArea = document.getElementById("tempTextArea");
+
+                        // Adds a temporary text area where the text will be written
+                        if (tempTextArea == null) {
+                            var $textArea = $("<textarea>", {
+                                type: "text",
+                                id: "tempTextArea"
+                            });
+
+                            // Adds style to position the text right in the position where the click/touch was performed
+                            $textArea.css({
+                                position: "absolute",
+                                left: e.pageX,
+                                top: e.pageY,
+                                height: "100px",
+                                width: "200px"
+                            });                            
+
+                            $("body").append($textArea);
+
+                            $textArea.focus();
+
+                            // If the user presses ESC, then the textarea will be removed
+                            $textArea.keyup(function (e) {
+                                if (e.which === 27) {
+                                    e.preventDefault();
+
+                                    document.body.removeChild(this);
+                                }
+                            });
+
+                            // If the textarea loses focus, then it is removed
+                            $textArea.focusout(function (e) {
+                                document.body.removeChild(this);
+                            });
+
+                        // If the temporary text area already exists, it means the user wants to exit it
+                        } else {
+                            e.preventDefault();
+
+                            // Retrieves the text information
+                            var lineHeight = this.context.measureText("M").width * 1.2;
+                            var x = parseInt($(tempTextArea).css("left")) - this.canvas.offset().left;
+                            var y = parseInt($(tempTextArea).css("top")) - this.canvas.offset().top;
+                            var lines = $(tempTextArea).val().split("\n");
+
+                            // Create a new event for each line of the text
+                            for (var i = 0; i < lines.length; i++) {
+                                this.action.events.push({
+                                    x: x,
+                                    y: y,
+                                    text: lines[i],
+                                    event: e.type
+                                });
+
+                                y += lineHeight;
+                            }
+                            
+                            // Makes the textarea lose focus
+                            $("#tempTextArea").blur();
+
+                            this.stopPainting();
+                        }
+                    }
+                    break;
+            }
+        },
+        draw: function (action) {
+            this.context.font = "20px Georgia";
+
+            if (action.events != null) {
+                for (var i = 0; i < action.events.length; i++) {
+                    this.context.fillText(action.events[i].text, action.events[i].x, action.events[i].y);
+                }
+            }
+        }
+    }
+
     return $.sketch.tools.eraser = {
         onEvent: function (e) {
             return $.sketch.tools.marker.onEvent.call(this, e);
@@ -170,8 +263,8 @@ var __slice = Array.prototype.slice;
         draw: function (action) {
             var oldcomposite;
             oldcomposite = this.context.globalCompositeOperation;
-            this.context.globalCompositeOperation = "copy";
-            action.color = "rgba(0,0,0,0)";
+            this.context.globalCompositeOperation = "destination-out";
+            action.color = "#000000";
             $.sketch.tools.marker.draw.call(this, action);
             return this.context.globalCompositeOperation = oldcomposite;
         }
