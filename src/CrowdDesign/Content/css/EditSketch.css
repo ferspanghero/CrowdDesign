@@ -1,10 +1,11 @@
 ﻿#divEditSketchMain {
-    width: 100%;
     text-align: center;
 }
 
 #cnvSketch {
     border: 2px solid black;
+    width: 99%; 
+    height: 99%; 
 }
 
 #divSketchTools {

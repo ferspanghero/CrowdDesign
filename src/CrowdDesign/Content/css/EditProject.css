@@ -1,68 +1,89 @@
-﻿div {
-    position: relative; 
+﻿/* General page styles
+-----------------------------------------------------------*/
+
+div {
+    position: relative;
     padding: 10px;
-    overflow: auto; 
+    overflow: auto;
 }
+
+table th, td {
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid black;
+    padding: 0;
+    word-wrap: break-word;
+}
+
+/* Table layout styles
+-----------------------------------------------------------*/
 
 #divProjectGeneralData {
     text-align: left;
 }
 
 #tblMorphChart {
-    border: 0; 
-    border-collapse:collapse;
+    border: 0;
+    border-collapse: collapse;
 }
 
-#tblMorphChart th {
-    border-bottom: 7px double black;
-    height: 50px;
-    min-width: 224px; 
+    #tblMorphChart th {
+        border-bottom: 7px double black;
+        height: 50px;
+        min-width: 224px;
+    }
+
+    #tblMorphChart tr {
+        border: 1px solid black;
+    }
+
+    #tblMorphChart td {
+        border: none;
+    }
+
+    #tblMorphChart th:first-child {
+        border-right: 7px double;
+    }
+
+    #tblMorphChart td:first-child {
+        border-right: 7px double;
+    }
+
+.aPlusButton {
+    display: block;
+    margin-top: 23px;
 }
 
-#tblMorphChart th:first-child {
-    border-right: 7px double black;
+.imgPlusIcon {
+    width: 75px;
+    height: auto;
 }
 
-#tblMorphChart > tbody > tr > td:first-child {
-    border-right: 7px double;
-}
-
-#tblMorphChart td:first-child{
-    border-left: 1px solid black;
-}
-
-#tblMorphChart td:last-child{
-    border-right: 1px solid black;
-}
-
+/* Dimension styles
+-----------------------------------------------------------*/
 .divDimension {
     min-width: 300px;
     min-height: 160px;
-    text-align: center;
     font-size: 0.9em;
 }
 
 .pDimensionDescription {
-    font-size: 0.8em; 
+    font-size: 0.8em;
 }
 
-#tblMorphChart td{
-    border-right: none;
-    border-left: none;
-    word-wrap: break-word; 
-}
-
+/* Solution Alternative styles
+-----------------------------------------------------------*/
 .pSolutionTitle {
-    margin: 0 auto; 
-    font-size: 0.8em; 
+    margin: 0 auto;
+    font-size: 0.8em;
 }
 
-.divSolutionAlternative{
-    padding: 1px; 
+.divSolutionAlternative {
+    padding: 1px;
     border: 1px solid black;
-    margin: 10px; 
+    margin: 10px;
     height: 150px;
-    width: 200px;   
+    width: 200px;
     min-height: 150px;
     min-width: 200px;
 }
@@ -72,29 +93,22 @@
     height: 80%;
 }
 
-.tdAddNewSketch {
-    text-align: center;
-}
+/* Drag and Drop styles
+-----------------------------------------------------------*/
 
 .divSketchDraggable, .divDimensionDraggable {
     cursor: pointer;
-    overflow: visible;
+    overflow: auto;
 }
 
-.divHoveredDroppable {
-    background-color: lightgray;
+.divHoveredSolutionDroppable {
+    background-color: lightblue;
+}
+
+.divHoveredDimensionDroppable {
+    background-color: lightgoldenrodyellow;
 }
 
 #divMergeConfirmationDialog {
     display: none;
-}
-
-.aPlusButton {
-    display: block;
-    margin-top: 23px;    
-}
-
-.imgPlusIcon{
-    width: 75px;
-    height: auto;
 }

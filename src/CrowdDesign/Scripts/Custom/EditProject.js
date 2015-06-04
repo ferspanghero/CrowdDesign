@@ -1,25 +1,32 @@
 ﻿$(document).ready(function () {
     $(".divSketchDraggable").draggable({
-        helper: "clone",
         opacity: 0.7,
-        containment: "tbody"
+        containment: "tbody",
+        revert: "invalid",
+        revertDuration: 200,
+        stack: ".divSketchDroppable",
+        delay: 150
     });
 
     $(".divDimensionDraggable").draggable({
-        helper: "clone",
+        helper: "original", 
         opacity: 0.7,
-        containment: "tbody"
+        containment: "tbody",
+        axis: "y",
+        stack: ".divDimensionDroppable",
+        delay: 150,
+        revert: true
     });
 
     $(".divSketchDroppable").droppable({
         accept: ".divSketchDraggable",
-        hoverClass: "divHoveredDroppable",
+        hoverClass: "divHoveredSolutionDroppable",
         drop: sketchDropped
     });
 
     $(".divDimensionDroppable").droppable({
         accept: ".divDimensionDraggable, .divSketchDraggable",
-        hoverClass: "divHoveredDroppable",
+        hoverClass: "divHoveredDimensionDroppable",
         drop: dimensionDropped
     });
 });
