@@ -7,10 +7,12 @@ using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
 using CrowdDesign.UI.Web.Models;
 using CrowdDesign.Utils.AspNet.Mvc;
+using Microsoft.AspNet.SignalR;
+using CrowdDesign.UI.Web.Hubs;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
-    [Authorize]
+    [System.Web.Mvc.Authorize]
     public class SketchController : BaseController<ISketchRepository, Sketch, int>
     {
         #region Constructors
@@ -78,10 +80,14 @@ namespace CrowdDesign.UI.Web.Controllers
                     viewModel.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
 
                     bool hasMultipleRequests = ViewData.ContainsKey("MultipleRequests");
-                    int sketchId = -1;                    
+                    int sketchId = -1;
 
                     if (!hasMultipleRequests)
+                    {
                         sketchId = Repository.Create(viewModel.ToDomainModel());
+
+                        GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
+                    }
 
                     if (sketchId > 0 || hasMultipleRequests)
                         return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
@@ -99,7 +105,12 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
             {
-                Repository.Update(viewModel.ToDomainModel());
+                if (!ViewData.ContainsKey("MultipleRequests"))
+                {
+                    Repository.Update(viewModel.ToDomainModel());
+
+                    GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
+                }
 
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
             }
@@ -115,7 +126,12 @@ namespace CrowdDesign.UI.Web.Controllers
                 return View("Error");
 
             if (!ViewData.ContainsKey("MultipleRequests"))
+            {
                 Repository.Delete(sketchId.Value);
+
+                GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
+            }
+                
 
             return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
         }
@@ -129,10 +145,12 @@ namespace CrowdDesign.UI.Web.Controllers
                 if (!ViewData.ContainsKey("MultipleRequests"))
                     Repository.ReplaceSketches(sourceSketchId.Value, targetSketchId.Value);
 
+                GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
+
                 return Json("Sketch moved successfully");
             }
 
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;            
 
             return Json("Failed to move the sketch");
         }
@@ -145,6 +163,8 @@ namespace CrowdDesign.UI.Web.Controllers
             {
                 if (!ViewData.ContainsKey("MultipleRequests"))
                     Repository.MoveSketchToDimension(sourceSketchId.Value, targetDimensionId.Value);
+
+                GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
 
                 return Json("Sketch moved successfully");
             }
