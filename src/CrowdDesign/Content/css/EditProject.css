@@ -5,6 +5,7 @@ div {
     position: relative;
     padding: 10px;
     overflow: auto;
+
 }
 
 table th, td {
@@ -13,6 +14,27 @@ table th, td {
     border: 1px solid black;
     padding: 0;
     word-wrap: break-word;
+}
+
+#pPromptTitle{
+    margin-left: auto; 
+    margin-right: auto; 
+    margin-top: 0;
+    margin-bottom: 0; 
+    width: 800px; 
+    text-align: center; 
+}
+
+#openPrompt{
+    height: 30px; 
+    width: 30px; 
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#spanProjectTitle{
+    display: inline-block;
+    vertical-align: middle;
 }
 
 /* Table layout styles
@@ -86,11 +108,12 @@ table th, td {
     width: 200px;
     min-height: 150px;
     min-width: 200px;
+    background-color: white; 
 }
 
 #imgSketchThumbnail {
-    width: 80%;
-    height: 80%;
+    width: 82%;
+    height: 82%;
 }
 
 /* Drag and Drop styles
@@ -107,6 +130,10 @@ table th, td {
 
 .divHoveredDimensionDroppable {
     background-color: lightgoldenrodyellow;
+}
+
+.divHoveredNewSolutionDroppable {
+    background-color: darkblue;
 }
 
 #divMergeConfirmationDialog {
