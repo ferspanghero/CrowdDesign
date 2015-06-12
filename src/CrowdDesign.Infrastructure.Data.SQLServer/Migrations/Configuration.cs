@@ -20,6 +20,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Migrations
             // TODO: The password should be encrypted
             context.Users.AddOrUpdate
                 (
+                    e => e.Username,
                     new User
                     {
                         Username = "admin",

@@ -53,6 +53,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 bool hasMultipleRequests = ViewData.ContainsKey("MultipleRequests");
                 int dimensionId = -1;
 
+                // Prevents saving dimensions with the same name
                 if (Repository.AnyEntity(d => d.Name.Equals(viewModel.Name)))
                 {
                     ModelState.AddModelError("Name", "A dimension with the same name already exists");
@@ -80,6 +81,7 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
+                // Prevents saving dimensions with the same name
                 if (Repository.AnyEntity(d => d.Name.Equals(viewModel.Name)))
                 {
                     ModelState.AddModelError("Name", "A dimension with the same name already exists");
