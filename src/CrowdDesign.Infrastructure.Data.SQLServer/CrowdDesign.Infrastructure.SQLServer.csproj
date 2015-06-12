@@ -50,10 +50,9 @@
     <Compile Include="Contexts\Configurations\DimensionConfiguration.cs" />
     <Compile Include="Contexts\Configurations\ProjectConfiguration.cs" />
     <Compile Include="Contexts\DatabaseContext.cs" />
-    <Compile Include="Contexts\DatabaseInitializer.cs" />
-    <Compile Include="Migrations\201506112349116_AddUniqueConstrainsAndMaxLenghts.cs" />
-    <Compile Include="Migrations\201506112349116_AddUniqueConstrainsAndMaxLenghts.Designer.cs">
-      <DependentUpon>201506112349116_AddUniqueConstrainsAndMaxLenghts.cs</DependentUpon>
+    <Compile Include="Migrations\201506120223074_Initial.cs" />
+    <Compile Include="Migrations\201506120223074_Initial.Designer.cs">
+      <DependentUpon>201506120223074_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\DimensionRepository.cs" />
@@ -97,8 +96,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201506112349116_AddUniqueConstrainsAndMaxLenghts.resx">
-      <DependentUpon>201506112349116_AddUniqueConstrainsAndMaxLenghts.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201506120223074_Initial.resx">
+      <DependentUpon>201506120223074_Initial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\SketchStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>

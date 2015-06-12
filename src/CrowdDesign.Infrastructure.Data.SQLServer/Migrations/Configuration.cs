@@ -1,19 +1,34 @@
-using System.Data.Entity.Migrations;
 using CrowdDesign.Core.Entities;
-using CrowdDesign.Infrastructure.SQLServer.Contexts;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Migrations
 {
-    internal sealed class Configuration : DbMigrationsConfiguration<DatabaseContext>
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Migrations;
+    using System.Linq;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<CrowdDesign.Infrastructure.SQLServer.Contexts.DatabaseContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(DatabaseContext context)
+        protected override void Seed(CrowdDesign.Infrastructure.SQLServer.Contexts.DatabaseContext context)
         {
-            base.Seed(context);
+            // Adds default users to the database
+            // TODO: The password should be encrypted
+            context.Users.AddOrUpdate
+                (
+                    new User
+                    {
+                        Username = "admin",
+                        Password = "password",
+                        IsAdmin = true
+                    }
+                );
+
+            context.SaveChanges();
         }
     }
 }

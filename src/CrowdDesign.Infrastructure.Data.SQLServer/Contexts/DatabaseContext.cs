@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Reflection;
 using CrowdDesign.Core.Entities;
+using CrowdDesign.Infrastructure.SQLServer.Migrations;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Contexts
 {
@@ -14,7 +15,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
         public DatabaseContext()
             : base("DefaultConnection")
         {
-            Database.SetInitializer(new DatabaseInitializer());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DatabaseContext, Configuration>());
         }
         #endregion
 
