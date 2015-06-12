@@ -5,12 +5,14 @@ using CrowdDesign.Core.Entities;
 using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
+using CrowdDesign.UI.Web.Hubs;
 using CrowdDesign.UI.Web.Models;
 using CrowdDesign.Utils.AspNet.Mvc;
+using Microsoft.AspNet.SignalR;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
-    [Authorize]
+    [System.Web.Mvc.Authorize]
     public class DimensionController : BaseController<IDimensionRepository, Dimension, int>
     {
         #region Constructors
@@ -51,8 +53,20 @@ namespace CrowdDesign.UI.Web.Controllers
                 bool hasMultipleRequests = ViewData.ContainsKey("MultipleRequests");
                 int dimensionId = -1;
 
+                // Prevents saving dimensions with the same name
+                if (Repository.AnyEntity(d => d.Name.Equals(viewModel.Name)))
+                {
+                    ModelState.AddModelError("Name", "A dimension with the same name already exists");
+
+                    return View("EditDimension", viewModel);
+                }
+
                 if (!hasMultipleRequests)
+                {                    
                     dimensionId = Repository.Create(viewModel.ToDomainModel());
+
+                    GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
+                }
 
                 if (dimensionId > 0 || hasMultipleRequests)
                     return RedirectToAction("EditProject", "Project", new { viewModel.ProjectId });
@@ -67,8 +81,20 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
+                // Prevents saving dimensions with the same name
+                if (Repository.AnyEntity(d => d.Name.Equals(viewModel.Name)))
+                {
+                    ModelState.AddModelError("Name", "A dimension with the same name already exists");
+
+                    return View("EditDimension", viewModel);
+                }
+
                 if (!ViewData.ContainsKey("MultipleRequests"))
+                {                    
                     Repository.Update(viewModel.ToDomainModel());
+
+                    GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
+                }
 
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
             }
@@ -85,7 +111,11 @@ namespace CrowdDesign.UI.Web.Controllers
                 return View("Error");
 
             if (!ViewData.ContainsKey("MultipleRequests"))
+            {
                 Repository.Delete(dimensionId.Value);
+
+                GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
+            }
 
             return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
         }
@@ -98,6 +128,8 @@ namespace CrowdDesign.UI.Web.Controllers
             {
                 if (!ViewData.ContainsKey("MultipleRequests"))
                     Repository.MergeDimensions(sourceDimensionId.Value, targetDimensionId.Value);
+
+                GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
 
                 return Json("Dimensions merged successfully");
             }

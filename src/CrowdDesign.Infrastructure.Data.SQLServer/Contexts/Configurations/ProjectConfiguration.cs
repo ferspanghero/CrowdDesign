@@ -8,6 +8,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts.Configurations
         public ProjectConfiguration()
         {
             Property(e => e.Name).IsRequired();
+            Property(e => e.Name).HasMaxLength(50);
         }
     }
 }

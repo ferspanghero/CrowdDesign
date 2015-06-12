@@ -12,6 +12,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts.Configurations
             HasRequired(e => e.User).WithMany(e => e.Sketches);
 
             Property(e => e.Title).IsRequired();
+            Property(e => e.Title).HasMaxLength(25);
         }
     }
 }

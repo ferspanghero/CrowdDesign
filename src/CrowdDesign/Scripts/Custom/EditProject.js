@@ -1,4 +1,12 @@
 ﻿$(document).ready(function () {
+    var hub = $.connection.morphologicalChartHub;
+
+    hub.client.refresh = function() {
+        location.reload();
+    }
+
+    $.connection.hub.start();
+
     $(".divSketchDraggable").draggable({
         opacity: 0.7,
         containment: "tbody",

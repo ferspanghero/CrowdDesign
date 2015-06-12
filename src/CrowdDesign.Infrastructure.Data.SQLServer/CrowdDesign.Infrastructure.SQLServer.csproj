@@ -50,7 +50,10 @@
     <Compile Include="Contexts\Configurations\DimensionConfiguration.cs" />
     <Compile Include="Contexts\Configurations\ProjectConfiguration.cs" />
     <Compile Include="Contexts\DatabaseContext.cs" />
-    <Compile Include="Contexts\DatabaseInitializer.cs" />
+    <Compile Include="Migrations\201506120223074_Initial.cs" />
+    <Compile Include="Migrations\201506120223074_Initial.Designer.cs">
+      <DependentUpon>201506120223074_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\DimensionRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
@@ -93,6 +96,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Migrations\201506120223074_Initial.resx">
+      <DependentUpon>201506120223074_Initial.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\SketchStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SketchStrings.Designer.cs</LastGenOutput>
