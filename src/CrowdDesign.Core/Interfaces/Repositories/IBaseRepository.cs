@@ -38,7 +38,14 @@ namespace CrowdDesign.Core.Interfaces.Repositories
         /// Deletes an entity.
         /// </summary>
         /// <param name="entityId">The id of the entity to be deleted.</param>
-        void Delete(TKey entityId); 
+        void Delete(TKey entityId);
+
+        /// <summary>
+        /// Verifies if any entity meets a certain criteria.
+        /// </summary>
+        /// <param name="criteria">The criteria to be met.</param>
+        /// <returns>A boolean value indicating if the criteria has been met.</returns>
+        bool AnyEntity(Func<TEntity, bool> criteria);
         #endregion
     }
 }

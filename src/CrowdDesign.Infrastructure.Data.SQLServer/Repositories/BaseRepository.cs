@@ -143,6 +143,12 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             Context.SaveChanges();
         }
 
+        public bool AnyEntity(Func<TEntity, bool> pred)
+        {
+            return 
+                EntitySet.Any(pred);
+        }
+
         public void Dispose()
         {
             if (!_disposed)
