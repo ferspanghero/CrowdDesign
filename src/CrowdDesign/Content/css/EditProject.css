@@ -125,7 +125,7 @@ table th, td {
 }
 
 .divHoveredSolutionDroppable {
-    background-color: lightblue;
+    background-color: lightskyblue;
 }
 
 .divHoveredDimensionDroppable {
@@ -133,9 +133,16 @@ table th, td {
 }
 
 .divHoveredNewSolutionDroppable {
-    background-color: darkblue;
+    background-color: lightblue;
 }
+
+/* Dialogs
+-----------------------------------------------------------*/
 
 #divMergeConfirmationDialog {
     display: none;
+}
+
+#prompt {
+    display: none; 
 }
