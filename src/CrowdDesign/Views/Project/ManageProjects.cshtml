@@ -1,14 +1,12 @@
 ﻿@{
     ViewBag.Title = "Manage projects";
 }
-
 @model IEnumerable<CrowdDesign.Core.Entities.Project>
-
 <div id="divProjectsTable">
     <table id="tblProjects">
         <thead>
             <tr>
-                <th>Project Name</th>
+                <th colspan="3">Project Management </th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +21,16 @@
                             {
                                 <input id="btnDeleteProject" type="submit" value="" />
                             }
+                            
+                        </td>
+                        <td id="tdNameChange">
+                             @using (Html.BeginForm("UpdateProject", "Project", FormMethod.Post))
+                        {
+                            @Html.HiddenFor(ProjectId => project.Id)
+                            @Html.EditorFor(ProjectName => project.Name)
+
+                            <input id="btnChangeName" type="submit" value="Alter name" />
+                        }
                         </td>
                     </tr>
                 }
@@ -30,7 +38,6 @@
         </tbody>
     </table>
 </div>
-
 @if (ViewBag.IsUserAdmin)
 {
     <div id="divProjectsActions">

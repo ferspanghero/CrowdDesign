@@ -3,8 +3,8 @@
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
     var sketchElement = $("#cnvSketch");
 
-    sketchElement.attr("width", 1024);
-    sketchElement.attr("height", 768);
+    sketchElement.attr("width", 1280);
+    sketchElement.attr("height", 800);
 
     sketchElement.sketch();
 

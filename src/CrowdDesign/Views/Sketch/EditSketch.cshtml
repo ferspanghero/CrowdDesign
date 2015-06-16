@@ -37,6 +37,10 @@
                 @Html.ValidationMessageFor(model => model.Title)
             </div>
 
+            <div id="divCanvas">
+                <canvas id="cnvSketch"></canvas>
+            </div>
+
             <div id="divSketchTools">
                 <a href="#cnvSketch" data-tool="marker" data-color="#000000" title="Black"><img src="~/Content/resources/images/black_icon.png" alt="Black" /></a>
                 <a href="#cnvSketch" data-tool="marker" data-color="#ff0000" title="Red"><img src="~/Content/resources/images/red_icon.png" alt="Red" /></a>
@@ -51,13 +55,10 @@
                 <a href="#cnvSketch" data-tool="marker" data-size="15"><img src="~/Content/resources/images/mediumbrush_icon.png" alt="Medium brush" /></a>
                 <a href="#cnvSketch" data-tool="marker" data-size="30"><img src="~/Content/resources/images/bigbrush_icon.png" alt="Big brush" /></a>
                 <a href="#cnvSketch" data-tool="marker" data-size="60"><img src="~/Content/resources/images/bucket_icon.png" alt="Huge bucket" /></a>
-                <a href="#cnvSketch" data-tool="eraser" title="Eraser"><img src="~/Content/resources/images/eraser_icon.png" alt="Eraser" /></a>                
+                <a href="#cnvSketch" data-tool="eraser" title="Eraser"><img src="~/Content/resources/images/eraser_icon.png" alt="Eraser" /></a>
                 <a href="#cnvSketch" data-tool="text" title="Text"><img src="~/Content/resources/images/text_icon.png" alt="Text" /></a>
             </div>
 
-            <div id="divCanvas">
-                <canvas id="cnvSketch"></canvas>
-            </div>
 
             <div>
                 @{
