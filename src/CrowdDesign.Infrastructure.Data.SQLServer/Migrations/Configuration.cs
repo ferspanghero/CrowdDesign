@@ -29,6 +29,28 @@ namespace CrowdDesign.Infrastructure.SQLServer.Migrations
                     }
                 );
 
+            context.Users.AddOrUpdate
+                (
+                    e => e.Username,
+                    new User
+                    {
+                        Username = "user1",
+                        Password = "password",
+                        IsAdmin = false
+                    }
+                );
+
+            context.Users.AddOrUpdate
+                (
+                    e => e.Username,
+                    new User
+                    {
+                        Username = "user2",
+                        Password = "password",
+                        IsAdmin = false
+                    }
+                );
+
             context.SaveChanges();
         }
     }

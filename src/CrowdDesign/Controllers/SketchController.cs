@@ -27,6 +27,8 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (projectId != null && dimensionId != null)
             {
+                // Since an action is being executed after the session expires (and going to the Index page after that),
+                // this check is necessary to prevent a NullReferenceException
                 if (System.Web.HttpContext.Current.Session["userId"] != null)
                 {
                     ViewBag.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
@@ -75,6 +77,8 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
+                // Since an action is being executed after the session expires (and going to the Index page after that),
+                // this check is necessary to prevent a NullReferenceException
                 if (System.Web.HttpContext.Current.Session["userId"] != null)
                 {
                     viewModel.UserId = (int)System.Web.HttpContext.Current.Session["userId"];

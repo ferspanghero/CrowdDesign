@@ -6,7 +6,11 @@
 
 <div id="divEditSketchMain">
     @{
-
+        // The user can edit the sketch in the following situations:
+        // The user is an admin
+        // OR the model is null or there isn't a valid sketch id (the sketch is being created)
+        // OR the model is not null (the sketch is being updated) and the current user is the one that created the sketch
+        bool userCanEditSketch = ViewBag.UserIsAdmin || (Model == null || !Model.SketchId.HasValue) || Model.UserId.HasValue && Model.UserId == ViewBag.UserId;
         string actionName;
 
         if (Model == null || !Model.SketchId.HasValue)
@@ -57,11 +61,8 @@
 
             <div>
                 @{
-            // Display the save button in the following situations:
-            // The user is an admin
-            // OR the model is null or there isn't a valid sketch id (the sketch is being created)
-            // OR the model is not null (the sketch is being updated) and the current user is the one that created the sketch
-            if (ViewBag.UserIsAdmin || (Model == null || !Model.SketchId.HasValue) || Model.UserId.HasValue && Model.UserId == ViewBag.UserId)
+           
+            if (userCanEditSketch)
             {
                 <input id="btnSaveSketch" type="submit" value="Save changes" />
             }
@@ -69,7 +70,7 @@
             </div>
         }
 
-        if (Model != null && Model.SketchId.HasValue)
+        if (Model != null && Model.SketchId.HasValue && userCanEditSketch)
         {
             using (Html.BeginForm("DeleteSketch", "Sketch", new { Model.SketchId, Model.ProjectId }, FormMethod.Post, new { onclick = "return confirm('This operation cannot be undone. Are you sure you want to continue?');" }))
             {
