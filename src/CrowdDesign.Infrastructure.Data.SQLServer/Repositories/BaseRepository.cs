@@ -145,8 +145,10 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
         public bool AnyEntity(Func<TEntity, bool> pred)
         {
-            return 
-                EntitySet.Any(pred);
+            // The method AsNoTracking() is required because calling IEnumerable.Any() directly from the EntitySet 
+            // causes entities to be detached, generating primary key conflicts in update scenarios
+            return
+                EntitySet.AsNoTracking().Any(pred);
         }
 
         public void Dispose()
