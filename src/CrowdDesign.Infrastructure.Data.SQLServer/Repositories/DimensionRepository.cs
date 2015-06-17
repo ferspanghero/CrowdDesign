@@ -22,6 +22,11 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             get { return DimensionStrings.DimensionNotFound; }
         }
+
+        protected override string EntityAlreadyExistsMessage
+        {
+            get { return DimensionStrings.DimensionAlreadyExists; }
+        }
         #endregion
 
         #region Methods

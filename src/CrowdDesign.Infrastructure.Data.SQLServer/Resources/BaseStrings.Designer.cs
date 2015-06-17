@@ -22,14 +22,14 @@ namespace CrowdDesign.Infrastructure.SQLServer.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class DimensionStrings {
+    internal class BaseStrings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal DimensionStrings() {
+        internal BaseStrings() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CrowdDesign.Infrastructure.SQLServer.Resources.DimensionStrings", typeof(DimensionStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CrowdDesign.Infrastructure.SQLServer.Resources.BaseStrings", typeof(BaseStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,20 @@ namespace CrowdDesign.Infrastructure.SQLServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A dimension with the same name already exists.
+        ///   Looks up a localized string similar to The entity already exists.
         /// </summary>
-        internal static string DimensionAlreadyExists {
+        internal static string EntityAlreadyExists {
             get {
-                return ResourceManager.GetString("DimensionAlreadyExists", resourceCulture);
+                return ResourceManager.GetString("EntityAlreadyExists", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to find dimension.
+        ///   Looks up a localized string similar to Unable to find entity.
         /// </summary>
-        internal static string DimensionNotFound {
+        internal static string EntityNotFound {
             get {
-                return ResourceManager.GetString("DimensionNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to find one or more dimensions.
-        /// </summary>
-        internal static string DimensionsNotFound {
-            get {
-                return ResourceManager.GetString("DimensionsNotFound", resourceCulture);
+                return ResourceManager.GetString("EntityNotFound", resourceCulture);
             }
         }
     }

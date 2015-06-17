@@ -9,6 +9,8 @@ using CrowdDesign.UI.Web.Hubs;
 using CrowdDesign.UI.Web.Models;
 using CrowdDesign.Utils.AspNet.Mvc;
 using Microsoft.AspNet.SignalR;
+using System;
+using CrowdDesign.Core.Exceptions;
 
 namespace CrowdDesign.UI.Web.Controllers
 {
@@ -53,17 +55,18 @@ namespace CrowdDesign.UI.Web.Controllers
                 bool hasMultipleRequests = ViewData.ContainsKey("MultipleRequests");
                 int dimensionId = -1;
 
-                // Prevents saving dimensions with the same name
-                if (Repository.AnyEntity(d => d.Name.Equals(viewModel.Name)))
-                {
-                    ModelState.AddModelError("Name", "A dimension with the same name already exists");
-
-                    return View("EditDimension", viewModel);
-                }
-
                 if (!hasMultipleRequests)
-                {                    
-                    dimensionId = Repository.Create(viewModel.ToDomainModel());
+                {
+                    try
+                    {
+                        dimensionId = Repository.Create(viewModel.ToDomainModel());
+                    }
+                    catch (EntityAlreadyExistsException ex)
+                    {
+                        ModelState.AddModelError("Name", ex.Message);
+
+                        return View("EditDimension", viewModel);
+                    }
 
                     GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
                 }
@@ -81,17 +84,18 @@ namespace CrowdDesign.UI.Web.Controllers
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
-                // Prevents saving dimensions with the same name
-                if (Repository.AnyEntity(d => d.Name.Equals(viewModel.Name) && d.Id != viewModel.DimensionId))
-                {
-                    ModelState.AddModelError("Name", "A dimension with the same name already exists");
-
-                    return View("EditDimension", viewModel);
-                }
-
                 if (!ViewData.ContainsKey("MultipleRequests"))
-                {                    
-                    Repository.Update(viewModel.ToDomainModel());
+                {
+                    try
+                    {
+                        Repository.Update(viewModel.ToDomainModel());
+                    }
+                    catch (EntityAlreadyExistsException ex)
+                    {
+                        ModelState.AddModelError("Name", ex.Message);
+
+                        return View("EditDimension", viewModel);
+                    }
 
                     GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
                 }

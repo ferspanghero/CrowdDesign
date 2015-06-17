@@ -61,6 +61,11 @@
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\ProjectRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\BaseStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BaseStrings.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\SketchStrings.Designer.cs">
       <DependentUpon>SketchStrings.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -98,6 +103,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201506120223074_Initial.resx">
       <DependentUpon>201506120223074_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\BaseStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BaseStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\SketchStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>

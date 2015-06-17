@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using CrowdDesign.Core.Interfaces.Entities;
 using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Utils.Extensions;
+using System.Data.SqlClient;
+using CrowdDesign.Core.Exceptions;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 {
@@ -29,12 +32,23 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         #endregion
 
         #region Properties
-        #region Abstract
+
         /// <summary>
         /// Gets a message to be displayed when the entity is not found.
         /// </summary>
-        protected abstract string EntityNotFoundMessage { get; }
-        #endregion
+        protected virtual string EntityNotFoundMessage
+        {
+            get { return Resources.BaseStrings.EntityNotFound; }
+
+        }
+
+        /// <summary>
+        /// Gets a message to be displayed when the entity already exists.
+        /// </summary>
+        protected virtual string EntityAlreadyExistsMessage
+        {
+            get { return Resources.BaseStrings.EntityAlreadyExists; }
+        }
 
         /// <summary>
         /// Gets or sets the Entity Framework database context.
@@ -104,16 +118,29 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 
             return
                 entities;
-        }        
+        }
 
         public TKey Create(TEntity entity)
         {
             entity.TryThrowArgumentNullException("entity");
 
-            CreateEntityRelationships(entity);
+            try
+            {
+                CreateEntityRelationships(entity);
 
-            EntitySet.Add(entity);
-            Context.SaveChanges();
+                EntitySet.Add(entity);
+                Context.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                SqlException sqlEx = ex.GetBaseException() as SqlException;
+
+                // This error code represents errors related to SQL Server unique keys conflicts
+                if (sqlEx != null && sqlEx.ErrorCode == -2146232060)
+                    throw new EntityAlreadyExistsException(EntityAlreadyExistsMessage);
+
+                throw;
+            }
 
             TKey entityId = entity.Id;
 
@@ -125,10 +152,23 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         {
             entity.TryThrowArgumentNullException("entity");
 
-            EntitySet.Attach(entity);
-            Context.Entry(entity).State = EntityState.Modified;
+            try
+            {
+                EntitySet.Attach(entity);
+                Context.Entry(entity).State = EntityState.Modified;
 
-            Context.SaveChanges();
+                Context.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                SqlException sqlEx = ex.GetBaseException() as SqlException;
+
+                // This error code represents errors related to SQL Server unique keys conflicts
+                if (sqlEx != null && sqlEx.ErrorCode == -2146232060)
+                    throw new EntityAlreadyExistsException(EntityAlreadyExistsMessage);
+
+                throw;
+            }
         }
 
         public void Delete(TKey entityId)
@@ -141,14 +181,6 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             EntitySet.Remove(entityRecord);
 
             Context.SaveChanges();
-        }
-
-        public bool AnyEntity(Func<TEntity, bool> pred)
-        {
-            // The method AsNoTracking() is required because calling IEnumerable.Any() directly from the EntitySet 
-            // causes entities to be detached, generating primary key conflicts in update scenarios
-            return
-                EntitySet.AsNoTracking().Any(pred);
         }
 
         public void Dispose()
