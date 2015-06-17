@@ -2,6 +2,7 @@
     var jsonSketchData = $("#Data").val();
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
     var sketchElement = $("#cnvSketch");
+    var sketchActionsStack = new Array();    
 
     sketchElement.attr("width", 1280);
     sketchElement.attr("height", 800);
@@ -24,4 +25,35 @@
     $("#btnClearSketch").click(function () {
         $("#Data").val("");
     });
+
+    $("#lnkSketchUndo").click(function () {
+        undoAction(sketchElement.sketch(), sketchActionsStack);
+    });
+
+    $("#lnkSketchRedo").click(function () {
+        redoAction(sketchElement.sketch(), sketchActionsStack);
+    });
+
+    $(document).keydown(function (e) {
+        if (e.which === 90 && e.ctrlKey) {
+            undoAction(sketchElement.sketch(), sketchActionsStack);
+        }
+        else if (e.which === 89 && e.ctrlKey) {
+            redoAction(sketchElement.sketch(), sketchActionsStack);
+        }
+    });
 });
+
+function undoAction(sketch, sketchActionsStack) {
+    if (sketch.actions.length > 0) {
+        sketchActionsStack.push(sketch.actions.pop());
+        sketch.redraw();
+    }
+}
+
+function redoAction(sketch, sketchActionsStack) {
+    if (sketchActionsStack.length > 0) {
+        sketch.actions.push(sketchActionsStack.pop());
+        sketch.redraw();
+    }
+}

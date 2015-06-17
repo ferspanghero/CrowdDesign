@@ -183,10 +183,13 @@
     <Content Include="Content\resources\images\mediumbrush_icon.png" />
     <Content Include="Content\resources\images\pencil_icon.png" />
     <Content Include="Content\resources\images\pen_icon.png" />
+    <Content Include="Content\resources\images\plus_icon.png" />
+    <Content Include="Content\resources\images\redo_icon.png" />
     <Content Include="Content\resources\images\red_icon.png" />
     <Content Include="Content\resources\images\smallbrush_icon.png" />
     <Content Include="Content\resources\images\stick_icon.png" />
     <Content Include="Content\resources\images\text_icon.png" />
+    <Content Include="Content\resources\images\undo_icon.png" />
     <Content Include="Content\resources\images\yellow_icon.png" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
