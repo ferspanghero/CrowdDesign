@@ -178,5 +178,13 @@ namespace CrowdDesign.UI.Web.Controllers
             return Json("Failed to move the sketch");
         }
         #endregion
+
+        public ActionResult CancelAction(int? projectId)
+        {
+            if (projectId == null || !ModelState.IsValid)
+                return View("Error");
+
+            return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
+        }
     }
 }
