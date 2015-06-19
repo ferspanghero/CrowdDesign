@@ -22,8 +22,8 @@
         $("#ImageUri").val(document.getElementById("cnvSketch").toDataURL());
     });
 
-    $("#btnClearSketch").click(function () {
-        $("#Data").val("");
+    $("#lnkClearSketch").click(function () {
+        clearSketch(sketchElement.sketch(), sketchActionsStack);
     });
 
     $("#lnkSketchUndo").click(function () {
@@ -56,4 +56,15 @@ function redoAction(sketch, sketchActionsStack) {
         sketch.actions.push(sketchActionsStack.pop());
         sketch.redraw();
     }
+}
+
+function clearSketch(sketch, sketchActionsStack) {
+    if (sketch.actions.length > 0) {
+        sketchActionsStack.push(sketch.actions.pop());
+        clearSketch(sketch, sketchActionsStack);
+    } else {
+        sketchActionsStack = [];
+        sketch.redraw();   
+    }
+        
 }
