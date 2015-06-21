@@ -23,7 +23,25 @@
     });
 
     $("#lnkClearSketch").click(function () {
-        clearSketch(sketchElement.sketch(), sketchActionsStack);
+        $("#dialog-confirm").html("This operation cannot be undone. Are you sure you want to continue?");
+
+        // Define the Dialog and its properties.
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            modal: true,
+            title: "Clear sketch",
+            height: 300,
+            width: 400,
+            buttons: {
+                "Yes": function () {
+                    $(this).dialog('close');
+                    clearSketch(sketchElement.sketch(), sketchActionsStack);
+                },
+                "No": function () {
+                    $(this).dialog('close');
+               }
+            }
+        }); 
     });
 
     $("#lnkSketchUndo").click(function () {
