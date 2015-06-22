@@ -2,6 +2,7 @@
 using System.Net;
 using System.Web.Mvc;
 using CrowdDesign.Core.Entities;
+using CrowdDesign.Core.Exceptions;
 using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Contexts;
 using CrowdDesign.Infrastructure.SQLServer.Repositories;
@@ -111,7 +112,16 @@ namespace CrowdDesign.UI.Web.Controllers
             {
                 if (!ViewData.ContainsKey("MultipleRequests"))
                 {
-                    Repository.Update(viewModel.ToDomainModel());
+                    try
+                    {
+                        Repository.Update(viewModel.ToDomainModel());
+                    }
+                    catch (EntityAlreadyDeletedException ex)
+                    {
+                        ModelState.AddModelError("Title", ex.Message);
+
+                        return RedirectToAction("EditSketch", new { viewModel.ProjectId, viewModel.DimensionId, viewModel.SketchId });
+                    }
 
                     GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
                 }
@@ -135,7 +145,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
                 GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
             }
-                
+
 
             return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
         }
@@ -154,7 +164,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 return Json("Sketch moved successfully");
             }
 
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;            
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             return Json("Failed to move the sketch");
         }

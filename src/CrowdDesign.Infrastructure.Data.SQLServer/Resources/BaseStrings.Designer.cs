@@ -61,6 +61,15 @@ namespace CrowdDesign.Infrastructure.SQLServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The entity has already been deleted.
+        /// </summary>
+        internal static string EntityAlreadyDeleted {
+            get {
+                return ResourceManager.GetString("EntityAlreadyDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The entity already exists.
         /// </summary>
         internal static string EntityAlreadyExists {

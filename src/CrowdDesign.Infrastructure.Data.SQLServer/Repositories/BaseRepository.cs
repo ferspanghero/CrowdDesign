@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using CrowdDesign.Core.Interfaces.Entities;
@@ -48,6 +49,14 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
         protected virtual string EntityAlreadyExistsMessage
         {
             get { return Resources.BaseStrings.EntityAlreadyExists; }
+        }
+
+        /// <summary>
+        /// Gets a message to be displayed when the entity has already been deleted.
+        /// </summary>
+        protected virtual string EntityAlreadyDeletedMessage
+        {
+            get { return Resources.BaseStrings.EntityAlreadyDeleted; }
         }
 
         /// <summary>
@@ -161,11 +170,15 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             }
             catch (DbUpdateException ex)
             {
-                SqlException sqlEx = ex.GetBaseException() as SqlException;
+                Exception baseException = ex.GetBaseException();
 
-                // This error code represents errors related to SQL Server unique keys conflicts
-                if (sqlEx != null && sqlEx.ErrorCode == -2146232060)
+                // Exception that is thrown when a SQL Server unique constraint is violated. The error code is obtained from SQL Server
+                if (baseException is SqlException && ((SqlException)baseException).ErrorCode == -2146232060)
                     throw new EntityAlreadyExistsException(EntityAlreadyExistsMessage);
+                
+                // Exception that is thrown when an attempt to update an already deleted entity is made
+                if (baseException is OptimisticConcurrencyException)
+                    throw new EntityAlreadyDeletedException(EntityAlreadyDeletedMessage);
 
                 throw;
             }

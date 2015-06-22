@@ -65,7 +65,7 @@ namespace CrowdDesign.UI.Web.Controllers
                     {
                         ModelState.AddModelError("Name", ex.Message);
 
-                        return View("EditDimension", viewModel);
+                        return RedirectToAction("EditDimension", new { viewModel.ProjectId, viewModel.DimensionId });
                     }
 
                     GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
@@ -94,13 +94,19 @@ namespace CrowdDesign.UI.Web.Controllers
                     {
                         ModelState.AddModelError("Name", ex.Message);
 
-                        return View("EditDimension", viewModel);
+                        return RedirectToAction("EditDimension", new { viewModel.ProjectId, viewModel.DimensionId });
+                    }
+                    catch (EntityAlreadyDeletedException ex)
+                    {
+                        ModelState.AddModelError("Name", ex.Message);
+
+                        return RedirectToAction("EditDimension", new { viewModel.ProjectId, viewModel.DimensionId });
                     }
 
                     GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
                 }
 
-                return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
+                return RedirectToAction("EditProject", "Project", new { viewModel.ProjectId });
             }
 
             return View("Error");
