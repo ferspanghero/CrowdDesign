@@ -1,13 +1,10 @@
 ﻿$(document).ready(function () {
     var jsonSketchData = $("#Data").val();
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
-    var sketchElement = $("#cnvSketch");
-    var sketchActionsStack = new Array();    
+    var sketchElement = new fabric.Canvas('cnvSketch');
 
-    sketchElement.attr("width", 1280);
-    sketchElement.attr("height", 800);
-
-    sketchElement.sketch();
+    sketchElement.isDrawingMode = true;
+    sketchElement.Selection = false;
 
     if (sketchData) {
         $.each(sketchData, function () {

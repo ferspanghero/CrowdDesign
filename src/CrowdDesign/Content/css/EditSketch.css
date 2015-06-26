@@ -15,3 +15,7 @@
 .divSketchField {
     display: inline;
 }
+
+.canvas-container {
+    margin: 0 auto;
+}
