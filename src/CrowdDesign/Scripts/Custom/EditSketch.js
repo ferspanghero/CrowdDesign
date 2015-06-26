@@ -54,8 +54,12 @@
         }
     });
 
-    $(".lnkSketchDrawColor").click(function (e) {
+    $(".lnkSketchDrawColor").click(function () {
         sketchElement.freeDrawingBrush.color = this.getAttribute('data-color');
+    });
+
+    $(".lnkSketchDrawWidth").click(function () {
+        sketchElement.freeDrawingBrush.width = this.getAttribute('data-size');
     });
 });
 
