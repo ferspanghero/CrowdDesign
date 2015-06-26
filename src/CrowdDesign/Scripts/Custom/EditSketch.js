@@ -53,6 +53,10 @@
             redoAction(sketchElement.sketch(), sketchActionsStack);
         }
     });
+
+    $(".lnkSketchDrawColor").click(function (e) {
+        sketchElement.freeDrawingBrush.color = this.getAttribute('data-color');
+    });
 });
 
 function undoAction(sketch, sketchActionsStack) {

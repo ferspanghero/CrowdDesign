@@ -42,12 +42,12 @@
             </div>
 
             <div id="divSketchTools">
-                <a href="#cnvSketch" data-tool="marker" data-color="#000000" title="Black"><img src="~/Content/resources/images/black_icon.png" alt="Black"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#ff0000" title="Red"><img src="~/Content/resources/images/red_icon.png" alt="Red"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#00ff00" title="Green"><img src="~/Content/resources/images/green_icon.png" alt="Green"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#0000ff" title="Blue"><img src="~/Content/resources/images/blue_icon.png" alt="Blue"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#ffff00" title="Yellow"><img src="~/Content/resources/images/yellow_icon.png" alt="Yellow"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#00ffff" title="Cyan"><img src="~/Content/resources/images/cyan_icon.png" alt="Cyan"/></a>
+                <a href="#" class="lnkSketchDrawColor" data-color="#000000" title="Black"><img src="~/Content/resources/images/black_icon.png" alt="Black"/></a>
+                <a href="#" class="lnkSketchDrawColor" data-color="#ff0000" title="Red"><img src="~/Content/resources/images/red_icon.png" alt="Red" /></a>
+                <a href="#" class="lnkSketchDrawColor" data-color="#00ff00" title="Green"><img src="~/Content/resources/images/green_icon.png" alt="Green" /></a>
+                <a href="#" class="lnkSketchDrawColor" data-color="#0000ff" title="Blue"><img src="~/Content/resources/images/blue_icon.png" alt="Blue" /></a>
+                <a href="#" class="lnkSketchDrawColor" data-color=" #ffff00" title="Yellow"><img src="~/Content/resources/images/yellow_icon.png" alt="Yellow" /></a>
+                <a href="#" class="lnkSketchDrawColor" data-color="#00ffff" title="Cyan"><img src="~/Content/resources/images/cyan_icon.png" alt="Cyan" /></a>
                 <a href="#cnvSketch" data-tool="marker" data-size="1"><img src="~/Content/resources/images/pencil_icon.png" alt="Pencil"/></a>
                 <a href="#cnvSketch" data-tool="marker" data-size="3"><img src="~/Content/resources/images/pen_icon.png" alt="Pen"/></a>
                 <a href="#cnvSketch" data-tool="marker" data-size="5"><img src="~/Content/resources/images/stick_icon.png" alt="Stick"/></a>
@@ -65,7 +65,7 @@
             <div>
                 @{
 
-                    if (userCanEditSketch)
+            if (userCanEditSketch)
                     {
                         <input id="btnSaveSketch" type="submit" value="Save changes"/>
                     }
