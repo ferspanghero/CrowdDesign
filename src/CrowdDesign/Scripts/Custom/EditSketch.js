@@ -7,16 +7,12 @@
     sketchElement.Selection = false;
 
     if (sketchData) {
-        $.each(sketchData, function () {
-            sketchElement.sketch().actions.push(this);
-        });
-
-        sketchElement.sketch().redraw();
+        sketchElement.loadFromJSON(sketchData, sketchElement.renderAll.bind(sketchElement));
     }
 
     $("#btnSaveSketch").click(function () {
-        $("#Data").val(JSON.stringify(sketchElement.sketch().actions));
-        $("#ImageUri").val(document.getElementById("cnvSketch").toDataURL());
+        $("#Data").val(JSON.stringify(sketchElement));
+        $("#ImageUri").val(sketchElement.toDataURL());
     });
 
     $("#lnkClearSketch").click(function () {
