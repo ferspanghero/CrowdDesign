@@ -39,7 +39,7 @@
         }); 
     });
 
-    $("#lnkSketchUndo").click(function () {
+    function undoAction() {
         if (sketchElement.getObjects().length !== 0) {
             var lastItemIndex = (sketchElement.getObjects().length - 1);
             var item = sketchElement.item(lastItemIndex);
@@ -48,22 +48,30 @@
             sketchElement.remove(item);
             sketchElement.renderAll();
         }
-   });
+    }
 
-    $("#lnkSketchRedo").click(function () {
+    function redoAction() {
         if (sketchActionStack.length !== 0) {
             var item = sketchActionStack.pop(item);
             sketchElement.add(item);
             sketchElement.renderAll();
         }
+    }
+
+    $("#lnkSketchUndo").click(function () {
+        undoAction();
+    });
+
+    $("#lnkSketchRedo").click(function () {
+        redoAction();
     });
 
     $(document).keydown(function (e) {
         if (e.which === 90 && e.ctrlKey) {
-            undoAction(sketchElement.sketch(), sketchActionsStack);
+            undoAction();
         }
         else if (e.which === 89 && e.ctrlKey) {
-            redoAction(sketchElement.sketch(), sketchActionsStack);
+            redoAction();
         }
     });
 
