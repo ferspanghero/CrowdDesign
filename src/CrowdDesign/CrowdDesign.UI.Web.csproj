@@ -229,6 +229,7 @@
     <Content Include="Content\css\Site.css" />
     <None Include="Properties\PublishProfiles\CrowdDesign server.pubxml" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
+    <Content Include="Scripts\fabric.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
     <Content Include="Scripts\jquery-2.1.3.min.js" />
     <Content Include="Scripts\jquery-2.1.3.min.map" />
