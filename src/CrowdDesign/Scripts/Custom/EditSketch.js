@@ -2,6 +2,7 @@
     var jsonSketchData = $("#Data").val();
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
     var sketchElement = new fabric.Canvas('cnvSketch');
+    var sketchActionStack = []
 
     sketchElement.isDrawingMode = true;
     sketchElement.Selection = false;
@@ -28,7 +29,8 @@
             buttons: {
                 "Yes": function () {
                     $(this).dialog('close');
-                    clearSketch(sketchElement.sketch(), sketchActionsStack);
+                    sketchElement.clear();
+                    sketchElement.renderAll();
                 },
                 "No": function () {
                     $(this).dialog('close');
@@ -38,11 +40,22 @@
     });
 
     $("#lnkSketchUndo").click(function () {
-        undoAction(sketchElement.sketch(), sketchActionsStack);
-    });
+        if (sketchElement.getObjects().length !== 0) {
+            var lastItemIndex = (sketchElement.getObjects().length - 1);
+            var item = sketchElement.item(lastItemIndex);
+
+            sketchActionStack.push(item);
+            sketchElement.remove(item);
+            sketchElement.renderAll();
+        }
+   });
 
     $("#lnkSketchRedo").click(function () {
-        redoAction(sketchElement.sketch(), sketchActionsStack);
+        if (sketchActionStack.length !== 0) {
+            var item = sketchActionStack.pop(item);
+            sketchElement.add(item);
+            sketchElement.renderAll();
+        }
     });
 
     $(document).keydown(function (e) {
@@ -62,28 +75,3 @@
         sketchElement.freeDrawingBrush.width = this.getAttribute('data-size');
     });
 });
-
-function undoAction(sketch, sketchActionsStack) {
-    if (sketch.actions.length > 0) {
-        sketchActionsStack.push(sketch.actions.pop());
-        sketch.redraw();
-    }
-}
-
-function redoAction(sketch, sketchActionsStack) {
-    if (sketchActionsStack.length > 0) {
-        sketch.actions.push(sketchActionsStack.pop());
-        sketch.redraw();
-    }
-}
-
-function clearSketch(sketch, sketchActionsStack) {
-    if (sketch.actions.length > 0) {
-        sketchActionsStack.push(sketch.actions.pop());
-        clearSketch(sketch, sketchActionsStack);
-    } else {
-        sketchActionsStack = [];
-        sketch.redraw();   
-    }
-        
-}
