@@ -189,7 +189,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             TEntity entityRecord = EntitySet.Find(entityId);
 
             if (entityRecord == null)
-                throw new InvalidOperationException(EntityNotFoundMessage);
+                throw new EntityNotFoundException(EntityNotFoundMessage);
 
             EntitySet.Remove(entityRecord);
 

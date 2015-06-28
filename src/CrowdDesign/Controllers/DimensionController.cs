@@ -24,6 +24,7 @@ namespace CrowdDesign.UI.Web.Controllers
         #endregion
 
         #region Methods
+        [ImportModelStateFromTempData]
         public ActionResult EditDimension(int? projectId, int? dimensionId)
         {
             if (projectId == null)
@@ -36,9 +37,15 @@ namespace CrowdDesign.UI.Web.Controllers
                 Dimension dimension = Repository.Get(dimensionId.Value).SingleOrDefault();
 
                 if (dimension == null)
-                    return View("Error");
-
-                viewModel = new EditDimensionViewModel(dimension);
+                {
+                    // If a previous action caused the model to be invalid (like a failed update or creation), return the view so that it can display the errors
+                    if (!ModelState.IsValid)
+                        viewModel = new EditDimensionViewModel { ProjectId = projectId };
+                    else
+                        return View("Error");
+                }
+                else
+                    viewModel = new EditDimensionViewModel(dimension);
             }
             else
                 viewModel = new EditDimensionViewModel { ProjectId = projectId };
@@ -48,6 +55,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
+        [ExportModelStateToTempData]
         public ActionResult CreateDimension(EditDimensionViewModel viewModel)
         {
             if (viewModel != null && viewModel.ProjectId != null && ModelState.IsValid)
@@ -80,6 +88,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
+        [ExportModelStateToTempData]
         public ActionResult UpdateDimension(EditDimensionViewModel viewModel)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
@@ -115,6 +124,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
+        [ExportModelStateToTempData]
         public ActionResult DeleteDimension(int? dimensionId, int? projectId)
         {
             if (dimensionId == null || projectId == null || !ModelState.IsValid)
@@ -122,7 +132,16 @@ namespace CrowdDesign.UI.Web.Controllers
 
             if (!ViewData.ContainsKey("MultipleRequests"))
             {
-                Repository.Delete(dimensionId.Value);
+                try
+                {
+                    Repository.Delete(dimensionId.Value);
+                }
+                catch (EntityNotFoundException ex)
+                {
+                    ModelState.AddModelError("Name", ex.Message);
+
+                    return RedirectToAction("EditDimension", new { projectId, dimensionId });
+                }
 
                 GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
             }
@@ -148,7 +167,6 @@ namespace CrowdDesign.UI.Web.Controllers
 
             return Json("Failed to merge dimensions");
         }
-        #endregion
 
         public ActionResult CancelAction(int? projectId)
         {
@@ -156,5 +174,6 @@ namespace CrowdDesign.UI.Web.Controllers
                 return View("Error");
             return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
         }
+        #endregion       
     }
 }

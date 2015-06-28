@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using CrowdDesign.Core.Entities;
+using CrowdDesign.Core.Exceptions;
 using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Resources;
 using CrowdDesign.Utils.Extensions;
@@ -70,7 +71,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             var dimensionRecords = dimensionIds.SelectMany(id => dimensionsLookup[id]).ToList();
 
             if (dimensionIds.Length != dimensionRecords.Count)
-                throw new InvalidOperationException(DimensionStrings.DimensionsNotFound);
+                throw new EntityNotFoundException(DimensionStrings.DimensionsNotFound);
 
             // If there is more than one dimension being merged
             if (dimensionRecords.Count > 1)

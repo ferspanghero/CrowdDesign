@@ -83,7 +83,7 @@
 
         if (Model != null && Model.SketchId.HasValue && userCanEditSketch)
         {
-            using (Html.BeginForm("DeleteSketch", "Sketch", new {Model.SketchId, Model.ProjectId}, FormMethod.Post, new {onclick = "return confirm('This operation cannot be undone. Are you sure you want to continue?');"}))
+            using (Html.BeginForm("DeleteSketch", "Sketch", new {Model.SketchId, Model.DimensionId, Model.ProjectId}, FormMethod.Post, new {onclick = "return confirm('This operation cannot be undone. Are you sure you want to continue?');"}))
             {
                 <div class="divSketchField">
                     <input type="submit" value="Delete"/>

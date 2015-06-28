@@ -71,6 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AspNet.Mvc\DetectMultipleRequestsAttribute.cs" />
+    <Compile Include="AspNet.Mvc\ExportModelStateToTempDataAttribute.cs" />
+    <Compile Include="AspNet.Mvc\ImportModelStateFromTempDataAttribute.cs" />
+    <Compile Include="AspNet.Mvc\ModelStateTempDataTransferAttribute.cs" />
     <Compile Include="Extensions\Extensions.Object.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
