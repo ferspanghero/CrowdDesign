@@ -54,6 +54,10 @@
     <Compile Include="Migrations\201506120223074_Initial.Designer.cs">
       <DependentUpon>201506120223074_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506280552052_UpdateDimensionUniqueKey.cs" />
+    <Compile Include="Migrations\201506280552052_UpdateDimensionUniqueKey.Designer.cs">
+      <DependentUpon>201506280552052_UpdateDimensionUniqueKey.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\DimensionRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
@@ -103,6 +107,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201506120223074_Initial.resx">
       <DependentUpon>201506120223074_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506280552052_UpdateDimensionUniqueKey.resx">
+      <DependentUpon>201506280552052_UpdateDimensionUniqueKey.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\BaseStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
