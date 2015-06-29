@@ -251,8 +251,6 @@
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\Custom\EditProject.js" />
-    <Content Include="Scripts\sketch.js" />
-    <Content Include="Scripts\sketch.min.js" />
     <Content Include="Scripts\Custom\EditSketch.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
@@ -269,9 +267,6 @@
     <Content Include="Views\Sketch\EditSketch.cshtml" />
     <Content Include="Views\Project\EditProject.cshtml" />
     <Content Include="Views\Project\ManageProjects.cshtml" />
-    <Content Include="Scripts\sketch.min.js.map">
-      <DependentUpon>sketch.min.js</DependentUpon>
-    </Content>
     <Content Include="Views\Dimension\EditDimension.cshtml" />
     <Content Include="Views\Security\Login.cshtml" />
   </ItemGroup>
