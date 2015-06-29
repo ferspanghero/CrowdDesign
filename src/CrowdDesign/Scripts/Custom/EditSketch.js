@@ -102,4 +102,12 @@
         sketchElement.freeDrawingBrush.width = this.getAttribute('data-size');
     });
 
+    $(".lnkSketchText").click(function () {
+        var input = prompt("Please enter the text you would like to add to your canvas");
+        if (input != null) {
+            var textElement = new fabric.Text(input, { left: 100, top: 100 });
+            sketchElement.add(textElement);
+            sketchElement.isDrawingMode = false;
+        }
+    });
 });
