@@ -39,6 +39,23 @@
         }); 
     });
 
+    $("#lnkSketchDrawingMode").click(function () {
+        sketchElement.isDrawingMode = false;
+        sketchElement.Selection = true;
+    });
+
+    $("#lnkSketchDeletePath").click(function () {
+        if (sketchElement.getActiveGroup()) {
+            sketchElement.getActiveGroup().forEachObject(function(a) {
+                sketchElement.remove(a);
+            });
+            sketchElement.discardActiveGroup();
+            sketchElement.renderAll();
+        } else {
+            sketchElement.remove(sketchElement.getActiveObject());
+        }
+    });
+
     function undoAction() {
         if (sketchElement.getObjects().length !== 0) {
             var lastItemIndex = (sketchElement.getObjects().length - 1);
@@ -77,9 +94,12 @@
 
     $(".lnkSketchDrawColor").click(function () {
         sketchElement.freeDrawingBrush.color = this.getAttribute('data-color');
+        sketchElement.isDrawingMode = true;
+        sketchElement.Selection = false;
     });
 
     $(".lnkSketchDrawWidth").click(function () {
         sketchElement.freeDrawingBrush.width = this.getAttribute('data-size');
     });
+
 });

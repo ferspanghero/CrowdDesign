@@ -177,11 +177,12 @@
     <Content Include="Content\resources\images\bucket_icon.png" />
     <Content Include="Content\resources\images\create.png" />
     <Content Include="Content\resources\images\cyan_icon.png" />
-    <Content Include="Content\resources\images\delete.png" />
     <Content Include="Content\resources\images\clear_all_icon.png" />
+    <Content Include="Content\resources\images\delete_icon.png" />
     <Content Include="Content\resources\images\eraser_icon.png" />
     <Content Include="Content\resources\images\green_icon.png" />
     <Content Include="Content\resources\images\mediumbrush_icon.png" />
+    <Content Include="Content\resources\images\mode_icon.png" />
     <Content Include="Content\resources\images\pencil_icon.png" />
     <Content Include="Content\resources\images\pen_icon.png" />
     <Content Include="Content\resources\images\plus_icon.png" />
