@@ -100,6 +100,8 @@
 
     $(".lnkSketchDrawWidth").click(function () {
         sketchElement.freeDrawingBrush.width = this.getAttribute('data-size');
+        sketchElement.isDrawingMode = true;
+        sketchElement.Selection = false;
     });
 
     $(".lnkSketchText").click(function () {
