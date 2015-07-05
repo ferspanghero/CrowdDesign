@@ -1,8 +1,8 @@
 ﻿$(document).ready(function () {
     var jsonSketchData = $("#Data").val();
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
-    var sketchElement = new fabric.Canvas('cnvSketch');
-    var sketchActionStack = []
+    var sketchElement = new fabric.Canvas('mainCanvas');
+    var sketchActionStack = [];
 
     sketchElement.isDrawingMode = true;
     sketchElement.Selection = false;

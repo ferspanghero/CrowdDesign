@@ -37,9 +37,7 @@
                 @Html.ValidationMessageFor(model => model.Title)
             </div>
 
-            <div id="divCanvas">
-                <canvas id="cnvSketch" width="1200" height="800"></canvas>
-            </div>
+            <canvas id="mainCanvas" width="1200" height="800" style="border:1px solid #000000; margin: 0 auto; display: block;"></canvas>
 
             <div id="divSketchTools">
                 <a class="lnkSketchDrawColor" data-color="#000000" title="Black"><img src="~/Content/resources/images/black_icon.png" alt="Black"/></a>
