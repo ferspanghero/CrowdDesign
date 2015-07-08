@@ -47,7 +47,14 @@
         $(this).removeClass("inactive-tool");
     });
 
-    $(".lnkSketchEraser").click(function() {
+    $(".lnkSketchEraser").click(function () {
+        sketchElement.isDrawingMode = false;
+        sketchElement.Selection = true;
+        sketchElement.on('mouse:down', function (e) {
+            sketchElement.remove(sketchElement.getActiveObject());
+            sketchElement.renderAll();
+        });
+
         $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
         $(this).addClass("active-tool");
         $(this).removeClass("inactive-tool");
