@@ -96,6 +96,9 @@
         sketchElement.freeDrawingBrush.color = this.getAttribute('data-color');
         sketchElement.isDrawingMode = true;
         sketchElement.Selection = false;
+        $("a.active-color").removeClass("active-color").addClass("inactive-color");
+        $(this).addClass("active-color");
+        $(this).removeClass("inactive-color");
     });
 
     $(".lnkSketchDrawWidth").click(function () {
