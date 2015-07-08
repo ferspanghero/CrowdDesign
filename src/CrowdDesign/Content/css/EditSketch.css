@@ -20,12 +20,12 @@
     margin: 0 auto;
 }
 
-.active-tool, .active-color, .active-width {
+.active-tool, .active-color {
     -ms-opacity: 1;
     opacity: 1;
 }
 
-.inactive-tool, .inactive-color, .inactive-width {
+.inactive-tool, .inactive-color {
     -ms-opacity: 0.3;
     opacity: 0.3;
 }

@@ -42,6 +42,15 @@
     $("#lnkSketchDrawingMode").click(function () {
         sketchElement.isDrawingMode = false;
         sketchElement.Selection = true;
+        $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
+        $(this).addClass("active-tool");
+        $(this).removeClass("inactive-tool");
+    });
+
+    $(".lnkSketchEraser").click(function() {
+        $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
+        $(this).addClass("active-tool");
+        $(this).removeClass("inactive-tool");
     });
 
     $("#lnkSketchDeletePath").click(function () {
@@ -105,9 +114,9 @@
         sketchElement.freeDrawingBrush.width = this.getAttribute('data-size');
         sketchElement.isDrawingMode = true;
         sketchElement.Selection = false;
-        $("a.active-width").removeClass("active-width").addClass("inactive-width");
-        $(this).addClass("active-width");
-        $(this).removeClass("inactive-width");
+        $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
+        $(this).addClass("active-tool");
+        $(this).removeClass("inactive-tool");
     });
 
     $(".lnkSketchText").click(function () {
