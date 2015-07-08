@@ -105,6 +105,9 @@
         sketchElement.freeDrawingBrush.width = this.getAttribute('data-size');
         sketchElement.isDrawingMode = true;
         sketchElement.Selection = false;
+        $("a.active-width").removeClass("active-width").addClass("inactive-width");
+        $(this).addClass("active-width");
+        $(this).removeClass("inactive-width");
     });
 
     $(".lnkSketchText").click(function () {
