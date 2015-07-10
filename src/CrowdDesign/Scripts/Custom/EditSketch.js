@@ -116,15 +116,24 @@
         $(anchor).removeClass("inactive-color");
     }
 
-    $(".lnkSketchDrawColor").click(function() {
+    $(".lnkSketchDrawColor").click(function () {
         sketchElement.freeDrawingBrush.color = this.getAttribute("data-color");
-        sketchElement.isDrawingMode = true;
-        sketchElement.Selection = false;
         makeActiveColor(this);
 
-        var searchString = '[data-size="' + sketchElement.freeDrawingBrush.width + '"]';
-        var element = $(searchString);
-        makeActiveTool(element);
+        if (sketchElement.getActiveObject()) {
+            var target = sketchElement.getActiveObject();
+            if (target.get('type') !== "path") { // paths can be given fills, but the results are often unexpected. This line allows fills to be assigned to anything but path objects
+                target.set('fill', sketchElement.freeDrawingBrush.color);
+            }
+        } else {
+            sketchElement.isDrawingMode = true;
+            sketchElement.Selection = false;
+            var searchString = '[data-size="' + sketchElement.freeDrawingBrush.width + '"]';
+            var element = $(searchString);
+            makeActiveTool(element);
+        }
+
+        sketchElement.renderAll();
     });
 
     $(".lnkSketchDrawWidth").click(function() {
@@ -140,6 +149,27 @@
             var textElement = new fabric.Text(input, { left: 100, top: 100 });
             sketchElement.add(textElement);
             sketchElement.isDrawingMode = false;
+        }
+    });
+
+    $(".lnkAddShape").click(function () {
+        var shapeType = this.getAttribute("data-shapeType");
+        var currentColor = sketchElement.freeDrawingBrush.color;
+        if (shapeType === "rect") {
+            var shape = new fabric.Rect({
+                left: 100,
+                top: 100,
+                fill: currentColor,
+                width: 50,
+                height: 50
+            });
+            sketchElement.add(shape);
+        }
+        else if (shapeType === "circle") {
+            var shape = new fabric.Circle({
+                radius: 50, fill: currentColor, left: 100, top: 100
+            });
+            sketchElement.add(shape);
         }
     });
 });
