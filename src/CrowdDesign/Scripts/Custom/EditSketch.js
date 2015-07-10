@@ -122,9 +122,7 @@
 
         if (sketchElement.getActiveObject()) {
             var target = sketchElement.getActiveObject();
-            if (target.get('type') !== "path") { // paths can be given fills, but the results are often unexpected. This line allows fills to be assigned to anything but path objects
-                target.set('fill', sketchElement.freeDrawingBrush.color);
-            }
+            target.set('stroke', sketchElement.freeDrawingBrush.color);
         } else {
             sketchElement.isDrawingMode = true;
             sketchElement.Selection = false;
@@ -159,7 +157,9 @@
             var shape = new fabric.Rect({
                 left: 100,
                 top: 100,
-                fill: currentColor,
+                stroke: currentColor,
+                fill: "transparent",
+                strokeWidth: 2,
                 width: 50,
                 height: 50
             });
@@ -167,7 +167,7 @@
         }
         else if (shapeType === "circle") {
             var shape = new fabric.Circle({
-                radius: 50, fill: currentColor, left: 100, top: 100
+                radius: 50, stroke: currentColor, fill: "transparent", strokeWidth: 2, left: 100, top: 100
             });
             sketchElement.add(shape);
         }
