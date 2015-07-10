@@ -160,8 +160,8 @@
                 stroke: currentColor,
                 fill: "transparent",
                 strokeWidth: 2,
-                width: 50,
-                height: 50
+                width: 100,
+                height: 100
             });
             sketchElement.add(shape);
         }
