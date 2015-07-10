@@ -120,7 +120,12 @@
         sketchElement.freeDrawingBrush.color = this.getAttribute("data-color");
         makeActiveColor(this);
 
-        if (sketchElement.getActiveObject()) {
+        if (sketchElement.getActiveGroup()) {
+            sketchElement.getActiveGroup().forEachObject(function (a) {
+                a.set('stroke', sketchElement.freeDrawingBrush.color);
+            });
+        }
+        else if (sketchElement.getActiveObject()) {
             var target = sketchElement.getActiveObject();
             target.set('stroke', sketchElement.freeDrawingBrush.color);
         } else {
