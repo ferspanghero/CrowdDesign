@@ -53,25 +53,20 @@
         sketchElement.isDrawingMode = false;
         sketchElement.Selection = true;
         sketchElement.on("mouse:down", function(e) {
-            sketchElement.remove(sketchElement.getActiveObject());
+            if (sketchElement.getActiveGroup()) {
+                sketchElement.getActiveGroup().forEachObject(function (a) {
+                    sketchElement.remove(a);
+                });
+                sketchElement.discardActiveGroup();
+            } else {
+                sketchElement.remove(sketchElement.getActiveObject());
+            }
             sketchElement.renderAll();
         });
 
         $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
         $(this).addClass("active-tool");
         $(this).removeClass("inactive-tool");
-    });
-
-    $("#lnkSketchDeletePath").click(function() {
-        if (sketchElement.getActiveGroup()) {
-            sketchElement.getActiveGroup().forEachObject(function(a) {
-                sketchElement.remove(a);
-            });
-            sketchElement.discardActiveGroup();
-            sketchElement.renderAll();
-        } else {
-            sketchElement.remove(sketchElement.getActiveObject());
-        }
     });
 
     function undoAction() {
@@ -109,22 +104,34 @@
         }
     });
 
+    function makeActiveTool(anchor) {
+        $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
+        $(anchor).addClass("active-tool");
+        $(anchor).removeClass("inactive-tool");
+    }
+
+    function makeActiveColor(anchor) {
+        $("a.active-color").removeClass("active-color").addClass("inactive-color");
+        $(anchor).addClass("active-color");
+        $(anchor).removeClass("inactive-color");
+    }
+
     $(".lnkSketchDrawColor").click(function() {
         sketchElement.freeDrawingBrush.color = this.getAttribute("data-color");
         sketchElement.isDrawingMode = true;
         sketchElement.Selection = false;
-        $("a.active-color").removeClass("active-color").addClass("inactive-color");
-        $(this).addClass("active-color");
-        $(this).removeClass("inactive-color");
+        makeActiveColor(this);
+
+        var searchString = '[data-size="' + sketchElement.freeDrawingBrush.width + '"]';
+        var element = $(searchString);
+        makeActiveTool(element);
     });
 
     $(".lnkSketchDrawWidth").click(function() {
         sketchElement.freeDrawingBrush.width = this.getAttribute("data-size");
         sketchElement.isDrawingMode = true;
         sketchElement.Selection = false;
-        $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
-        $(this).addClass("active-tool");
-        $(this).removeClass("inactive-tool");
+        makeActiveTool(this);
     });
 
     $(".lnkSketchText").click(function() {
