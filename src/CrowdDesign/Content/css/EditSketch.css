@@ -29,3 +29,7 @@
     -ms-opacity: 0.3;
     opacity: 0.3;
 }
+
+.last-tool-in-section {
+    margin-right: 200px;
+}
