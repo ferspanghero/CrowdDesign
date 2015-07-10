@@ -1,6 +1,8 @@
 ﻿#divEditSketchMain {
-    width: 100%;
+    width: 1200px;
+    margin: 0 auto;
     text-align: center;
+    overflow-x: hidden;
 }
 
 #cnvSketch {
@@ -14,6 +16,7 @@
 
 .divSketchField {
     display: inline;
+    float: right;
 }
 
 .canvas-container {
