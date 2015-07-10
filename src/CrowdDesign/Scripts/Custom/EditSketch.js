@@ -171,5 +171,9 @@
             });
             sketchElement.add(shape);
         }
+
+        sketchElement.isDrawingMode = false;
+        sketchElement.Selection = true;
+        makeActiveTool($("#lnkSketchDrawingMode"));
     });
 });
