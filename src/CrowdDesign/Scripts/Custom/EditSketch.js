@@ -1,7 +1,7 @@
-﻿$(document).ready(function () {
+﻿$(document).ready(function() {
     var jsonSketchData = $("#Data").val();
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
-    var sketchElement = new fabric.Canvas('mainCanvas');
+    var sketchElement = new fabric.Canvas("mainCanvas");
     var sketchActionStack = [];
 
     sketchElement.isDrawingMode = true;
@@ -11,12 +11,12 @@
         sketchElement.loadFromJSON(sketchData, sketchElement.renderAll.bind(sketchElement));
     }
 
-    $("#btnSaveSketch").click(function () {
+    $("#btnSaveSketch").click(function() {
         $("#Data").val(JSON.stringify(sketchElement));
         $("#ImageUri").val(sketchElement.toDataURL());
     });
 
-    $("#lnkClearSketch").click(function () {
+    $("#lnkClearSketch").click(function() {
         $("#dialog-confirm").html("This operation cannot be undone. Are you sure you want to continue?");
 
         // Define the Dialog and its properties.
@@ -27,30 +27,31 @@
             height: 300,
             width: 400,
             buttons: {
-                "Yes": function () {
-                    $(this).dialog('close');
+                "Yes": function() {
+                    $(this).dialog("close");
                     sketchElement.clear();
                     sketchElement.renderAll();
                 },
-                "No": function () {
-                    $(this).dialog('close');
-               }
+                "No": function() {
+                    $(this).dialog("close");
+                }
             }
-        }); 
+        });
     });
 
-    $("#lnkSketchDrawingMode").click(function () {
+    $("#lnkSketchDrawingMode").click(function() {
         sketchElement.isDrawingMode = false;
         sketchElement.Selection = true;
         $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
         $(this).addClass("active-tool");
         $(this).removeClass("inactive-tool");
+        sketchElement.off("mouse:down");
     });
 
-    $(".lnkSketchEraser").click(function () {
+    $(".lnkSketchEraser").click(function() {
         sketchElement.isDrawingMode = false;
         sketchElement.Selection = true;
-        sketchElement.on('mouse:down', function (e) {
+        sketchElement.on("mouse:down", function(e) {
             sketchElement.remove(sketchElement.getActiveObject());
             sketchElement.renderAll();
         });
@@ -60,7 +61,7 @@
         $(this).removeClass("inactive-tool");
     });
 
-    $("#lnkSketchDeletePath").click(function () {
+    $("#lnkSketchDeletePath").click(function() {
         if (sketchElement.getActiveGroup()) {
             sketchElement.getActiveGroup().forEachObject(function(a) {
                 sketchElement.remove(a);
@@ -91,25 +92,24 @@
         }
     }
 
-    $("#lnkSketchUndo").click(function () {
+    $("#lnkSketchUndo").click(function() {
         undoAction();
     });
 
-    $("#lnkSketchRedo").click(function () {
+    $("#lnkSketchRedo").click(function() {
         redoAction();
     });
 
-    $(document).keydown(function (e) {
+    $(document).keydown(function(e) {
         if (e.which === 90 && e.ctrlKey) {
             undoAction();
-        }
-        else if (e.which === 89 && e.ctrlKey) {
+        } else if (e.which === 89 && e.ctrlKey) {
             redoAction();
         }
     });
 
-    $(".lnkSketchDrawColor").click(function () {
-        sketchElement.freeDrawingBrush.color = this.getAttribute('data-color');
+    $(".lnkSketchDrawColor").click(function() {
+        sketchElement.freeDrawingBrush.color = this.getAttribute("data-color");
         sketchElement.isDrawingMode = true;
         sketchElement.Selection = false;
         $("a.active-color").removeClass("active-color").addClass("inactive-color");
@@ -117,8 +117,8 @@
         $(this).removeClass("inactive-color");
     });
 
-    $(".lnkSketchDrawWidth").click(function () {
-        sketchElement.freeDrawingBrush.width = this.getAttribute('data-size');
+    $(".lnkSketchDrawWidth").click(function() {
+        sketchElement.freeDrawingBrush.width = this.getAttribute("data-size");
         sketchElement.isDrawingMode = true;
         sketchElement.Selection = false;
         $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
@@ -126,7 +126,7 @@
         $(this).removeClass("inactive-tool");
     });
 
-    $(".lnkSketchText").click(function () {
+    $(".lnkSketchText").click(function() {
         var input = prompt("Please enter the text you would like to add to your canvas");
         if (input != null) {
             var textElement = new fabric.Text(input, { left: 100, top: 100 });
