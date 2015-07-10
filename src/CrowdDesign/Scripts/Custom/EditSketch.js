@@ -5,6 +5,7 @@
     var sketchActionStack = [];
 
     sketchElement.isDrawingMode = true;
+    sketchElement.freeDrawingBrush.width = 5;
     sketchElement.Selection = false;
 
     if (sketchData) {
