@@ -73,7 +73,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
-        public ActionResult CreateSketch(EditSketchViewModel viewModel)
+        public ActionResult CreateSketch(EditSketchViewModel viewModel, bool returnToProject, bool startNewSketch)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
@@ -94,7 +94,12 @@ namespace CrowdDesign.UI.Web.Controllers
                     }
 
                     if (sketchId > 0 || hasMultipleRequests)
-                        return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
+                        if (returnToProject)
+                            return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
+                        else if (startNewSketch)
+                            return EditSketch(viewModel.ProjectId, viewModel.DimensionId, null);
+                        else
+                            return EditSketch(viewModel.ProjectId, viewModel.DimensionId, viewModel.SketchId);
                 }
                 else
                     return RedirectToAction("Index", "Security");
@@ -105,7 +110,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
-        public ActionResult UpdateSketch(EditSketchViewModel viewModel)
+        public ActionResult UpdateSketch(EditSketchViewModel viewModel, bool returnToProject, bool startNewSketch)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
             {
@@ -116,7 +121,13 @@ namespace CrowdDesign.UI.Web.Controllers
                     GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
                 }
 
-                return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
+                if (returnToProject)
+                    return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
+                else if (startNewSketch)
+                    return EditSketch(viewModel.ProjectId, viewModel.DimensionId, null);
+                else
+                    return EditSketch(viewModel.ProjectId, viewModel.DimensionId, viewModel.SketchId);
+
             }
 
             return View("Error");
@@ -135,7 +146,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
                 GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
             }
-                
+
 
             return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
         }
@@ -154,7 +165,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 return Json("Sketch moved successfully");
             }
 
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;            
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
             return Json("Failed to move the sketch");
         }

@@ -17,6 +17,12 @@
         $("#ImageUri").val(sketchElement.toDataURL());
     });
 
+    $("#btnDuplicateSketch").click(function() {
+        $("#returnToProject").val("false");
+        $("#startNewSketch").val("true");
+        $("#saveSketchForm").submit();
+    })
+
     $("#lnkClearSketch").click(function() {
         $("#dialog-confirm").html("This operation cannot be undone. Are you sure you want to continue?");
 

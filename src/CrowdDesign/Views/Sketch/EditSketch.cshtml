@@ -39,7 +39,11 @@
             </div>
         }
 
-        using (Html.BeginForm(actionName, "Sketch", FormMethod.Post))
+        <div class="divSketchField">
+            <input id='btnDuplicateSketch' type="submit" value="Duplicate"/>
+        </div>
+
+        using (Html.BeginForm(actionName, "Sketch", FormMethod.Post, new { id = "saveSketchForm"}))
         {
             @Html.HiddenFor(model => model.ProjectId)
             @Html.HiddenFor(model => model.DimensionId)
@@ -51,7 +55,9 @@
             if (userCanEditSketch)
             {
                 <div class="divSketchField">
-                    <input id="btnSaveSketch" type="submit" value="Save changes" />
+                    <input id="returnToProject" name="returnToProject" type="hidden" value="true"/>
+                    <input id="startNewSketch" name="startNewSketch" type="hidden" value="false" />
+                    <input id="btnSaveSketch" type="submit" value="Save changes"/>
                 </div>
             }
 
