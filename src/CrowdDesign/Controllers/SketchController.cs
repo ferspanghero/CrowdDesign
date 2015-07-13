@@ -73,7 +73,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
-        public ActionResult CreateSketch(EditSketchViewModel viewModel, bool returnToProject, bool startNewSketch)
+        public ActionResult CreateSketch(EditSketchViewModel viewModel, bool returnToProject, bool startNewSketch, bool duplicateSketch)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
@@ -97,6 +97,9 @@ namespace CrowdDesign.UI.Web.Controllers
                         if (returnToProject)
                             return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
                         else if (startNewSketch)
+                            return RedirectToAction("EditSketch",
+                                new { ProjectId = viewModel.ProjectId, DimensionId = viewModel.DimensionId });
+                        else if (duplicateSketch)
                             return EditSketch(viewModel.ProjectId, viewModel.DimensionId, null);
                         else
                             return EditSketch(viewModel.ProjectId, viewModel.DimensionId, viewModel.SketchId);
@@ -110,7 +113,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
         [HttpPost]
         [DetectMultipleRequests]
-        public ActionResult UpdateSketch(EditSketchViewModel viewModel, bool returnToProject, bool startNewSketch)
+        public ActionResult UpdateSketch(EditSketchViewModel viewModel, bool returnToProject, bool startNewSketch, bool duplicateSketch)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
             {
@@ -123,11 +126,12 @@ namespace CrowdDesign.UI.Web.Controllers
 
                 if (returnToProject)
                     return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
-                else if (startNewSketch)
+                if (startNewSketch)
+                    return RedirectToAction("EditSketch",
+                        new { ProjectId = viewModel.ProjectId, DimensionId = viewModel.DimensionId });
+                if (duplicateSketch)
                     return EditSketch(viewModel.ProjectId, viewModel.DimensionId, null);
-                else
-                    return EditSketch(viewModel.ProjectId, viewModel.DimensionId, viewModel.SketchId);
-
+                return EditSketch(viewModel.ProjectId, viewModel.DimensionId, viewModel.SketchId);
             }
 
             return View("Error");

@@ -19,6 +19,12 @@
 
     $("#btnDuplicateSketch").click(function() {
         $("#returnToProject").val("false");
+        $("#duplicateSketch").val("true");
+        $("#saveSketchForm").submit();
+    });
+
+    $("#btnNewSketch").click(function () {
+        $("#returnToProject").val("false");
         $("#startNewSketch").val("true");
         $("#saveSketchForm").submit();
     })

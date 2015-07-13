@@ -42,6 +42,10 @@
         <div class="divSketchField">
             <input id='btnDuplicateSketch' type="submit" value="Duplicate"/>
         </div>
+        
+        <div class="divSketchField">
+            <input id='btnNewSketch' type="submit" value="New"/>
+        </div>
 
         using (Html.BeginForm(actionName, "Sketch", FormMethod.Post, new { id = "saveSketchForm"}))
         {
@@ -56,7 +60,8 @@
             {
                 <div class="divSketchField">
                     <input id="returnToProject" name="returnToProject" type="hidden" value="true"/>
-                    <input id="startNewSketch" name="startNewSketch" type="hidden" value="false" />
+                    <input id="duplicateSketch" name="duplicateSketch" type="hidden" value="false" />
+                    <input id="startNewSketch" name="startNewSketch" type="hidden" value="false"/>
                     <input id="btnSaveSketch" type="submit" value="Save changes"/>
                 </div>
             }
