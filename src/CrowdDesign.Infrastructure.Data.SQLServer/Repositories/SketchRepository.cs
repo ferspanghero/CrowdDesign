@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using CrowdDesign.Core.Entities;
+using CrowdDesign.Core.Exceptions;
 using CrowdDesign.Core.Interfaces.Repositories;
 using CrowdDesign.Infrastructure.SQLServer.Resources;
 using CrowdDesign.Utils.Extensions;
@@ -49,7 +50,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             var sketches = Get(sourceSketchId, targetSketchId).ToDictionary(s => s.Id, s => s);
 
             if (sketches.Count != 2)
-                throw new InvalidOperationException(SketchStrings.SketchesNotFound);
+                throw new EntityNotFoundException(SketchStrings.SketchesNotFound);
 
             Sketch sourceSketch = sketches[sourceSketchId];
             Sketch targetSketch = sketches[targetSketchId];
@@ -124,7 +125,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
             Sketch sourceSketch = Get(sourceSketchId).SingleOrDefault();
 
             if (sourceSketch == null)
-                throw new InvalidOperationException(SketchStrings.SketchNotFound);
+                throw new EntityNotFoundException(SketchStrings.SketchNotFound);
 
             // The general idea of this algorithm is that if a sketch is moved directly to a dimension,
             // it will be placed in the end position
@@ -154,7 +155,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 Dimension targetDimension = dimensionRepository.Get(targetDimensionId).SingleOrDefault();
 
                 if (targetDimension == null)
-                    throw new InvalidOperationException(DimensionStrings.DimensionNotFound);
+                    throw new EntityNotFoundException(DimensionStrings.DimensionNotFound);
 
                 // Decrements the position of all sketches that belong to the moved sketch original dimension that were in a position after it
                 // For example: for sketches in positions [1, 2, 3, 4], if [2] is moved, then [3, 4] need to be updated

@@ -87,6 +87,7 @@ table th, td {
     min-width: 300px;
     min-height: 160px;
     font-size: 0.9em;
+    width: 300px; 
 }
 
 .pDimensionDescription {

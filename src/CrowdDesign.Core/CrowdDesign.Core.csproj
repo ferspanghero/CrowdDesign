@@ -43,6 +43,9 @@
     <Compile Include="Entities\Project.cs" />
     <Compile Include="Entities\Sketch.cs" />
     <Compile Include="Entities\User.cs" />
+    <Compile Include="Exceptions\EntityAlreadyDeletedException.cs" />
+    <Compile Include="Exceptions\EntityNotFoundException.cs" />
+    <Compile Include="Exceptions\EntityAlreadyExistsException.cs" />
     <Compile Include="Interfaces\Entities\IDomainEntity.cs" />
     <Compile Include="Interfaces\Repositories\IBaseRepository.cs" />
     <Compile Include="Interfaces\Repositories\IDimensionRepository.cs" />
