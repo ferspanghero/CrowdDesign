@@ -67,9 +67,18 @@
             }
 
             <div class="divSketchField">
+                
                 @Html.LabelFor(model => model.Title)
-                @Html.TextBoxFor(model => model.Title)
+                @Html.TextBoxFor(model => model.Title, new { id = "sketchTitle" })
                 @Html.ValidationMessageFor(model => model.Title)
+
+                @if (!Model.SketchId.HasValue)
+                {
+                    // if this is a new duplicated sketch, clear the title
+                    <script>
+                        document.getElementById("sketchTitle").value = "";
+                    </script>
+                }
             </div>
 
             <canvas id="mainCanvas" width="1200" height="800" style="border:1px solid #000000; margin: 0 auto; display: block;"></canvas>

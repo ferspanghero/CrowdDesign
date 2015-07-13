@@ -12,7 +12,10 @@
         sketchElement.loadFromJSON(sketchData, sketchElement.renderAll.bind(sketchElement));
     }
 
-    $("#btnSaveSketch").click(function() {
+    $("#btnSaveSketch").click(function () {
+        $("#returnToProject").val("true");
+        $("#startNewSketch").val("false");
+        $("#duplicateSketch").val("false");
         $("#Data").val(JSON.stringify(sketchElement));
         $("#ImageUri").val(sketchElement.toDataURL());
     });
