@@ -23,12 +23,16 @@
     $("#btnDuplicateSketch").click(function() {
         $("#returnToProject").val("false");
         $("#duplicateSketch").val("true");
+        $("#Data").val(JSON.stringify(sketchElement));
+        $("#ImageUri").val(sketchElement.toDataURL());
         $("#saveSketchForm").submit();
     });
 
     $("#btnNewSketch").click(function () {
         $("#returnToProject").val("false");
         $("#startNewSketch").val("true");
+        $("#Data").val(JSON.stringify(sketchElement));
+        $("#ImageUri").val(sketchElement.toDataURL());
         $("#saveSketchForm").submit();
     })
 
