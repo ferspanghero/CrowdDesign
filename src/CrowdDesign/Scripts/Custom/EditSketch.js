@@ -59,19 +59,12 @@
         });
     });
 
-    $("#lnkSketchDrawingMode").click(function() {
-        sketchElement.isDrawingMode = false;
-        sketchElement.Selection = true;
-        $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
-        $(this).addClass("active-tool");
-        $(this).removeClass("inactive-tool");
+    function disableEraser() {
         sketchElement.off("mouse:down");
-    });
+    }
 
-    $(".lnkSketchEraser").click(function() {
-        sketchElement.isDrawingMode = false;
-        sketchElement.Selection = true;
-        sketchElement.on("mouse:down", function(e) {
+    function enableEraser() {
+        sketchElement.on("mouse:down", function (e) {
             if (sketchElement.getActiveGroup()) {
                 sketchElement.getActiveGroup().forEachObject(function (a) {
                     sketchElement.remove(a);
@@ -82,6 +75,21 @@
             }
             sketchElement.renderAll();
         });
+    }
+
+    $("#lnkSketchDrawingMode").click(function() {
+        sketchElement.isDrawingMode = false;
+        sketchElement.Selection = true;
+        $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
+        $(this).addClass("active-tool");
+        $(this).removeClass("inactive-tool");
+        disableEraser();
+    });
+
+    $(".lnkSketchEraser").click(function() {
+        sketchElement.isDrawingMode = false;
+        sketchElement.Selection = true;
+        enableEraser();
 
         $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
         $(this).addClass("active-tool");
@@ -127,12 +135,14 @@
         $("a.active-tool").removeClass("active-tool").addClass("inactive-tool");
         $(anchor).addClass("active-tool");
         $(anchor).removeClass("inactive-tool");
+        disableEraser();
     }
 
     function makeActiveColor(anchor) {
         $("a.active-color").removeClass("active-color").addClass("inactive-color");
         $(anchor).addClass("active-color");
         $(anchor).removeClass("inactive-color");
+        disableEraser();
     }
 
     $(".lnkSketchDrawColor").click(function () {
@@ -172,6 +182,7 @@
             sketchElement.add(textElement);
             sketchElement.isDrawingMode = false;
         }
+        disableEraser();
     });
 
     $(".lnkAddShape").click(function () {
@@ -198,6 +209,7 @@
 
         sketchElement.isDrawingMode = false;
         sketchElement.Selection = true;
+        disableEraser();
         makeActiveTool($("#lnkSketchDrawingMode"));
     });
 });
