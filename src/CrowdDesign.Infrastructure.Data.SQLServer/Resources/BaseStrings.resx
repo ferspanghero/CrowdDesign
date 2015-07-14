@@ -117,13 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DimensionAlreadyExists" xml:space="preserve">
-    <value>A dimension with the same name already exists</value>
+  <data name="EntityAlreadyDeleted" xml:space="preserve">
+    <value>The entity has already been deleted</value>
   </data>
-  <data name="DimensionNotFound" xml:space="preserve">
-    <value>Unable to find dimension</value>
+  <data name="EntityAlreadyExists" xml:space="preserve">
+    <value>The entity already exists</value>
   </data>
-  <data name="DimensionsNotFound" xml:space="preserve">
-    <value>Unable to find one or more dimensions</value>
+  <data name="EntityNotFound" xml:space="preserve">
+    <value>Unable to find entity</value>
   </data>
 </root>
