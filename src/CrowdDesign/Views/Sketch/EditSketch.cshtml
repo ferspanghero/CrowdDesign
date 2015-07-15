@@ -22,7 +22,32 @@
             actionName = "UpdateSketch";
         }
 
-        using (Html.BeginForm(actionName, "Sketch", FormMethod.Post))
+        if (Model != null && Model.SketchId.HasValue && userCanEditSketch)
+        {
+            using (Html.BeginForm("DeleteSketch", "Sketch", new { Model.SketchId, Model.DimensionId, Model.ProjectId }, FormMethod.Post, new { onclick = "return confirm('This operation cannot be undone. Are you sure you want to continue?');" }))
+            {
+                <div class="divSketchField">
+                    <input type="submit" value="Delete" />
+                </div>
+            }
+        }
+
+        using (Html.BeginForm("CancelAction", "Sketch", new { Model.ProjectId }, FormMethod.Post, new { onclick = "return confirm('Are you sure you want to cancel?');" }))
+        {
+            <div class="divSketchField">
+                <input type="submit" value="Cancel" />
+            </div>
+        }
+
+        <div class="divSketchField">
+            <input id='btnDuplicateSketch' type="submit" value="Duplicate" />
+        </div>
+
+        <div class="divSketchField">
+            <input id='btnNewSketch' type="submit" value="New" />
+        </div>
+
+        using (Html.BeginForm(actionName, "Sketch", FormMethod.Post, new { id = "saveSketchForm" }))
         {
             @Html.HiddenFor(model => model.ProjectId)
             @Html.HiddenFor(model => model.DimensionId)
@@ -31,64 +56,56 @@
             @Html.HiddenFor(model => model.ImageUri)
             @Html.HiddenFor(model => model.Position)
 
-            <div class="divSketchField">
-                @Html.LabelFor(model => model.Title)
-                @Html.TextBoxFor(model => model.Title)
-                @Html.ValidationMessageFor(model => model.Title)
-            </div>
-
-            <div id="divCanvas">
-                <canvas id="cnvSketch"></canvas>
-            </div>
-
-            <div id="divSketchTools">
-                <a href="#cnvSketch" data-tool="marker" data-color="#000000" title="Black"><img src="~/Content/resources/images/black_icon.png" alt="Black"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#ff0000" title="Red"><img src="~/Content/resources/images/red_icon.png" alt="Red"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#00ff00" title="Green"><img src="~/Content/resources/images/green_icon.png" alt="Green"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#0000ff" title="Blue"><img src="~/Content/resources/images/blue_icon.png" alt="Blue"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#ffff00" title="Yellow"><img src="~/Content/resources/images/yellow_icon.png" alt="Yellow"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-color="#00ffff" title="Cyan"><img src="~/Content/resources/images/cyan_icon.png" alt="Cyan"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-size="1"><img src="~/Content/resources/images/pencil_icon.png" alt="Pencil"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-size="3"><img src="~/Content/resources/images/pen_icon.png" alt="Pen"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-size="5"><img src="~/Content/resources/images/stick_icon.png" alt="Stick"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-size="9"><img src="~/Content/resources/images/smallbrush_icon.png" alt="Small brush"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-size="15"><img src="~/Content/resources/images/mediumbrush_icon.png" alt="Medium brush"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-size="30"><img src="~/Content/resources/images/bigbrush_icon.png" alt="Big brush"/></a>
-                <a href="#cnvSketch" data-tool="marker" data-size="60"><img src="~/Content/resources/images/bucket_icon.png" alt="Huge bucket"/></a>
-                <a href="#cnvSketch" data-tool="eraser" title="Eraser"><img src="~/Content/resources/images/eraser_icon.png" alt="Eraser"/></a>
-                <a href="#cnvSketch" title="Clear Sketch" id="lnkClearSketch"><img src="~/Content/resources/images/clear_all_icon.png" alt="Clear Sketch"/></a>
-                <a href="#cnvSketch" data-tool="text" title="Text"><img src="~/Content/resources/images/text_icon.png" alt="Text"/></a>
-                <a href="#cnvSketch" title="Undo (Ctrl + Z)" id="lnkSketchUndo"><img src="~/Content/resources/images/undo_icon.png" alt="Text"/></a>
-                <a href="#cnvSketch" title="Redo (Ctrl + Y)" id="lnkSketchRedo"><img src="~/Content/resources/images/redo_icon.png" alt="Text"/></a>
-            </div>
-
-            <div>
-                @{
-
-                    if (userCanEditSketch)
-                    {
-                        <input id="btnSaveSketch" type="submit" value="Save changes"/>
-                    }
-                }
-            </div>
-        }
-
-
-        using (Html.BeginForm("CancelAction", "Sketch", new {Model.ProjectId}, FormMethod.Post, new {onclick = "return confirm('Are you sure you want to cancel?');"}))
-        {
-            <div class="divSketchField">
-                <input type="submit" value="Cancel"/>
-            </div>
-        }
-
-        if (Model != null && Model.SketchId.HasValue && userCanEditSketch)
-        {
-            using (Html.BeginForm("DeleteSketch", "Sketch", new {Model.SketchId, Model.DimensionId, Model.ProjectId}, FormMethod.Post, new {onclick = "return confirm('This operation cannot be undone. Are you sure you want to continue?');"}))
+            if (userCanEditSketch)
             {
                 <div class="divSketchField">
-                    <input type="submit" value="Delete"/>
+                    <input id="returnToProject" name="returnToProject" type="hidden" value="true" />
+                    <input id="duplicateSketch" name="duplicateSketch" type="hidden" value="false" />
+                    <input id="startNewSketch" name="startNewSketch" type="hidden" value="false" />
+                    <input id="btnSaveSketch" type="submit" value="Save changes" />
                 </div>
             }
+
+            <div class="divSketchField">
+
+                @Html.LabelFor(model => model.Title)
+                @Html.TextBoxFor(model => model.Title, new { id = "sketchTitle" })
+                @Html.ValidationMessageFor(model => model.Title)
+
+                @if (!Model.SketchId.HasValue)
+                {
+                    // if this is a new duplicated sketch, clear the title
+                    <script>
+                        document.getElementById("sketchTitle").value = "";
+                    </script>
+                }
+            </div>
+
+            <canvas id="mainCanvas" width="1200" height="800" style="border:1px solid #000000; margin: 0 auto; display: block;"></canvas>
+
+            <div id="divSketchTools">
+                <a class="lnkSketchDrawColor active-color" data-color="#000000" title="Black"><img src="~/Content/resources/images/black_icon.png" alt="Black" /></a>
+                <a class="lnkSketchDrawColor inactive-color" data-color="#ff0000" title="Red"><img src="~/Content/resources/images/red_icon.png" alt="Red" /></a>
+                <a class="lnkSketchDrawColor inactive-color" data-color="#00ff00" title="Green"><img src="~/Content/resources/images/green_icon.png" alt="Green" /></a>
+                <a class="lnkSketchDrawColor inactive-color" data-color="#0000ff" title="Blue"><img src="~/Content/resources/images/blue_icon.png" alt="Blue" /></a>
+                <a class="lnkSketchDrawColor inactive-color" data-color=" #ffff00" title="Yellow"><img src="~/Content/resources/images/yellow_icon.png" alt="Yellow" /></a>
+                <a class="lnkSketchDrawColor inactive-color" data-color="#00ffff" title="Cyan"><img src="~/Content/resources/images/cyan_icon.png" alt="Cyan" /></a>
+                <a class="lnkSketchDrawWidth inactive-tool" data-size="1"><img src="~/Content/resources/images/brush-width-1.png" alt="Pencil" /></a>
+                <a class="lnkSketchDrawWidth inactive-tool" data-size="3"><img src="~/Content/resources/images/brush-width-3.png" alt="Pen" /></a>
+                <a class="lnkSketchDrawWidth active-tool" data-size="5"><img src="~/Content/resources/images/brush-width-5.png" alt="Stick" /></a>
+                <a class="lnkSketchDrawWidth inactive-tool" data-size="9"><img src="~/Content/resources/images/brush-width-9.png" alt="Small brush" /></a>
+                <a class="lnkSketchDrawWidth inactive-tool" data-size="15"><img src="~/Content/resources/images/brush-width-15.png" alt="Medium brush" /></a>
+                <a class="lnkSketchDrawWidth inactive-tool" data-size="30"><img src="~/Content/resources/images/brush-width-30.png" alt="Big brush" /></a>
+                <a class="lnkSketchDrawWidth inactive-tool" data-size="60"><img src="~/Content/resources/images/brush-width-60.png" alt="Huge bucket" /></a>
+                <a class="lnkSketchEraser inactive-tool" data-color="#ffffff" title="Eraser"><img src="~/Content/resources/images/eraser_icon.png" alt="Eraser" /></a>
+                <a class="inactive-tool last-tool-in-section" id="lnkSketchDrawingMode" title="Drawing Mode"><img src="~/Content/resources/images/mode_icon.png" alt="Mode" /></a>
+                <a class="lnkSketchText" title="Text"><img src="~/Content/resources/images/text_icon.png" alt="Text" /></a>
+                <a title="Add a rectangle" class="lnkAddShape" data-shapetype="rect"><img src="~/Content/resources/images/add-rect.png" alt="Add a rectangle" /></a>
+                <a title="Add a circle" class="lnkAddShape" data-shapetype="circle"><img src="~/Content/resources/images/add-circle.png" alt="Add a circle" /></a>
+                <a title="Undo (Ctrl + Z)" id="lnkSketchUndo"><img src="~/Content/resources/images/undo_icon.png" alt="Text" /></a>
+                <a title="Redo (Ctrl + Y)" id="lnkSketchRedo"><img src="~/Content/resources/images/redo_icon.png" alt="Text" /></a>
+                <a title="Clear Sketch" id="lnkClearSketch"><img src="~/Content/resources/images/clear_all_icon.png" alt="Clear Sketch" /></a>
+            </div>
         }
     }
 </div>
@@ -97,7 +114,7 @@
 
 @section scripts
 {
-    @Scripts.Render("~/Scripts/sketch.js")
+    @Scripts.Render("~/Scripts/fabric.js")
     @Scripts.Render("~/Scripts/Custom/EditSketch.js")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jqueryui")

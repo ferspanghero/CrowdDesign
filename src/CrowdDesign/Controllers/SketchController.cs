@@ -48,10 +48,10 @@ namespace CrowdDesign.UI.Web.Controllers
                             if (!ModelState.IsValid)
                                 viewModel = new EditSketchViewModel { ProjectId = projectId, DimensionId = dimensionId };
                             else
-                                return View("Error");
+                            return View("Error");
                         }
                         else
-                            viewModel = new EditSketchViewModel(sketch);
+                        viewModel = new EditSketchViewModel(sketch);
                     }
                     else
                     {
@@ -82,7 +82,7 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         [DetectMultipleRequests]
         [ExportModelStateToTempData]
-        public ActionResult CreateSketch(EditSketchViewModel viewModel)
+        public ActionResult CreateSketch(EditSketchViewModel viewModel, bool returnToProject, bool startNewSketch, bool duplicateSketch)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.DimensionId != null && ModelState.IsValid)
             {
@@ -103,7 +103,15 @@ namespace CrowdDesign.UI.Web.Controllers
                     }
 
                     if (sketchId > 0 || hasMultipleRequests)
+                        if (returnToProject)
                         return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
+                        else if (startNewSketch)
+                            return RedirectToAction("EditSketch",
+                                new { ProjectId = viewModel.ProjectId, DimensionId = viewModel.DimensionId });
+                        else if (duplicateSketch)
+                            return EditSketch(viewModel.ProjectId, viewModel.DimensionId, null);
+                        else
+                            return EditSketch(viewModel.ProjectId, viewModel.DimensionId, viewModel.SketchId);
                 }
                 else
                     return RedirectToAction("Index", "Security");
@@ -115,7 +123,7 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         [DetectMultipleRequests]
         [ExportModelStateToTempData]
-        public ActionResult UpdateSketch(EditSketchViewModel viewModel)
+        public ActionResult UpdateSketch(EditSketchViewModel viewModel, bool returnToProject, bool startNewSketch, bool duplicateSketch)
         {
             if (viewModel != null && viewModel.ProjectId != null && viewModel.SketchId != null && ModelState.IsValid)
             {
@@ -123,7 +131,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 {
                     try
                     {
-                        Repository.Update(viewModel.ToDomainModel());
+                    Repository.Update(viewModel.ToDomainModel());
                     }
                     catch (EntityAlreadyDeletedException ex)
                     {
@@ -135,7 +143,14 @@ namespace CrowdDesign.UI.Web.Controllers
                     GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
                 }
 
+                if (returnToProject)
                 return RedirectToAction("EditProject", "Project", new { ProjectId = viewModel.ProjectId.Value });
+                if (startNewSketch)
+                    return RedirectToAction("EditSketch",
+                        new { ProjectId = viewModel.ProjectId, DimensionId = viewModel.DimensionId });
+                if (duplicateSketch)
+                    return EditSketch(viewModel.ProjectId, viewModel.DimensionId, null);
+                return EditSketch(viewModel.ProjectId, viewModel.DimensionId, viewModel.SketchId);
             }
 
             return View("Error");
@@ -153,7 +168,7 @@ namespace CrowdDesign.UI.Web.Controllers
             {
                 try
                 {
-                    Repository.Delete(sketchId.Value);
+                Repository.Delete(sketchId.Value);
                 }
                 catch (EntityNotFoundException ex)
                 {
@@ -164,7 +179,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
                 GlobalHost.ConnectionManager.GetHubContext<MorphologicalChartHub>().Clients.All.refresh();
             }
-
+                
 
             return RedirectToAction("EditProject", "Project", new { ProjectId = projectId.Value });
         }
@@ -183,7 +198,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 return Json("Sketch moved successfully");
             }
 
-            Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            Response.StatusCode = (int)HttpStatusCode.BadRequest;            
 
             return Json("Failed to move the sketch");
         }

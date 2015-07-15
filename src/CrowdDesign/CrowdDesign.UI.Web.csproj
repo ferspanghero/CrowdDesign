@@ -171,24 +171,27 @@
     <Content Include="Content\css\EditProject.css" />
     <Content Include="Content\css\EditSketch.css" />
     <Content Include="Content\css\Login.css" />
-    <Content Include="Content\resources\images\bigbrush_icon.png" />
+    <Content Include="Content\resources\images\add-circle.png" />
+    <Content Include="Content\resources\images\add-rect.png" />
     <Content Include="Content\resources\images\black_icon.png" />
     <Content Include="Content\resources\images\blue_icon.png" />
-    <Content Include="Content\resources\images\bucket_icon.png" />
+    <Content Include="Content\resources\images\brush-width-1.png" />
+    <Content Include="Content\resources\images\brush-width-15.png" />
+    <Content Include="Content\resources\images\brush-width-3.png" />
+    <Content Include="Content\resources\images\brush-width-30.png" />
+    <Content Include="Content\resources\images\brush-width-5.png" />
+    <Content Include="Content\resources\images\brush-width-60.png" />
+    <Content Include="Content\resources\images\brush-width-9.png" />
     <Content Include="Content\resources\images\create.png" />
     <Content Include="Content\resources\images\cyan_icon.png" />
-    <Content Include="Content\resources\images\delete.png" />
     <Content Include="Content\resources\images\clear_all_icon.png" />
+    <Content Include="Content\resources\images\delete_icon.png" />
     <Content Include="Content\resources\images\eraser_icon.png" />
     <Content Include="Content\resources\images\green_icon.png" />
-    <Content Include="Content\resources\images\mediumbrush_icon.png" />
-    <Content Include="Content\resources\images\pencil_icon.png" />
-    <Content Include="Content\resources\images\pen_icon.png" />
+    <Content Include="Content\resources\images\mode_icon.png" />
     <Content Include="Content\resources\images\plus_icon.png" />
     <Content Include="Content\resources\images\redo_icon.png" />
     <Content Include="Content\resources\images\red_icon.png" />
-    <Content Include="Content\resources\images\smallbrush_icon.png" />
-    <Content Include="Content\resources\images\stick_icon.png" />
     <Content Include="Content\resources\images\text_icon.png" />
     <Content Include="Content\resources\images\undo_icon.png" />
     <Content Include="Content\resources\images\yellow_icon.png" />
@@ -229,6 +232,7 @@
     <Content Include="Content\css\Site.css" />
     <None Include="Properties\PublishProfiles\CrowdDesign server.pubxml" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
+    <Content Include="Scripts\fabric.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
     <Content Include="Scripts\jquery-2.1.3.min.js" />
     <Content Include="Scripts\jquery-2.1.3.min.map" />
@@ -249,8 +253,6 @@
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\Custom\EditProject.js" />
-    <Content Include="Scripts\sketch.js" />
-    <Content Include="Scripts\sketch.min.js" />
     <Content Include="Scripts\Custom\EditSketch.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
@@ -267,9 +269,6 @@
     <Content Include="Views\Sketch\EditSketch.cshtml" />
     <Content Include="Views\Project\EditProject.cshtml" />
     <Content Include="Views\Project\ManageProjects.cshtml" />
-    <Content Include="Scripts\sketch.min.js.map">
-      <DependentUpon>sketch.min.js</DependentUpon>
-    </Content>
     <Content Include="Views\Dimension\EditDimension.cshtml" />
     <Content Include="Views\Security\Login.cshtml" />
   </ItemGroup>
