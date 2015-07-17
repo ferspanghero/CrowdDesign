@@ -1,17 +1,47 @@
-﻿$(document).ready(function() {
+﻿$(document).ready(function () {
+    // initialization
     var jsonSketchData = $("#Data").val();
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
     var sketchElement = new fabric.Canvas("mainCanvas");
-    var sketchActionStack = [];
-
-    sketchElement.isDrawingMode = true;
-    sketchElement.freeDrawingBrush.width = 5;
-    sketchElement.Selection = false;
-
+    var sketchStateStack = [];
+    var sketchRedoStack = [];
     if (sketchData) {
         sketchElement.loadFromJSON(sketchData, sketchElement.renderAll.bind(sketchElement));
     }
+    sketchStateStack.push(JSON.stringify(sketchElement));
+    var recordingStates = true;
 
+    // configuration
+    sketchElement.isDrawingMode = true;
+    sketchElement.freeDrawingBrush.width = 5;
+    sketchElement.Selection = false;
+    
+    function saveState() {
+        if (sketchStateStack.length == 30) {
+            sketchStateStack.shift();
+        }
+        sketchStateStack.push(JSON.stringify(sketchElement));
+    }
+
+    sketchElement.on('object:added', function (e) {
+        if (recordingStates) {
+            saveState();
+        }
+    });
+
+    sketchElement.on('object:modified', function (e) {
+        if (recordingStates) {
+            saveState();
+        }
+    });
+
+    sketchElement.on('object:removed', function (e) {
+        if (recordingStates) {
+            saveState();
+        }
+    });
+    
+    // event handlers
     $("#btnSaveSketch").click(function () {
         $("#returnToProject").val("true");
         $("#startNewSketch").val("false");
@@ -97,21 +127,26 @@
     });
 
     function undoAction() {
-        if (sketchElement.getObjects().length !== 0) {
-            var lastItemIndex = (sketchElement.getObjects().length - 1);
-            var item = sketchElement.item(lastItemIndex);
+        if (sketchStateStack.length > 1) {
+            recordingStates = false;
+            var currentState = sketchStateStack.pop();
+            sketchRedoStack.push(currentState);
 
-            sketchActionStack.push(item);
-            sketchElement.remove(item);
+            var stateToReturnTo = sketchStateStack[sketchStateStack.length - 1];
+            sketchElement.loadFromJSON(stateToReturnTo);
             sketchElement.renderAll();
+            recordingStates = true;
         }
     }
 
     function redoAction() {
-        if (sketchActionStack.length !== 0) {
-            var item = sketchActionStack.pop(item);
-            sketchElement.add(item);
+        if (sketchRedoStack.length > 0) {
+            recordingStates = false;
+            var stateToReturnTo = sketchRedoStack.pop();
+            sketchStateStack.push(stateToReturnTo);
+            sketchElement.loadFromJSON(stateToReturnTo);
             sketchElement.renderAll();
+            recordingStates = true;
         }
     }
 
