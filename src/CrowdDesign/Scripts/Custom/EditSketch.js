@@ -20,6 +20,9 @@
         if (sketchStateStack.length == 30) {
             sketchStateStack.shift();
         }
+        if (sketchRedoStack.length != 0) {
+            sketchRedoStack = [];
+        }
         sketchStateStack.push(JSON.stringify(sketchElement));
     }
 
@@ -96,10 +99,13 @@
     function enableEraser() {
         sketchElement.on("mouse:down", function (e) {
             if (sketchElement.getActiveGroup()) {
+                recordingStates = false;
                 sketchElement.getActiveGroup().forEachObject(function (a) {
                     sketchElement.remove(a);
                 });
                 sketchElement.discardActiveGroup();
+                recordingStates = true;
+                saveState();
             } else {
                 sketchElement.remove(sketchElement.getActiveObject());
             }
@@ -185,13 +191,17 @@
         makeActiveColor(this);
 
         if (sketchElement.getActiveGroup()) {
+            recordingStates = false;
             sketchElement.getActiveGroup().forEachObject(function (a) {
                 a.set('stroke', sketchElement.freeDrawingBrush.color);
             });
+            recordingStates = true;
+            saveState();
         }
         else if (sketchElement.getActiveObject()) {
             var target = sketchElement.getActiveObject();
             target.set('stroke', sketchElement.freeDrawingBrush.color);
+            saveState();
         } else {
             sketchElement.isDrawingMode = true;
             sketchElement.Selection = false;
