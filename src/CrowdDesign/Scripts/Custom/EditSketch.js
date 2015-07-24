@@ -257,4 +257,20 @@
         disableEraser();
         makeActiveTool($("#lnkSketchDrawingMode"));
     });
+
+    $(".lnkSendBack").click(function() {
+        if (sketchElement.getActiveObject()) {
+            var target = sketchElement.getActiveObject();
+            sketchElement.sendToBack(target);
+            sketchElement.renderAll();
+        }
+    });
+
+    $(".lnkSendFront").click(function () {
+        if (sketchElement.getActiveObject()) {
+            var target = sketchElement.getActiveObject();
+            sketchElement.bringToFront(target);
+            sketchElement.renderAll();
+        }
+    });
 });
