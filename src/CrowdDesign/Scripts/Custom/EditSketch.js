@@ -45,29 +45,32 @@
     });
     
     // event handlers
+    function saveSketchToDataFields() {
+        sketchElement.deactivateAll();
+        $("#Data").val(JSON.stringify(sketchElement));
+        $("#ImageUri").val(sketchElement.toDataURL());
+    }
+
     $("#btnSaveSketch").click(function () {
         $("#returnToProject").val("true");
         $("#startNewSketch").val("false");
         $("#duplicateSketch").val("false");
-        $("#Data").val(JSON.stringify(sketchElement));
-        $("#ImageUri").val(sketchElement.toDataURL());
+        saveSketchToDataFields();
     });
 
     $("#btnDuplicateSketch").click(function() {
         $("#returnToProject").val("false");
         $("#duplicateSketch").val("true");
-        $("#Data").val(JSON.stringify(sketchElement));
-        $("#ImageUri").val(sketchElement.toDataURL());
+        saveSketchToDataFields();
         $("#saveSketchForm").submit();
     });
 
-    $("#btnNewSketch").click(function () {
+    $("#btnNewSketch").click(function() {
         $("#returnToProject").val("false");
         $("#startNewSketch").val("true");
-        $("#Data").val(JSON.stringify(sketchElement));
-        $("#ImageUri").val(sketchElement.toDataURL());
+        saveSketchToDataFields();
         $("#saveSketchForm").submit();
-    })
+    });
 
     $("#lnkClearSketch").click(function() {
         $("#dialog-confirm").html("This operation cannot be undone. Are you sure you want to continue?");
