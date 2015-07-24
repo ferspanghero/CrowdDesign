@@ -262,6 +262,7 @@
         if (sketchElement.getActiveObject()) {
             var target = sketchElement.getActiveObject();
             sketchElement.sendToBack(target);
+            sketchElement.deactivateAll();
             sketchElement.renderAll();
         }
     });
@@ -270,6 +271,7 @@
         if (sketchElement.getActiveObject()) {
             var target = sketchElement.getActiveObject();
             sketchElement.bringToFront(target);
+            sketchElement.deactivateAll();
             sketchElement.renderAll();
         }
     });
