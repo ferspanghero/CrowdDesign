@@ -192,6 +192,8 @@
     <Content Include="Content\resources\images\plus_icon.png" />
     <Content Include="Content\resources\images\redo_icon.png" />
     <Content Include="Content\resources\images\red_icon.png" />
+    <Content Include="Content\resources\images\send_front.png" />
+    <Content Include="Content\resources\images\send_back.png" />
     <Content Include="Content\resources\images\text_icon.png" />
     <Content Include="Content\resources\images\undo_icon.png" />
     <Content Include="Content\resources\images\yellow_icon.png" />

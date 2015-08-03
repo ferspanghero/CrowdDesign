@@ -1,40 +1,76 @@
-﻿$(document).ready(function() {
+﻿$(document).ready(function () {
+    // initialization
     var jsonSketchData = $("#Data").val();
     var sketchData = jsonSketchData ? JSON.parse($("#Data").val()) : undefined;
     var sketchElement = new fabric.Canvas("mainCanvas");
-    var sketchActionStack = [];
+    var sketchStateStack = [];
+    var sketchRedoStack = [];
+    if (sketchData) {
+        sketchElement.loadFromJSON(sketchData, sketchElement.renderAll.bind(sketchElement));
+    }
+    sketchStateStack.push(JSON.stringify(sketchElement));
+    var recordingStates = true;
 
+    // configuration
     sketchElement.isDrawingMode = true;
     sketchElement.freeDrawingBrush.width = 5;
     sketchElement.Selection = false;
+    
+    function saveState() {
+        if (sketchStateStack.length == 30) {
+            sketchStateStack.shift();
+        }
+        if (sketchRedoStack.length != 0) {
+            sketchRedoStack = [];
+        }
+        sketchStateStack.push(JSON.stringify(sketchElement));
+    }
 
-    if (sketchData) {
-        sketchElement.loadFromJSON(sketchData, sketchElement.renderAll.bind(sketchElement));
+    sketchElement.on('object:added', function (e) {
+        if (recordingStates) {
+            saveState();
+        }
+    });
+
+    sketchElement.on('object:modified', function (e) {
+        if (recordingStates) {
+            saveState();
+        }
+    });
+
+    sketchElement.on('object:removed', function (e) {
+        if (recordingStates) {
+            saveState();
+        }
+    });
+    
+    // event handlers
+    function saveSketchToDataFields() {
+        sketchElement.deactivateAll();
+        $("#Data").val(JSON.stringify(sketchElement));
+        $("#ImageUri").val(sketchElement.toDataURL());
     }
 
     $("#btnSaveSketch").click(function () {
         $("#returnToProject").val("true");
         $("#startNewSketch").val("false");
         $("#duplicateSketch").val("false");
-        $("#Data").val(JSON.stringify(sketchElement));
-        $("#ImageUri").val(sketchElement.toDataURL());
+        saveSketchToDataFields();
     });
 
     $("#btnDuplicateSketch").click(function() {
         $("#returnToProject").val("false");
         $("#duplicateSketch").val("true");
-        $("#Data").val(JSON.stringify(sketchElement));
-        $("#ImageUri").val(sketchElement.toDataURL());
+        saveSketchToDataFields();
         $("#saveSketchForm").submit();
     });
 
-    $("#btnNewSketch").click(function () {
+    $("#btnNewSketch").click(function() {
         $("#returnToProject").val("false");
         $("#startNewSketch").val("true");
-        $("#Data").val(JSON.stringify(sketchElement));
-        $("#ImageUri").val(sketchElement.toDataURL());
+        saveSketchToDataFields();
         $("#saveSketchForm").submit();
-    })
+    });
 
     $("#lnkClearSketch").click(function() {
         $("#dialog-confirm").html("This operation cannot be undone. Are you sure you want to continue?");
@@ -66,10 +102,13 @@
     function enableEraser() {
         sketchElement.on("mouse:down", function (e) {
             if (sketchElement.getActiveGroup()) {
+                recordingStates = false;
                 sketchElement.getActiveGroup().forEachObject(function (a) {
                     sketchElement.remove(a);
                 });
                 sketchElement.discardActiveGroup();
+                recordingStates = true;
+                saveState();
             } else {
                 sketchElement.remove(sketchElement.getActiveObject());
             }
@@ -97,21 +136,26 @@
     });
 
     function undoAction() {
-        if (sketchElement.getObjects().length !== 0) {
-            var lastItemIndex = (sketchElement.getObjects().length - 1);
-            var item = sketchElement.item(lastItemIndex);
+        if (sketchStateStack.length > 1) {
+            recordingStates = false;
+            var currentState = sketchStateStack.pop();
+            sketchRedoStack.push(currentState);
 
-            sketchActionStack.push(item);
-            sketchElement.remove(item);
+            var stateToReturnTo = sketchStateStack[sketchStateStack.length - 1];
+            sketchElement.loadFromJSON(stateToReturnTo);
             sketchElement.renderAll();
+            recordingStates = true;
         }
     }
 
     function redoAction() {
-        if (sketchActionStack.length !== 0) {
-            var item = sketchActionStack.pop(item);
-            sketchElement.add(item);
+        if (sketchRedoStack.length > 0) {
+            recordingStates = false;
+            var stateToReturnTo = sketchRedoStack.pop();
+            sketchStateStack.push(stateToReturnTo);
+            sketchElement.loadFromJSON(stateToReturnTo);
             sketchElement.renderAll();
+            recordingStates = true;
         }
     }
 
@@ -150,13 +194,17 @@
         makeActiveColor(this);
 
         if (sketchElement.getActiveGroup()) {
+            recordingStates = false;
             sketchElement.getActiveGroup().forEachObject(function (a) {
                 a.set('stroke', sketchElement.freeDrawingBrush.color);
             });
+            recordingStates = true;
+            saveState();
         }
         else if (sketchElement.getActiveObject()) {
             var target = sketchElement.getActiveObject();
             target.set('stroke', sketchElement.freeDrawingBrush.color);
+            saveState();
         } else {
             sketchElement.isDrawingMode = true;
             sketchElement.Selection = false;
@@ -211,5 +259,23 @@
         sketchElement.Selection = true;
         disableEraser();
         makeActiveTool($("#lnkSketchDrawingMode"));
+    });
+
+    $(".lnkSendBack").click(function() {
+        if (sketchElement.getActiveObject()) {
+            var target = sketchElement.getActiveObject();
+            sketchElement.sendToBack(target);
+            sketchElement.deactivateAll();
+            sketchElement.renderAll();
+        }
+    });
+
+    $(".lnkSendFront").click(function () {
+        if (sketchElement.getActiveObject()) {
+            var target = sketchElement.getActiveObject();
+            sketchElement.bringToFront(target);
+            sketchElement.deactivateAll();
+            sketchElement.renderAll();
+        }
     });
 });
