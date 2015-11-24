@@ -11,7 +11,7 @@ namespace CrowdDesign.Infrastructure.SQLServer.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(CrowdDesign.Infrastructure.SQLServer.Contexts.DatabaseContext context)

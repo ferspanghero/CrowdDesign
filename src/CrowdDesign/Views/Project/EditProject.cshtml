@@ -1,14 +1,34 @@
 ﻿@{
     ViewBag.Title = "Edit project details";
 }
-@model CrowdDesign.Core.Entities.Project
+@using System.IdentityModel.Protocols.WSTrust
+@using CrowdDesign.UI.Web.Models
+@model CrowdDesign.UI.Web.Models.EditProjectViewModel
 
 <div>
     <p id="pPromptTitle">
-        <span id="spanProjectTitle">@Html.DisplayName(Model.Name)</span>
-        <input type="image" name="openPrompt" class="btTxt submit" id="openPrompt" src="data:image/png;base64,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" />
+        <span id="spanProjectTitle"><strong>@Html.DisplayName(Model.Name)</strong></span>
     </p>
 
+    @if (Model.Phase == EditProjectViewModel.EProjectPhase.Sketching)
+    {
+        <p id="phaseTitle"><strong>Sketching Phase</strong></p>
+    }
+    else
+    {
+        <p id="phaseTitle"><strong>Voting Phase</strong></p>
+    }
+
+    <label>Ready for the voting phase?</label>
+
+    @if (Model.UserProjectVotingEntry != null && Model.UserProjectVotingEntry.Ready)
+    {
+        <img id="imgProjectReady" class="imgVote" src="~/Content/resources/images/like_selected.png" data-userid=@Model.UserId data-projectid=@Model.ProjectId />
+    }
+    else
+    {
+        <img id="imgProjectNotReady" class="imgVote" src="~/Content/resources/images/like.png" data-userid=@Model.UserId data-projectid=@Model.ProjectId />
+    }
 </div>
 
 <div>
@@ -41,28 +61,45 @@
 
             @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
             {
-                <tr>
-                    <td>
-                        <div class="divDimension">
-                            @Html.ActionLink("Add decision point", "EditDimension", "Dimension", new { ProjectId = Model != null ? (int?)Model.Id : null }, null)
-                            <a class="aPlusButton" href="@Url.Action("EditDimension", "Dimension", new { ProjectId = Model != null ? (int?)Model.Id : null }, null)">
-                                <img class="imgPlusIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABgCAYAAAB7YK6NAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAdVpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpDb21wcmVzc2lvbj41PC90aWZmOkNvbXByZXNzaW9uPgogICAgICAgICA8dGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPjI8L3RpZmY6UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CrDjMt0AAAF3SURBVHgB7d0xcoMwAEVB4P5nxoaeAhWeJ42XMqPk2eufdJpsm4cAAQIECBAgQIAAAQIECBAgQGBVgX3khX+uZ+T8r88ex7Gd5/nrzOufv1/P68PXwWPk8GxnJ9vCMM/S+MPvdrJvgB9+IPDhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJheugO0XXlaLZrWSHdY/q+s/b6r8kQ/mzy9/2zme5l/dWFuMftLfTF178iC72nZV4q/PCjgg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlh/ir56e559krS7p9RMgQIAAAQIECBAgQIAAAQIrCnwBUVwXibtjKX8AAAAASUVORK5CYII=" />
-                            </a>
-                        </div>
-                    </td>
+                if (Model.Phase == EditProjectViewModel.EProjectPhase.Sketching)
+                {
+                    <tr>
+                        <td>
+                            <div class="divDimension">
+                                @Html.ActionLink("Add decision point", "EditDimension", "Dimension", new {ProjectId = Model != null ? Model.ProjectId : null}, null)
+                                <a class="aPlusButton" href="@Url.Action("EditDimension", "Dimension", new {ProjectId = Model != null ? Model.ProjectId : null}, null)">
+                                    <img class="imgPlusIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABgCAYAAAB7YK6NAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAdVpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpDb21wcmVzc2lvbj41PC90aWZmOkNvbXByZXNzaW9uPgogICAgICAgICA8dGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPjI8L3RpZmY6UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CrDjMt0AAAF3SURBVHgB7d0xcoMwAEVB4P5nxoaeAhWeJ42XMqPk2eufdJpsm4cAAQIECBAgQIAAAQIECBAgQGBVgX3khX+uZ+T8r88ex7Gd5/nrzOufv1/P68PXwWPk8GxnJ9vCMM/S+MPvdrJvgB9+IPDhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJheugO0XXlaLZrWSHdY/q+s/b6r8kQ/mzy9/2zme5l/dWFuMftLfTF178iC72nZV4q/PCjgg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlh/ir56e559krS7p9RMgQIAAAQIECBAgQIAAAQIrCnwBUVwXibtjKX8AAAAASUVORK5CYII="/>
+                                </a>
+                            </div>
+                        </td>
 
-                    <td></td>
+                        <td></td>
 
-                </tr>
+                    </tr>
+                }
             }
             else
             {
                 foreach (var dimension in Model.Dimensions)
                 {
+                    bool dimensionVotingEntryExists = Model.UserDimensionVotingEntriesMap.ContainsKey(dimension.Id);
+
                     <tr>
                         <td class="divDimensionDraggable divDimensionDroppable" data-dimensionid=@dimension.Id>
                             <div class="divDimension">
-                                @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.Id, DimensionId = dimension.Id }, new { Title = "Sort criteria: " + dimension.SortCriteria })
+                                @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new { ProjectId = Model.ProjectId, DimensionId = dimension.Id }, new { Title = "Sort criteria: " + dimension.SortCriteria })
+
+                                @if (Model.Phase == EditProjectViewModel.EProjectPhase.Sketching)
+                                {
+                                    if (dimensionVotingEntryExists && Model.UserDimensionVotingEntriesMap[dimension.Id].DownvotedDimension)
+                                    {
+                                        <img class="imgVote imgDimensionDownvoteSelected" src="~/Content/resources/images/dislike_selected.png" data-userid=@Model.UserId data-dimensionid=@dimension.Id data-projectid=@Model.ProjectId />
+                                    }
+                                    else
+                                    {
+                                        <img class="imgVote imgDimensionDownvote" src="~/Content/resources/images/dislike.png" data-userid=@Model.UserId data-dimensionid=@dimension.Id data-projectid=@Model.ProjectId />
+                                    }
+                                }
                                 <p class="pDimensionDescription">
                                     @dimension.Description
                                 </p>
@@ -77,7 +114,20 @@
                                 <td class="divSketchDroppable" data-sketchid=@sketch.Id>
                                     <div class="divSolutionAlternative divSketchDraggable" data-sketchid=@sketch.Id>
                                         <p class="pSolutionTitle">@sketch.Title</p>
-                                        <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.Id, DimensionId = dimension.Id, SketchId = sketch.Id})>
+
+                                        @if (Model.Phase == EditProjectViewModel.EProjectPhase.Voting)
+                                        {
+                                            if (dimensionVotingEntryExists && Model.UserDimensionVotingEntriesMap[dimension.Id].SelectedSketchId != null && Model.UserDimensionVotingEntriesMap[dimension.Id].SelectedSketchId.Value == sketch.Id)
+                                            {
+                                                <img class="imgVote imgSketchVoteSelected" src="~/Content/resources/images/like_selected.png" data-userid=@Model.UserId data-dimensionid=@dimension.Id data-projectid=@Model.ProjectId />
+                                            }
+                                            else
+                                            {
+                                                <img class="imgVote imgSketchVote" src="~/Content/resources/images/like.png" data-userid=@Model.UserId data-dimensionid=@dimension.Id data-projectid=@Model.ProjectId data-sketchid=@sketch.Id />
+                                            }
+                                        }
+
+                                        <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.ProjectId, DimensionId = dimension.Id, SketchId = sketch.Id})>
                                             <img id="imgSketchThumbnail" src=@sketch.ImageUri />
                                         </a>
                                     </div>
@@ -86,15 +136,18 @@
                                 amountOfSolutionsInRow++;
                             }
 
-                            // Add new solution box to the row
-                            <td class="tdAddNewSketch divNewSketchDroppable" data-dimensionid="@dimension.Id">
-                                <div class="divSolutionAlternative pSolutionTitle">
-                                    @Html.ActionLink("Add solution", "EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)
-                                    <a class="aPlusButton" href="@Url.Action("EditSketch", "Sketch", new { ProjectId = Model.Id, DimensionId = dimension.Id }, null)">
-                                        <img class="imgPlusIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABgCAYAAAB7YK6NAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAdVpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpDb21wcmVzc2lvbj41PC90aWZmOkNvbXByZXNzaW9uPgogICAgICAgICA8dGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPjI8L3RpZmY6UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CrDjMt0AAAF3SURBVHgB7d0xcoMwAEVB4P5nxoaeAhWeJ42XMqPk2eufdJpsm4cAAQIECBAgQIAAAQIECBAgQGBVgX3khX+uZ+T8r88ex7Gd5/nrzOufv1/P68PXwWPk8GxnJ9vCMM/S+MPvdrJvgB9+IPDhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJheugO0XXlaLZrWSHdY/q+s/b6r8kQ/mzy9/2zme5l/dWFuMftLfTF178iC72nZV4q/PCjgg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlh/ir56e559krS7p9RMgQIAAAQIECBAgQIAAAQIrCnwBUVwXibtjKX8AAAAASUVORK5CYII=" />
-                                    </a>
-                                </div>
-                            </td>
+                            if (Model.Phase == EditProjectViewModel.EProjectPhase.Sketching)
+                            {
+                                // Add new solution box to the row
+                                <td class="tdAddNewSketch divNewSketchDroppable" data-dimensionid="@dimension.Id">
+                                    <div class="divSolutionAlternative pSolutionTitle">
+                                        @Html.ActionLink("Add solution", "EditSketch", "Sketch", new {ProjectId = Model.ProjectId, DimensionId = dimension.Id}, null)
+                                        <a class="aPlusButton" href="@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.ProjectId, DimensionId = dimension.Id}, null)">
+                                            <img class="imgPlusIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABgCAYAAAB7YK6NAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAdVpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpDb21wcmVzc2lvbj41PC90aWZmOkNvbXByZXNzaW9uPgogICAgICAgICA8dGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPjI8L3RpZmY6UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CrDjMt0AAAF3SURBVHgB7d0xcoMwAEVB4P5nxoaeAhWeJ42XMqPk2eufdJpsm4cAAQIECBAgQIAAAQIECBAgQGBVgX3khX+uZ+T8r88ex7Gd5/nrzOufv1/P68PXwWPk8GxnJ9vCMM/S+MPvdrJvgB9+IPDhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJheugO0XXlaLZrWSHdY/q+s/b6r8kQ/mzy9/2zme5l/dWFuMftLfTF178iC72nZV4q/PCjgg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlh/ir56e559krS7p9RMgQIAAAQIECBAgQIAAAQIrCnwBUVwXibtjKX8AAAAASUVORK5CYII="/>
+                                        </a>
+                                    </div>
+                                </td>
+                            }
 
                             int proposedSolutionsCount = 0;
 
@@ -115,33 +168,36 @@
                 }
 
                 <tr>
-                    <td>
-                        <div class="divDimension">
-                            @Html.ActionLink("Add decision point", "EditDimension", "Dimension", new { ProjectId = Model.Id }, null)
-                            <a class="aPlusButton" href="@Url.Action("EditDimension", "Dimension", new { ProjectId = Model.Id }, null)">
-                                <img class="imgPlusIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABgCAYAAAB7YK6NAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAdVpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpDb21wcmVzc2lvbj41PC90aWZmOkNvbXByZXNzaW9uPgogICAgICAgICA8dGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPjI8L3RpZmY6UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CrDjMt0AAAF3SURBVHgB7d0xcoMwAEVB4P5nxoaeAhWeJ42XMqPk2eufdJpsm4cAAQIECBAgQIAAAQIECBAgQGBVgX3khX+uZ+T8r88ex7Gd5/nrzOufv1/P68PXwWPk8GxnJ9vCMM/S+MPvdrJvgB9+IPDhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJheugO0XXlaLZrWSHdY/q+s/b6r8kQ/mzy9/2zme5l/dWFuMftLfTF178iC72nZV4q/PCjgg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlh/ir56e559krS7p9RMgQIAAAQIECBAgQIAAAQIrCnwBUVwXibtjKX8AAAAASUVORK5CYII=" />
-                            </a>
+                    @if (Model.Phase == EditProjectViewModel.EProjectPhase.Sketching)
+                    {
+                        <td>
+                            <div class="divDimension">
+                                @Html.ActionLink("Add decision point", "EditDimension", "Dimension", new {ProjectId = Model.ProjectId}, null)
+                                <a class="aPlusButton" href="@Url.Action("EditDimension", "Dimension", new {ProjectId = Model.ProjectId}, null)">
+                                    <img class="imgPlusIcon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF8AAABgCAYAAAB7YK6NAAAAAXNSR0IArs4c6QAAAAlwSFlzAAALEwAACxMBAJqcGAAAAdVpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpDb21wcmVzc2lvbj41PC90aWZmOkNvbXByZXNzaW9uPgogICAgICAgICA8dGlmZjpQaG90b21ldHJpY0ludGVycHJldGF0aW9uPjI8L3RpZmY6UGhvdG9tZXRyaWNJbnRlcnByZXRhdGlvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CrDjMt0AAAF3SURBVHgB7d0xcoMwAEVB4P5nxoaeAhWeJ42XMqPk2eufdJpsm4cAAQIECBAgQIAAAQIECBAgQGBVgX3khX+uZ+T8r88ex7Gd5/nrzOufv1/P68PXwWPk8GxnJ9vCMM/S+MPvdrJvgB9+IPDhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJh2vLhhwJheugO0XXlaLZrWSHdY/q+s/b6r8kQ/mzy9/2zme5l/dWFuMftLfTF178iC72nZV4q/PCjgg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlg8/FAjTlh/ir56e559krS7p9RMgQIAAAQIECBAgQIAAAQIrCnwBUVwXibtjKX8AAAAASUVORK5CYII="/>
+                                </a>
 
-                        </div>
+                            </div>
 
-                    </td>
+                        </td>
+                    }
 
                     @{
 
-                int emptyCellsNeeded = 0;
+                        int emptyCellsNeeded = 0;
 
-                if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
-                {
-                    emptyCellsNeeded = (from c in Model.Dimensions
-                                        where c.Sketches != null && c.Sketches.Count > 0
-                                        select c.Sketches.Count()).Max();
-                }
+                        if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                        {
+                            emptyCellsNeeded = (from c in Model.Dimensions
+                                where c.Sketches != null && c.Sketches.Count > 0
+                                select c.Sketches.Count()).Max();
+                        }
 
-                //add an empty cell to make a block
-                for (int i = 0; i <= emptyCellsNeeded; i++)
-                {
-                    <td></td>
-                }
+                        //add an empty cell to make a block
+                        for (int i = 0; i <= emptyCellsNeeded; i++)
+                        {
+                            <td></td>
+                        }
 
                     }
                 </tr>

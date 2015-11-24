@@ -19,6 +19,7 @@ namespace CrowdDesign.UI.Web.Models
                 ImageUri = sketch.ImageUri;
                 Position = sketch.Position;
                 Title = sketch.Title;
+                Submitted = sketch.Submitted;
 
                 if (sketch.Dimension != null)
                 {
@@ -42,6 +43,8 @@ namespace CrowdDesign.UI.Web.Models
         public string Data { get; set; }
         public string ImageUri { get; set; }
         public int Position { get; set; }
+        [Display(Name = "Submit sketch for voting")]
+        public bool Submitted { get; set; }
         
         [Required]
         [StringLength(25)]
@@ -58,6 +61,7 @@ namespace CrowdDesign.UI.Web.Models
                 ImageUri = ImageUri,
                 Position = Position,
                 Title = Title,
+                Submitted = Submitted,
                 User = new User {Id = UserId ?? -1},
                 Dimension = new Dimension
                 {

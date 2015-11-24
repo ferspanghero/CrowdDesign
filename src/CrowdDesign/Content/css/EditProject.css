@@ -35,6 +35,16 @@ table th, td {
 #spanProjectTitle{
     display: inline-block;
     vertical-align: middle;
+    font-size: 28px;
+}
+
+#phaseTitle {
+    font-size: 24px;
+}
+
+#imgProjectReady, #imgProjectNotReady {
+    margin-left: 10px;
+    bottom: 10px;   
 }
 
 /* Table layout styles
@@ -92,6 +102,17 @@ table th, td {
 
 .pDimensionDescription {
     font-size: 0.8em;
+}
+
+.imgVote {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    position: absolute;    
+}
+
+.imgDimensionDownvote, .imgDimensionDownvoteSelected, .imgSketchVote, .imgSketchVoteSelected {
+    right: 5px;
 }
 
 /* Solution Alternative styles

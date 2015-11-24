@@ -40,6 +40,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Dimension.cs" />
+    <Compile Include="Entities\ProjectVotingEntry.cs" />
+    <Compile Include="Entities\DimensionVotingEntry.cs" />
     <Compile Include="Entities\Project.cs" />
     <Compile Include="Entities\Sketch.cs" />
     <Compile Include="Entities\User.cs" />
@@ -49,6 +51,8 @@
     <Compile Include="Interfaces\Entities\IDomainEntity.cs" />
     <Compile Include="Interfaces\Repositories\IBaseRepository.cs" />
     <Compile Include="Interfaces\Repositories\IDimensionRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IProjectVotingRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IDimensionVotingEntryRepository.cs" />
     <Compile Include="Interfaces\Repositories\ISketchRepository.cs" />
     <Compile Include="Interfaces\Repositories\IUserRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

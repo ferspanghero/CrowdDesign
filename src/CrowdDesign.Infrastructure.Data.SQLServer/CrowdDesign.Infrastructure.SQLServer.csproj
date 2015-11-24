@@ -61,6 +61,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\DimensionRepository.cs" />
     <Compile Include="Repositories\BaseRepository.cs" />
+    <Compile Include="Repositories\ProjectVotingEntryRepository.cs" />
+    <Compile Include="Repositories\DimensionVotingEntryRepository.cs" />
     <Compile Include="Repositories\SketchRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\ProjectRepository.cs" />

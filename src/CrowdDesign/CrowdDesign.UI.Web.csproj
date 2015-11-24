@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="Hubs\MorphologicalChartHub.cs" />
     <Compile Include="Models\EditDimensionViewModel.cs" />
+    <Compile Include="Models\EditProjectViewModel.cs" />
     <Compile Include="Models\EditSketchViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -186,8 +187,12 @@
     <Content Include="Content\resources\images\cyan_icon.png" />
     <Content Include="Content\resources\images\clear_all_icon.png" />
     <Content Include="Content\resources\images\delete_icon.png" />
+    <Content Include="Content\resources\images\dislike.png" />
+    <Content Include="Content\resources\images\dislike_selected.png" />
     <Content Include="Content\resources\images\eraser_icon.png" />
     <Content Include="Content\resources\images\green_icon.png" />
+    <Content Include="Content\resources\images\like.png" />
+    <Content Include="Content\resources\images\like_selected.png" />
     <Content Include="Content\resources\images\mode_icon.png" />
     <Content Include="Content\resources\images\plus_icon.png" />
     <Content Include="Content\resources\images\redo_icon.png" />

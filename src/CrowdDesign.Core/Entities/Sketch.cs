@@ -36,6 +36,10 @@ namespace CrowdDesign.Core.Entities
         /// Gets or sets the sketch title.
         /// </summary>
         public string Title { get; set; }
+        /// <summary>
+        /// Defines whether the sketch is submitted for voting.
+        /// </summary>
+        public bool Submitted { get; set; }
         #endregion
     }
 }

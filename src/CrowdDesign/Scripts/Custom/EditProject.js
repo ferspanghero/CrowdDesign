@@ -64,8 +64,126 @@
 
     $("#openPrompt").click(function () {
         $("#prompt").dialog("open");
+    });    
+
+    $(".imgDimensionDownvoteSelected").click(function() {
+        var userId = $(this).attr("data-userid");
+        var dimensionId = $(this).attr("data-dimensionid");
+        var projectId = $(this).attr("data-projectId");
+
+        $.ajax({
+            url: "/Project/ChangeUserDimensionLikeStatus?userId=" + userId + "&dimensionId=" + dimensionId + "&projectId=" + projectId + "&downvote=" + false,
+            type: "POST",
+            async: true,
+            processData: false,
+            cache: false,
+            success: function () {
+                location.reload();
+            },
+            error: function (eventArgs) {
+                alert("Error");
+            }
+        });
     });
 
+    $(".imgDimensionDownvote").click(function () {
+        var userId = $(this).attr("data-userid");
+        var dimensionId = $(this).attr("data-dimensionid");
+        var projectId = $(this).attr("data-projectId");
+
+        $.ajax({
+            url: "/Project/ChangeUserDimensionLikeStatus?userId=" + userId + "&dimensionId=" + dimensionId + "&projectId=" + projectId + "&downvote=" + true,
+            type: "POST",
+            async: true,
+            processData: false,
+            cache: false,
+            success: function () {
+                location.reload();
+            },
+            error: function (eventArgs) {
+                alert("Error");
+            }
+        });
+    });
+
+    $("#imgProjectReady").click(function () {
+        var userId = $(this).attr("data-userid");
+        var projectId = $(this).attr("data-projectId");
+
+        $.ajax({
+            url: "/Project/ChangeUserProjectReadyStatus?userId=" + userId + "&projectId=" + projectId + "&ready=" + false,
+            type: "POST",
+            async: true,
+            processData: false,
+            cache: false,
+            success: function () {
+                location.reload();
+            },
+            error: function (eventArgs) {
+                alert("Error");
+            }
+        });
+    });
+
+    $("#imgProjectNotReady").click(function () {
+        var userId = $(this).attr("data-userid");
+        var projectId = $(this).attr("data-projectId");
+
+        $.ajax({
+            url: "/Project/ChangeUserProjectReadyStatus?userId=" + userId + "&projectId=" + projectId + "&ready=" + true,
+            type: "POST",
+            async: true,
+            processData: false,
+            cache: false,
+            success: function () {
+                location.reload();
+            },
+            error: function (eventArgs) {
+                alert("Error");
+            }
+        });
+    });
+
+    $(".imgSketchVoteSelected").click(function () {
+        var userId = $(this).attr("data-userid");
+        var dimensionId = $(this).attr("data-dimensionid");
+        var projectId = $(this).attr("data-projectId");
+
+        $.ajax({
+            url: "/Project/VoteForSketch?userId=" + userId + "&dimensionId=" + dimensionId + "&projectId=" + projectId + "&sketchId=" + null,
+            type: "POST",
+            async: true,
+            processData: false,
+            cache: false,
+            success: function () {
+                location.reload();
+            },
+            error: function (eventArgs) {
+                alert("Error");
+            }
+        });
+    });
+
+    $(".imgSketchVote").click(function () {
+        var userId = $(this).attr("data-userid");
+        var dimensionId = $(this).attr("data-dimensionid");
+        var projectId = $(this).attr("data-projectId");
+        var sketchId = $(this).attr("data-sketchid");
+
+        $.ajax({
+            url: "/Project/VoteForSketch?userId=" + userId + "&dimensionId=" + dimensionId + "&projectId=" + projectId + "&sketchId=" + sketchId,
+            type: "POST",
+            async: true,
+            processData: false,
+            cache: false,
+            success: function () {
+                location.reload();
+            },
+            error: function (eventArgs) {
+                alert("Error");
+            }
+        });
+    });
 });
 
 function sketchDropped(event, ui) {

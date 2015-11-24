@@ -24,6 +24,8 @@ namespace CrowdDesign.Infrastructure.SQLServer.Contexts
         public DbSet<Dimension> Dimensions { get; set; }
         public DbSet<Sketch> Sketches { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<DimensionVotingEntry> DimensionVotingEntries { get; set; }
+        public DbSet<ProjectVotingEntry> ProjectVotingEntries { get; set; }
         #endregion
 
         #region Methods
