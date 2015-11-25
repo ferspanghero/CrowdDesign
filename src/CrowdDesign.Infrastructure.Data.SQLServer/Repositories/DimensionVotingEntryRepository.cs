@@ -9,25 +9,11 @@ using CrowdDesign.Core.Interfaces.Repositories;
 
 namespace CrowdDesign.Infrastructure.SQLServer.Repositories
 {
-    public class DimensionVotingEntryRepository : BaseRepository<DimensionVotingEntry, int>, IDimensionVotingEntryRepository
+    public class DimensionVotingEntryRepository : BaseRepository<DimensionVotingEntry, int>
     {
         public DimensionVotingEntryRepository(DbContext context)
             : base(context)
         {
-        }
-
-        public IDictionary<int, DimensionVotingEntry> GetUserDimensionVotingEntries(int userId, int projectId)
-        {
-            var query = from e in EntitySet
-                        where e.UserId == userId && e.ProjectId == projectId
-                        select e;
-
-            return query.ToDictionary(k => k.DimensionId, v => v);
-        }
-
-        public IEnumerable<DimensionVotingEntry> Get(Func<DimensionVotingEntry, bool> predicate)
-        {
-            return EntitySet.Where(predicate).Select(e => e);
         }
     }
 }

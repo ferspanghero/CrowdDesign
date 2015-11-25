@@ -11,6 +11,7 @@ using CrowdDesign.Utils.AspNet.Mvc;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity;
+using CrowdDesign.Utils.Collections;
 using CrowdDesign.Utils.Extensions;
 using Microsoft.Ajax.Utilities;
 
@@ -62,8 +63,8 @@ namespace CrowdDesign.UI.Web.Controllers
                 if (projectId == null)
                     return View("Error");
 
-                IDimensionVotingEntryRepository dimVotingRep = new DimensionVotingEntryRepository(new DatabaseContext());
-                IProjectVotingRepository projVotingRep = new ProjectVotingEntryRepository(new DatabaseContext());
+                IBaseRepository<DimensionVotingEntry, int> dimVotingRep = new DimensionVotingEntryRepository(new DatabaseContext());
+                IBaseRepository<ProjectVotingEntry, int> projVotingRep = new ProjectVotingEntryRepository(new DatabaseContext());
                 IBaseRepository<User, int> userRep = new UserRepository(new DatabaseContext());
 
                 Project project = Repository.Get(projectId.Value).SingleOrDefault();
@@ -71,7 +72,7 @@ namespace CrowdDesign.UI.Web.Controllers
                 if (project == null)
                     return View("Error");
 
-                int usersCount = userRep.Get(null).Count();
+                int usersCount = userRep.Get().Count();
                 IEnumerable<ProjectVotingEntry> projectVotingEntries = projVotingRep.Get(e => e.ProjectId == projectId.Value);
                 int projectReadyVotesCount = projectVotingEntries.Count(e => e.Ready);
 
@@ -80,7 +81,7 @@ namespace CrowdDesign.UI.Web.Controllers
 
                 viewModel.UserId = (int)System.Web.HttpContext.Current.Session["userId"];
                 viewModel.IsUserAdmin = (bool)System.Web.HttpContext.Current.Session["userIsAdmin"];
-                viewModel.UserDimensionVotingEntriesMap = dimVotingRep.GetUserDimensionVotingEntries(viewModel.UserId.Value, projectId.Value);
+                viewModel.UserDimensionVotingEntriesMap = dimVotingRep.Get(e => e.UserId == viewModel.UserId.Value && e.ProjectId == projectId).ToDictionary(k => k.DimensionId, v => v);
                 viewModel.UserProjectVotingEntry = projVotingRep.Get(e => e.ProjectId == projectId.Value && e.UserId == viewModel.UserId.Value).SingleOrDefault();
 
                 decimal userMinimumQuota = Math.Ceiling(usersCount / 2m);
@@ -159,10 +160,45 @@ namespace CrowdDesign.UI.Web.Controllers
             return RedirectToAction("GetProjects");
         }
 
+        public ActionResult GetProjectTopCompleteSolutions(int? projectId, string passingDimensionsIds)
+        {
+            if (projectId == null || !ModelState.IsValid)
+                return View("Error");
+
+            IBaseRepository<DimensionVotingEntry, int> dimVotingRep = new DimensionVotingEntryRepository(new DatabaseContext());
+
+            Project project = Repository.Get(projectId.Value).SingleOrDefault();
+
+            if (project == null)
+                return View("Error");
+
+            var topCompleteSolutions =
+                dimVotingRep
+                    .Get(e => e.ProjectId == projectId.Value)
+                    .Where(e => e.SelectedSketchId != null)
+                    .ToLookup(e => e.UserId, e => e.SelectedSketchId)
+                    .Select(e => e.AsEnumerable())
+                    .GroupBy(e => e, new SequencesEqualEqualityComparer<int?>())
+                    .Select(e => new KeyValuePair<IEnumerable<int?>, int>(e.Key, e.Count()) )
+                    .OrderByDescending(e => e.Value)
+                    .ToList();
+
+            if (!string.IsNullOrEmpty(passingDimensionsIds))
+            {
+                HashSet<int> dimensionIds = new HashSet<int>(passingDimensionsIds.Split(',').Select(int.Parse).ToList());
+
+                project.Dimensions = project.Dimensions.Where(e => dimensionIds.Contains(e.Id)).ToList();
+            }
+
+            ViewProjectTopCompleteSolutionsViewModel viewModel = new ViewProjectTopCompleteSolutionsViewModel(project, topCompleteSolutions);
+
+            return View("ViewProjectTopCompleteSolutions", viewModel);
+        }
+
         [HttpPost]
         public JsonResult ChangeUserDimensionLikeStatus(int? userId, int? dimensionId, int? projectId, bool? downvote)
         {
-            IDimensionVotingEntryRepository rep = new DimensionVotingEntryRepository(new DatabaseContext());
+            IBaseRepository<DimensionVotingEntry, int> rep = new DimensionVotingEntryRepository(new DatabaseContext());
             DimensionVotingEntry entry = rep.Get(e => e.DimensionId == dimensionId.Value && e.UserId == userId.Value).SingleOrDefault();
 
             if (entry == null)
@@ -190,15 +226,27 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public JsonResult VoteForSketch(int? userId, int? dimensionId, int? projectId, int? sketchId)
         {
-            IDimensionVotingEntryRepository rep = new DimensionVotingEntryRepository(new DatabaseContext());
+            IBaseRepository<DimensionVotingEntry, int> rep = new DimensionVotingEntryRepository(new DatabaseContext());
             DimensionVotingEntry entry = rep.Get(e => e.DimensionId == dimensionId.Value && e.UserId == userId.Value).SingleOrDefault();
 
-            if (entry == null || sketchId == null)
-                return Json("Error");
+            if (entry == null)
+            {
+                rep.Create(
+                    new DimensionVotingEntry
+                    {
+                        DimensionId = dimensionId.Value,
+                        ProjectId = projectId.Value,
+                        UserId = userId.Value,
+                        SelectedSketchId = sketchId,
+                        DownvotedDimension = false
+                    });
+            }
+            else
+            {
+                entry.SelectedSketchId = sketchId;
 
-            entry.SelectedSketchId = sketchId;
-
-            rep.Update(entry);
+                rep.Update(entry);
+            }
 
             return Json("Success");
         }
@@ -206,7 +254,7 @@ namespace CrowdDesign.UI.Web.Controllers
         [HttpPost]
         public JsonResult ChangeUserProjectReadyStatus(int? userId, int? projectId, bool? ready)
         {
-            IProjectVotingRepository rep = new ProjectVotingEntryRepository(new DatabaseContext());
+            IBaseRepository<ProjectVotingEntry, int> rep = new ProjectVotingEntryRepository(new DatabaseContext());
             ProjectVotingEntry entry = rep.Get(e => e.ProjectId == projectId.Value && e.UserId == userId.Value).SingleOrDefault();
 
             if (entry == null)

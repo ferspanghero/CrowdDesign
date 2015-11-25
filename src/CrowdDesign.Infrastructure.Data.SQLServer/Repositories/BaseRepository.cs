@@ -129,6 +129,11 @@ namespace CrowdDesign.Infrastructure.SQLServer.Repositories
                 entities;
         }
 
+        public IEnumerable<TEntity> Get(Func<TEntity, bool> predicate)
+        {
+            return predicate == null ? EntitySet : EntitySet.Where(predicate);
+        }
+
         public TKey Create(TEntity entity)
         {
             entity.TryThrowArgumentNullException("entity");

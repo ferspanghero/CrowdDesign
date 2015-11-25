@@ -115,6 +115,10 @@ table th, td {
     right: 5px;
 }
 
+.imgSketchVote, .imgSketchVoteSelected {
+    bottom: 5px;
+}
+
 /* Solution Alternative styles
 -----------------------------------------------------------*/
 .pSolutionTitle {

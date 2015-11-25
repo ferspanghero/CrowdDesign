@@ -21,6 +21,8 @@ namespace CrowdDesign.Core.Interfaces.Repositories
         /// <remarks>If no ids are provided, all existing entities are returned</remarks>
         IEnumerable<TEntity> Get(params TKey[] entityIds);
 
+        IEnumerable<TEntity> Get(Func<TEntity, bool> predicate = null);
+
         /// <summary>
         /// Creates a new entity.
         /// </summary>

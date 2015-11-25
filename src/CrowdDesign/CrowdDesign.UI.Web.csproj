@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="Hubs\MorphologicalChartHub.cs" />
     <Compile Include="Models\EditDimensionViewModel.cs" />
+    <Compile Include="Models\ViewProjectTopCompleteSolutionsViewModel.cs" />
     <Compile Include="Models\EditProjectViewModel.cs" />
     <Compile Include="Models\EditSketchViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
@@ -200,6 +201,8 @@
     <Content Include="Content\resources\images\send_front.png" />
     <Content Include="Content\resources\images\send_back.png" />
     <Content Include="Content\resources\images\text_icon.png" />
+    <Content Include="Content\resources\images\tick-off.png" />
+    <Content Include="Content\resources\images\tick-on.png" />
     <Content Include="Content\resources\images\undo_icon.png" />
     <Content Include="Content\resources\images\yellow_icon.png" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -278,6 +281,7 @@
     <Content Include="Views\Project\ManageProjects.cshtml" />
     <Content Include="Views\Dimension\EditDimension.cshtml" />
     <Content Include="Views\Security\Login.cshtml" />
+    <Content Include="Views\Project\ViewProjectTopCompleteSolutions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

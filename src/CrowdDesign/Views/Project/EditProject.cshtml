@@ -19,16 +19,28 @@
         <p id="phaseTitle"><strong>Voting Phase</strong></p>
     }
 
-    <label>Ready for the voting phase?</label>
+    <div style="margin: 0; padding-bottom: 0;">
+        <label>Ready for the voting phase?</label>
 
-    @if (Model.UserProjectVotingEntry != null && Model.UserProjectVotingEntry.Ready)
-    {
-        <img id="imgProjectReady" class="imgVote" src="~/Content/resources/images/like_selected.png" data-userid=@Model.UserId data-projectid=@Model.ProjectId />
-    }
-    else
-    {
-        <img id="imgProjectNotReady" class="imgVote" src="~/Content/resources/images/like.png" data-userid=@Model.UserId data-projectid=@Model.ProjectId />
-    }
+        @if (Model.UserProjectVotingEntry != null && Model.UserProjectVotingEntry.Ready)
+        {
+            <img id="imgProjectReady" class="imgVote" src="~/Content/resources/images/like_selected.png" data-userid=@Model.UserId data-projectid=@Model.ProjectId style="position: absolute; top: 5px;" />
+        }
+        else
+        {
+            <img id="imgProjectNotReady" class="imgVote" src="~/Content/resources/images/like.png" data-userid=@Model.UserId data-projectid=@Model.ProjectId style="position: absolute; top: 5px;" />
+        }
+
+        @if (Model.Phase == EditProjectViewModel.EProjectPhase.Voting)
+        {
+            using (Html.BeginForm("GetProjectTopCompleteSolutions", "Project", new {projectId = Model.ProjectId, passingDimensionsIds = Model.Dimensions == null ? null : string.Join(",", Model.Dimensions.Select(e => e.Id).ToArray())}, FormMethod.Post))
+            {
+                <div style="padding-left: 0; padding-bottom: 0;">
+                    <input type="submit" value="Show top voted complete solutions"/>
+                </div>
+            }
+        }
+    </div>
 </div>
 
 <div>
@@ -119,11 +131,11 @@
                                         {
                                             if (dimensionVotingEntryExists && Model.UserDimensionVotingEntriesMap[dimension.Id].SelectedSketchId != null && Model.UserDimensionVotingEntriesMap[dimension.Id].SelectedSketchId.Value == sketch.Id)
                                             {
-                                                <img class="imgVote imgSketchVoteSelected" src="~/Content/resources/images/like_selected.png" data-userid=@Model.UserId data-dimensionid=@dimension.Id data-projectid=@Model.ProjectId />
+                                                <img class="imgVote imgSketchVoteSelected" src="~/Content/resources/images/tick-on.png" data-userid=@Model.UserId data-dimensionid=@dimension.Id data-projectid=@Model.ProjectId />
                                             }
                                             else
                                             {
-                                                <img class="imgVote imgSketchVote" src="~/Content/resources/images/like.png" data-userid=@Model.UserId data-dimensionid=@dimension.Id data-projectid=@Model.ProjectId data-sketchid=@sketch.Id />
+                                                <img class="imgVote imgSketchVote" src="~/Content/resources/images/tick-off.png" data-userid=@Model.UserId data-dimensionid=@dimension.Id data-projectid=@Model.ProjectId data-sketchid=@sketch.Id />
                                             }
                                         }
 

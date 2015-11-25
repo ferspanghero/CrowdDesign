@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = "Edit project details";
+}
+@using System.IdentityModel.Protocols.WSTrust
+@using CrowdDesign.Core.Entities
+@using CrowdDesign.UI.Web.Models
+@using CrowdDesign.Utils.Extensions
+@model CrowdDesign.UI.Web.Models.ViewProjectTopCompleteSolutionsViewModel
+
+<div>
+    <p id="pPromptTitle">
+        <span id="spanProjectTitle"><strong>@Html.DisplayName(Model.Name)</strong></span>
+    </p>
+
+    <p id="phaseTitle"><strong>Top Voted Complete Solutions</strong></p>
+
+    @using (Html.BeginForm("EditProject", "Project", new { projectId = Model.ProjectId }, FormMethod.Post))
+    {
+        <input type="submit" value="Back" />
+    }
+</div>
+
+<div>
+    <table id="tblMorphChart">
+        <thead>
+            <tr>
+                <th>Decision points</th>
+                @if (Model != null && Model.Dimensions != null)
+                {
+                    int i = 1;
+
+                    if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                    {
+                        int proposedSolutionsCount = (from c in Model.Dimensions
+                                                      where c.Sketches != null && c.Sketches.Count > 0
+                                                      select c.Sketches.Count()).Max();
+
+                        if (proposedSolutionsCount > 0)
+                        {
+                            i += proposedSolutionsCount;
+                        }
+                    }
+
+                    if (!Model.TopCompleteSolutions.IsNullOrEmpty())
+                    {
+                        for (int j = 0; j < Model.TopCompleteSolutions.Count(); j++)
+                        {
+                            <th id="thSolutionAlternativesTitle">Top Solution @(j + 1)</th>
+                        }
+                    }
+                    else
+                    {
+                        <th id="thSolutionAlternativesTitle" colspan="@i">No complete solutions to display</th>
+                    }
+                }
+
+            </tr>
+        </thead>
+        <tbody>
+
+            @if (Model == null || Model.Dimensions == null || Model.Dimensions.Count == 0)
+            {
+                <tr>
+                    <td></td>
+                </tr>
+            }
+            else
+            {
+                int j = 0;
+                
+                foreach (var dimension in Model.Dimensions)
+                {
+                    <tr>
+                        <td class="divDimensionDraggable divDimensionDroppable">
+                            <div class="divDimension">
+                                @Html.ActionLink(dimension.Name, "EditDimension", "Dimension", new {ProjectId = Model.ProjectId, DimensionId = dimension.Id}, new {Title = "Sort criteria: " + dimension.SortCriteria})
+                                <p class="pDimensionDescription">
+                                    @dimension.Description
+                                </p>
+                            </div>
+                        </td>
+
+                        @if (Model.TopCompleteSolutions != null)
+                        {
+                            int amountOfSolutionsInRow = 0;
+
+                            foreach (var topCompleteSolution in Model.TopCompleteSolutions)
+                            {
+                                Sketch sketch = dimension.Sketches.SingleOrDefault(e => e.Id == topCompleteSolution.Key.ElementAt(j).Value);
+
+                                if (sketch == null)
+                                {
+                                    <td></td>
+                                }
+                                else
+                                {
+                                    <td class="divSketchDroppable" style="border: 1px solid black">
+                                        <div class="divSolutionAlternative divSketchDraggable">
+                                            <p class="pSolutionTitle">@sketch.Title</p>
+
+                                            <a href=@Url.Action("EditSketch", "Sketch", new {ProjectId = Model.ProjectId, DimensionId = dimension.Id, SketchId = sketch.Id})>
+                                                <img id="imgSketchThumbnail" src=@sketch.ImageUri/>
+                                            </a>
+                                        </div>
+                                    </td>
+                                }
+
+                                amountOfSolutionsInRow++;
+                            }
+
+                            int proposedSolutionsCount = 0;
+
+                            if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                            {
+                                proposedSolutionsCount = (from c in Model.Dimensions
+                                    where c.Sketches != null && c.Sketches.Count > 0
+                                    select c.Sketches.Count()).Max();
+                            }
+
+                            // Add an empty cell to make a block
+                            for (int i = 0; i < proposedSolutionsCount - amountOfSolutionsInRow; i++)
+                            {
+                                <td></td>
+                            }
+                        }
+                    </tr>
+
+                    j++;
+                }
+
+                <tr>
+                    @{
+
+                int emptyCellsNeeded = 0;
+
+                if (Model.Dimensions.Any(c => c.Sketches != null && c.Sketches.Count > 0))
+                {
+                    emptyCellsNeeded = (from c in Model.Dimensions
+                                        where c.Sketches != null && c.Sketches.Count > 0
+                                        select c.Sketches.Count()).Max();
+                }
+
+                //add an empty cell to make a block
+                for (int i = 0; i <= emptyCellsNeeded; i++)
+                {
+                    <td></td>
+                }
+
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.js")
+    @Scripts.Render("~/Scripts/jquery.signalR-2.2.0.js")
+    @Scripts.Render("~/signalr/hubs")
+}

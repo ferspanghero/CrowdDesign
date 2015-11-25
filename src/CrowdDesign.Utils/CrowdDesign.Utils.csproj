@@ -74,6 +74,7 @@
     <Compile Include="AspNet.Mvc\ExportModelStateToTempDataAttribute.cs" />
     <Compile Include="AspNet.Mvc\ImportModelStateFromTempDataAttribute.cs" />
     <Compile Include="AspNet.Mvc\ModelStateTempDataTransferAttribute.cs" />
+    <Compile Include="Collections\SequencesEqualEqualityComparer.cs" />
     <Compile Include="Extensions\Extensions.Object.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
